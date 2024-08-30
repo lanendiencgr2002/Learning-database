@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.atguigu.cloud.mapper.AgencyMapper">
+  <resultMap id="BaseResultMap" type="com.atguigu.cloud.entities.Agency">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="ano" jdbcType="CHAR" property="ano" />
+    <result column="aname" jdbcType="CHAR" property="aname" />
+    <result column="asex" jdbcType="CHAR" property="asex" />
+    <result column="aphone" jdbcType="CHAR" property="aphone" />
+    <result column="aremark" jdbcType="VARCHAR" property="aremark" />
+  </resultMap>
+</mapper>
