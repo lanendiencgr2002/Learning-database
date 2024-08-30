@@ -1,0 +1,3 @@
+sync
+    SaleTicket：简单地用synchronized
+    ThreadDemo1：多生产多消费，用的是synchronized
