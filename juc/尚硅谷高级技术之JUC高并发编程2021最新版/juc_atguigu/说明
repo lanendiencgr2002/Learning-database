@@ -3,11 +3,14 @@ sync
     ThreadDemo1：多生产多消费，用的是synchronized, wait（等待）, notify（唤醒所有其他等待）方法
     Lock_8：演示了synchronized的8种情况，锁对象，锁静态方法，等等
     SyncLockDemo：演示了可重入锁
+    DeadLock：演示了死锁
 lock
     ThreadDemo2：多生产多消费，用的是Lock锁，await（等待），signalAll（唤醒所有其他等待）方法
     ThreadDemo3：线程间定制化通信，用Condition，启动三个线程，按照如下要求：AA打印5次，B时打印10次，CC打印15次 循环5轮
     ThreadDemo4：常见数据结构线程不安全演示，还有解决方法：用-CopyOnWriteArrayList，-CopyOnWriteArraySet，-ConcurrentHashMap
     LSaleTicket：公平锁和非公平锁演示
+callable
+    Demo1：演示了用callable创建线程，和FutureTask的用法，简略原理
 
 
 

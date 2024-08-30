@@ -34,7 +34,7 @@ public class Demo1 {
         //FutureTask
         FutureTask<Integer> futureTask1 = new FutureTask<>(new MyThread2());
 
-        //lam表达式
+        //lam表达式  //callable是函数式接口，可以用lambda
         FutureTask<Integer> futureTask2 = new FutureTask<>(()->{
             System.out.println(Thread.currentThread().getName()+" come in callable");
             return 1024;
