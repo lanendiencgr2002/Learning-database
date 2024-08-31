@@ -11,8 +11,11 @@ lock
     LSaleTicket：公平锁和非公平锁演示
 callable
     Demo1：演示了用callable创建线程，和FutureTask的用法，简略原理
-
-
+juc
+    CountDownLatchDemo：演示了juc辅助类，CountDownLatch: 减少计数，等待计数到0后执行任务
+    CyclicBarrierDemo：演示了juc辅助类，CyclicBarrier: 等待线程到达栅栏，然后一起执行任务
+    SemaphoreDemo：演示了juc辅助类，Semaphore: 控制资源的访问
+    ReadWriteLockDemo：演示了读写锁
 
 
 
