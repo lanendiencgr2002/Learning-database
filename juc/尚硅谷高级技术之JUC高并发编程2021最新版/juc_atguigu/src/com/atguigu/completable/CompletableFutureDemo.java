@@ -21,8 +21,8 @@ public class CompletableFutureDemo {
             return 1024;
         });
         completableFuture2.whenComplete((t,u)->{
-            System.out.println("------t="+t);
-            System.out.println("------u="+u);
+            System.out.println("------t="+t);//返回值
+            System.out.println("------u="+u);//异常
         }).get();
 
     }

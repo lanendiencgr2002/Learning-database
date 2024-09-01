@@ -16,7 +16,15 @@ juc
     CyclicBarrierDemo：演示了juc辅助类，CyclicBarrier: 等待线程到达栅栏，然后一起执行任务
     SemaphoreDemo：演示了juc辅助类，Semaphore: 控制资源的访问
     ReadWriteLockDemo：演示了读写锁
-
+queue
+    BlockingQueueDemo：演示了阻塞队列
+pool
+    ThreadPoolDemo1：演示了3个常见线程池的用法
+    ThreadPoolDemo2：演示了自定义线程池的用法
+forkjoin
+    ForkJoinDemo：演示了Fork/Join框架的用法,从1加到100，分治求和
+completable
+    CompletableFutureDemo：演示了异步调用没有返回值和有返回值
 
 
 
