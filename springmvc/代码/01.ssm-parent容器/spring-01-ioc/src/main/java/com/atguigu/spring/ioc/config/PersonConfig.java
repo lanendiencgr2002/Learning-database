@@ -12,7 +12,6 @@ import org.springframework.context.annotation.*;
 
 @Configuration //告诉Spring容器，这是一个配置类
 public class PersonConfig {
-
     //场景：判断当前电脑的操作系统是windows还是mac
     //  windows 系统，容器中有 bill
     //  mac 系统，容器中有 joseph

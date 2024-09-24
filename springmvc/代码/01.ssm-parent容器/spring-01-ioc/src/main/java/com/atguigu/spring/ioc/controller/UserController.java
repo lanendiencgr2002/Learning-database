@@ -33,10 +33,10 @@ public class UserController {
     @Autowired
     Person bill;
 
-    @Autowired  //把这个类型的所有组件都拿来
+    @Autowired  //把这个类型的所有组件都拿来 不再局限于找到多个，找不到名字就报错
     List<Person> personList;
 
-    @Autowired
+    @Autowired //把这个类型的所有组件都拿来，并且放到map中，key就是组件的id，value就是组件对象
     Map<String,Person> personMap;
 
     @Autowired //注入ioc容器自己

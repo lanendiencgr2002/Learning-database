@@ -28,20 +28,23 @@ import java.util.Map;
  * 这个是主入口类，称为主程序类
  * application.properties 就是这个项目的配置文件
  */
-
+// @primary 在config中的personconfig中演示 在@Bean上面，用@Autowire时，存在多个类型一样名字不同的组件，会优先用这个注解的
+// @Qualifier("自定义bean的名字")在@Autowire上面用，类型多个可以指定bean名字在service中的userservice中演示
+// @Autowire在controller的usercontroller中演示
+// @Conditional(MacCondition.class)条件装配，当满足条件的时候（MacCondition.class中实现Condition接口重写match方法），这个组件才会被注册到容器中
+// @Bean('自定义bean的名字')
+// @Import(xx.class) 可以用于导入第三方bean（实现一般简单的bean导入）  这个注解放别的地方（比如controller），也一样可以 推荐单独放appconfig
+// 工程也可以导入第三方bean（可以实现复杂的bean导入） 例子在factory文件夹中
 @SpringBootApplication
 public class Spring01IocApplication {
-
-
     public static void main(String[] args) {
+        // ConfigurableApplicationContext父类是ApplicationContext：Spring应用上下文对象；IoC容器
+        // 跑起一个Spring的应用
         ConfigurableApplicationContext ioc = SpringApplication.run(Spring01IocApplication.class, args);
         System.out.println("=================ioc容器创建完成===================");
-
         DeliveryDao dao = ioc.getBean(DeliveryDao.class);
-
         dao.saveDelivery();
     }
-
     public static void test11(String[] args) throws IOException {
         ConfigurableApplicationContext ioc = SpringApplication.run(Spring01IocApplication.class, args);
         System.out.println("=================ioc容器创建完成===================");
@@ -60,7 +63,6 @@ public class Spring01IocApplication {
         System.out.println("available = " + available);
 
     }
-
     public static void test10(String[] args) {
         ConfigurableApplicationContext ioc = SpringApplication.run(Spring01IocApplication.class, args);
         System.out.println("=================ioc容器创建完成===================");
@@ -77,9 +79,6 @@ public class Spring01IocApplication {
         String myName = hahaService.getMyName();
         System.out.println("myName = " + myName);
     }
-
-
-
     public static void test09(String[] args) {
         ConfigurableApplicationContext ioc = SpringApplication.run(Spring01IocApplication.class, args);
         System.out.println("=================ioc容器创建完成===================");
@@ -88,8 +87,6 @@ public class Spring01IocApplication {
         System.out.println("bean = " + bean);
 
     }
-
-
     /**
      *
      * @param args
@@ -106,7 +103,6 @@ public class Spring01IocApplication {
 
 
     }
-
     /**
      * 测试自动注入: 代码在 UserController 中
      * @param args
@@ -119,34 +115,27 @@ public class Spring01IocApplication {
 
         System.out.println("userController = " + userController);
     }
-
     /**
-     * 条件注册
+     * 条件注册 @Conditional config/dogcofig有演示
      * @param args
      */
     public static void test06(String[] args) {
         ConfigurableApplicationContext ioc = SpringApplication.run(Spring01IocApplication.class, args);
-
         Map<String, Person> beans = ioc.getBeansOfType(Person.class);
         System.out.println("beans = " + beans);
-
-
         //拿到环境变量
         ConfigurableEnvironment environment = ioc.getEnvironment();
-
         String property = environment.getProperty("OS");
         System.out.println("property = " + property);
-
         Map<String, Dog> beansOfType = ioc.getBeansOfType(Dog.class);
         System.out.println("dogs = " + beansOfType);
-
         Map<String, UserService> ofType = ioc.getBeansOfType(UserService.class);
         System.out.println("ofType = " + ofType);
-
     }
-
-
-    // FactoryBean在容器中放的组件的类型，是接口中泛型指定的类型，组件的名字是 工厂自己的名字
+    /** FactoryBean在容器中放的组件的类型，是接口中泛型指定的类型，组件的名字是 工厂自己的名字
+     *
+     * @param args
+     */
     public static void test05(String[] args) {
         ConfigurableApplicationContext ioc = SpringApplication.run(Spring01IocApplication.class, args);
         System.out.println("=================ioc容器创建完成===================");
@@ -159,9 +148,8 @@ public class Spring01IocApplication {
         Map<String, Car> beansOfType = ioc.getBeansOfType(Car.class);
         System.out.println("beansOfType = " + beansOfType);
     }
-
     /**
-     * @Scope 调整组件的作用域：
+     * @Scope 调整组件的作用域：以下注解放Bean注解上面
      * 1、@Scope("prototype")：非单实例:
      *      容器启动的时候不会创建非单实例组件的对象。
      *      什么时候获取，什么时候创建
@@ -179,22 +167,18 @@ public class Spring01IocApplication {
     public static void test04(String[] args) {
         // @Scope("singleton")
         ConfigurableApplicationContext ioc = SpringApplication.run(Spring01IocApplication.class, args);
-
         System.out.println("=================ioc容器创建完成===================");
         Object zhangsan1 = ioc.getBean("zhangsan");
         System.out.println("zhangsan1 = " + zhangsan1);
         Object zhangsan2 = ioc.getBean("zhangsan");
         System.out.println("zhangsan2 = " + zhangsan2);
-
         //容器创建的时候（完成之前）就把所有的单实例对象创建完成
         System.out.println(zhangsan1 == zhangsan2);
-
         System.out.println("=========================================");
 //        Dog bean = ioc.getBean(Dog.class);
 //        System.out.println("dog = " + bean);
 
     }
-
     /**
      * 默认，分层注解能起作用的前提是：这些组件必须在主程序所在的包及其子包结构下
      * Spring 为我们提供了快速的 MVC分层注解
@@ -219,11 +203,10 @@ public class Spring01IocApplication {
         System.out.println("bean2 = " + bean2);
 
     }
-
     /**
-     * 组件：框架的底层配置；
+     * 组件：框架的底层配置；@configuration
      *   配置文件：指定配置
-     *   配置类：分类管理组件的配置，配置类也是容器中的一种组件。
+     *   配置类：分类管理组件的配置，配置类也是容器中的一种组件。（用到了config里的DogConfig，PersonConfig（这两个也是组件（bean）））
      *
      * 创建时机：容器启动过程中就会创建组件对象
      * 单实例特性：所有组件默认是单例的，每次获取直接从容器中拿。容器提前会创建组件
@@ -233,29 +216,23 @@ public class Spring01IocApplication {
         //1、跑起一个Spring的应用；  ApplicationContext：Spring应用上下文对象； IoC容器
         ConfigurableApplicationContext ioc = SpringApplication.run(Spring01IocApplication.class, args);
         System.out.println("=================ioc容器创建完成===================");
-
         //2、获取组件
         Dog bean = ioc.getBean(Dog.class);
         System.out.println("bean = " + bean);
-
         Dog bean1 = ioc.getBean(Dog.class);
         System.out.println("bean1 = " + bean1);
-
         Dog bean2 = ioc.getBean(Dog.class);
         System.out.println("bean2 = " + bean2);
-
-
         Person zhangsan = (Person) ioc.getBean("zhangsan");
         System.out.println("对象 = " + zhangsan);
         System.out.println("=============================");
         for (String definitionName : ioc.getBeanDefinitionNames()) {
             System.out.println("definitionName = " + definitionName);
         }
-
-
     }
-
-
+    /** 演示了ioc对象，容器的获取
+     * @param args
+     */
     public static void test01BeanAnnotation(String[] args) {
         //1、跑起一个Spring的应用；  ApplicationContext：Spring应用上下文对象； IoC容器
         ConfigurableApplicationContext ioc = SpringApplication.run(Spring01IocApplication.class, args);
@@ -300,7 +277,7 @@ public class Spring01IocApplication {
         System.out.println("bean = " + bean);
 
 
-        //5、组件是单实例的....
+        //5、组件是单实例的....：获取的总是一个
 
     }
 
