@@ -27,13 +27,37 @@ import java.util.Map;
  * 这个是主入口类，称为主程序类
  * application.properties 就是这个项目的配置文件
  */
+/*
+ * Bean生命周期：@Bean里边有initMethod和destroyMethod，可以指定初始化和销毁方法
+ * @Bean(initMethod = "init", destroyMethod = "destroy") 
+ * 
+ */
+/* 
+ * 没有springboot之前，怎么启动spring容器？ new一个ioc容器
+ * new ClassPathXmlApplicationContext(xml文件路劲)： 
+ * 在xml文件中配置组件，外部配置文件，配置批量扫描等等
+ * 在main方法中有演示
+ */
 
 @SpringBootApplication
 public class Spring01IocApplication {
 
 
     /**
-     * 生命周期
+     * Bean生命周期：
+     * 1. 实例化：通过构造器创建Bean实例。
+     * 2. 属性注入：使用@Autowired等注解进行依赖注入，设置Bean的属性。
+     * 3. 初始化：
+     *    - 3.1 如果方法中@PostConstruct注解，调用postConstruct方法。
+     *    - 3.2 如果Bean实现了InitializingBean接口，调用afterPropertiesSet方法。
+     *    - 3.3 调用@Bean注解中指定的init方法进行初始化。
+     * 4. 使用：Bean进入就绪状态，可以被应用程序使用。
+     * 5. 销毁：
+     *    - 5.1 如果方法中@PreDestroy注解，调用preDestroy方法。
+     *    - 5.2 如果Bean实现了DisposableBean接口，调用destroy方法。
+     *    - 5.3 调用@Bean注解中指定的destroy方法进行最终的清理工作。
+     * 6. 结束：Bean被从容器中移除。
+     * 在bean/User类中可以演示这些生命周期方法。
      * @param args
      */
     public static void main(String[] args) {
@@ -56,7 +80,7 @@ public class Spring01IocApplication {
         ClassPathXmlApplicationContext ioc =
                 new ClassPathXmlApplicationContext("classpath:ioc.xml");
 
-        //文件系统：其他盘中找
+        //文件系统：其他盘中找xml配置
 //        new FileSystemXmlApplicationContext();
 
         //2、底层组件

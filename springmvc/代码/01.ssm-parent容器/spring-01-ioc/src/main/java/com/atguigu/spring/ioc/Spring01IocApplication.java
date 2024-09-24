@@ -28,13 +28,67 @@ import java.util.Map;
  * 这个是主入口类，称为主程序类
  * application.properties 就是这个项目的配置文件
  */
+/*
+ * @Profile("环境标识")多数据源也是特殊的条件注解，基础是@Conditional
+ * 可以标在方法和类上
+ * 当这个环境被激活的时候，才会加入如下组件  默认是default环境 可以指定多个环境{x1,x2}
+ * 在配置文件中指定环境：spring.profiles.active=x1,x2 //spring.profiles.active=dev
+ * 
+ */
+/*
+ * ResourceUtils：获取资源文件
+ * 例子：File file = ResourceUtils.getFile("classpath:abc.jpg");
+ * 还可以传url:File file = ResourceUtils.getFile("https://www.baidu.com/abc.jpg");
+ */
+/* 
+ * @value在@Component/Service（将类标识为组件）等注解上，用于给组件的属性赋值
+ * @value('字面值')：直接复制 
+ * 例如：@Value("123") public int num;
+ * @Value("${自定义的属性名}:取不到的默认值自动转类型")：从配置文件中获取值 
+ * 默认application.properties文件在resources目录下 
+ * 可以用@PropertySource("classpath:自定义的配置文件名")指定配置文件位置，加在类上面
+ * 如果用别的jar包下的配置文件，可以用@PropertySource("classpath*:xxx/配置文件名")指定
+ * 例如@Value("${dog.age}") public String osName; 在application.properties中配置dog.age=123
+ * @value("#{}")：SpEL表达式填可执行代码，获取容器中的组件对象 最终值返回给类型变量
+ *   //T()：获取类对象 .randomUUID调用类中的静态方法
+ * 例如：@Value("#{T(java.util.UUID).randomUUID()}") public Dog dog; 自动生成随机的uuid
+ * 更多写法：https://docs.spring.io/spring-framework/reference/core/expressions.html
+ */
+/* 构造器注入：在dao/userdao下演示
+ * 在@controller/Repository/Service/Component等分层注解上都可以使用
+ * 构造方法里边传入的参数，spring会自动去容器中找到对应的bean（可加@Autowire注解可不加），然后注入到构造方法 
+ * 或者用setXxx方法注入，在方法上使用@Autowired注解（不加也可以），可以用@Qualifier("自定义bean的名字")指定bean的名字+变量
+ * */
+// @Repository如同@controller等（将类标识为组件） 在dao的userdao中演示
+// @Resource在service的userservice中演示
 // @primary 在config中的personconfig中演示 在@Bean上面，用@Autowire时，存在多个类型一样名字不同的组件，会优先用这个注解的
-// @Qualifier("自定义bean的名字")在@Autowire上面用，类型多个可以指定bean名字在service中的userservice中演示
-// @Autowire在controller的usercontroller中演示
-// @Conditional(MacCondition.class)条件装配，当满足条件的时候（MacCondition.class中实现Condition接口重写match方法），这个组件才会被注册到容器中
-// @Bean('自定义bean的名字')
+// @Qualifier("自定义bean的名字（@bean public 类 '对象名'{}）")在@Autowire上面用，类型多个可以指定bean名字在service中的userservice中演示
+/* 
+ * @Autowired先根据类型去找，如果类型一样，再根据名字去找，找不到报错
+ * 可以用@Qualifier("自定义bean的名字（@bean public 类 '对象名'{}）")指定bean的名字+变量
+ * 或者一个类型多个名字中，可以在bean的时候给那些bean用@Primary指定优先使用,就只用一个不会报错了
+ * @Autowire在controller的usercontroller中演示
+ */
+/*  
+ * @Conditional(MacCondition.class)条件装配，当满足条件的时候（MacCondition.class中实现Condition接口重写match方法），这个组件才会被注册到容器中
+ * 在config中的dogconfig中演示
+ */
+/* 
+ * @Bean('自定义bean的名字') 没有的话bean的名字是（@bean public 类 '对象名'{})这里的对象名
+ * 在@SpringBootApplication同级目录中能扫到@bean
+ * 标注在方法上，返回值是组件类型，返回值就是组件类型，方法名就是组件的名字
+ * 在config中的personconfig中演示
+ */
 // @Import(xx.class) 可以用于导入第三方bean（实现一般简单的bean导入）  这个注解放别的地方（比如controller），也一样可以 推荐单独放appconfig
-// 工程也可以导入第三方bean（可以实现复杂的bean导入） 例子在factory文件夹中
+/* 
+ * FactoryBean一个接口：@Component 然后public class xxx implements FactoryBean<Bean类型>
+ * 可以实现复杂的bean导入，包括第三方bean导入，实现3个方法：
+ * 1、getObject()：返回要制造的bean对象
+ * 2、getObjectType()：返回要制造的bean对象的类型
+ * 3、isSingleton()：返回要制造的bean对象是否是单实例的
+ * 工厂也可以导入第三方bean（可以实现复杂的bean导入） 
+ * 在factory/BYDFactory中演示
+ */ 
 @SpringBootApplication
 public class Spring01IocApplication {
     public static void main(String[] args) {
@@ -45,6 +99,12 @@ public class Spring01IocApplication {
         DeliveryDao dao = ioc.getBean(DeliveryDao.class);
         dao.saveDelivery();
     }
+
+    /** 演示了用spring的ResourceUtils，来获取类路劲的文件比如配置文件
+     *
+     * @param args
+     * @throws IOException
+     */
     public static void test11(String[] args) throws IOException {
         ConfigurableApplicationContext ioc = SpringApplication.run(Spring01IocApplication.class, args);
         System.out.println("=================ioc容器创建完成===================");
@@ -63,6 +123,11 @@ public class Spring01IocApplication {
         System.out.println("available = " + available);
 
     }
+
+    /** 演示了用构造器注入，也就是在@Service下的一个set方法中，还有感知接口（Aware）的环境变量使用
+     *
+     * @param args
+     */
     public static void test10(String[] args) {
         ConfigurableApplicationContext ioc = SpringApplication.run(Spring01IocApplication.class, args);
         System.out.println("=================ioc容器创建完成===================");
@@ -79,6 +144,7 @@ public class Spring01IocApplication {
         String myName = hahaService.getMyName();
         System.out.println("myName = " + myName);
     }
+
     public static void test09(String[] args) {
         ConfigurableApplicationContext ioc = SpringApplication.run(Spring01IocApplication.class, args);
         System.out.println("=================ioc容器创建完成===================");
@@ -87,7 +153,7 @@ public class Spring01IocApplication {
         System.out.println("bean = " + bean);
 
     }
-    /**
+    /**@Resource，@Autowire对比
      *
      * @param args
      */
@@ -104,7 +170,7 @@ public class Spring01IocApplication {
 
     }
     /**
-     * 测试自动注入: 代码在 UserController 中
+     * 测试自动注入@Autowire: 代码在 UserController 中
      * @param args
      */
     public static void test07(String[] args) {

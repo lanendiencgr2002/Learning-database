@@ -10,6 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 //BeanPostProcessor：Bean外挂修改器
+/*
+    组件bean初始化和销毁时，进行调用
+    InitializingBean, DisposableBean：Bean生命周期接口 
+    实现后重写afterPropertiesSet，destroy方法，在Bean生命周期中进行调用
+ */ 
+
 
 @Data
 public class User implements InitializingBean, DisposableBean {

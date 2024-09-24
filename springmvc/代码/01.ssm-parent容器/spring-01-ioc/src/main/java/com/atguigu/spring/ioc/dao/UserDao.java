@@ -10,9 +10,8 @@ import org.springframework.stereotype.Repository;
 
 
 @ToString
-@Repository
+@Repository // 标识这个类是一个数据访问层组件，作为bean交给spring管理
 public class UserDao {
-
 
     Dog haha;
 
