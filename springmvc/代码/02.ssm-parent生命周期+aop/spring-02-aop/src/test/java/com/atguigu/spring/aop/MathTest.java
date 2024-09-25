@@ -7,33 +7,21 @@ import com.atguigu.spring.aop.proxy.statics.CalculatorStaticProxy;
 import com.atguigu.spring.aop.service.UserService;
 import com.atguigu.spring.aop.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Test;
-
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
-
 public class MathTest {
-
-
-
-
     @Test
     void test03(){
         MathCalculator proxyInstance = (MathCalculator) DynamicProxy.getProxyInstance(new MathCalculatorImpl());
-
         proxyInstance.add(1, 2);
-
         System.out.println("===================================");
         UserService instance = (UserService) DynamicProxy.getProxyInstance(new UserServiceImpl());
         instance.saveUser();
-
         System.out.println("===================================");
         proxyInstance.div(10,0);
-
-
     }
-
     @Test
     void test02() {
         //1、原生对象

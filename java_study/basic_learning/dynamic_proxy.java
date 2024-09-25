@@ -2,6 +2,7 @@ import java.lang.reflect.Proxy;
 import java.lang.reflect.Method;
 import java.lang.reflect.InvocationHandler;
 // 动态代理 比如明星唱歌，跳舞，经纪人帮忙准备话筒，舞台 经纪人就是代理
+@SuppressWarnings("all")
 public class dynamic_proxy {
     public static void main(String[] args) {
         // 1. 获取代理的对象
@@ -44,21 +45,21 @@ public class dynamic_proxy {
      *  public static Object newProxyInstance(ClassLoader loader, Class<?>[] interfaces, InvocationHandler h)
      *  - 方法作用：在指定类加载器中，为制定的接口组生成一个动态代理类
      *  - 参数：
-     *      - ClassLoader loader：指定用哪个类加载器，去加载生成的代理类
-     *      - Class<?>[] interfaces：指定接口数组，这些接口将被代理类实现，指定接口，这些接口用于指定生成的代理长什么，也就是有哪些方法
-     *      - InvocationHandler h：用来指定生成的代理对象要干什么事情
+     *      - ClassLoader loader：代理的目标对象：指定用哪个类加载器，去加载生成的代理类
+     *      - Class<?>[] interfaces：代理的目标对象实现的接口：指定接口数组，这些接口将被代理类实现，指定接口，这些接口用于指定生成的代理长什么，也就是有哪些方法
+     *      - InvocationHandler h：类似拦截器：用来指定生成的代理对象要干什么事情
      *  - 返回值：代理类对象
      */
         Star star = (Star) Proxy.newProxyInstance(
-            dynamic_proxy.class.getClassLoader(),
-            new Class[]{Star.class}, 
-            new InvocationHandler() {
+            BigStar.class.getClassLoader(), //也可以用xx.getClass().getClassLoader()
+            new Class[]{Star.class},  //也可以用xx.getClass().getInterfaces()
+            new InvocationHandler() { 
                 @Override
                 public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                     /*
                      * 参数：
-                     *  - Object proxy：代理对象
-                     *  - Method method：代理对象调用的方法 比如sing方法,dance方法
+                     *  - Object proxy：代理对象:明星经纪人
+                     *  - Method method：代理对象准备调用目标对象的这个方法：代理对象调用的方法 比如sing方法,dance方法
                      *  - Object[] args：代理对象调用的方法的参数 比如sing方法的参数是"一首歌"，dance方法的参数是null
                      *  - Object result：方法的返回值
                      */
@@ -68,12 +69,25 @@ public class dynamic_proxy {
                     }else if("dance".equals(method.getName())){
                         System.out.println("代理准备舞台");
                     }
+                    // 经纪人调用目标对象的方法 真正方法执行前可以拦截
                     Object result = method.invoke(bigStar, args);
                     return result;
                 }
             }
 
         );
+        // 简易写法
+        Star star3 = (Star) Proxy.newProxyInstance(
+            BigStar.class.getClassLoader(),
+            BigStar.class.getInterfaces(),
+            (proxy, method, args) -> {
+                if("sing".equals(method.getName())){
+                    System.out.println("代理准备话筒");
+                }else if("dance".equals(method.getName())){
+                    System.out.println("代理准备舞台");
+                }
+                return method.invoke(bigStar, args);
+            });
         return star;
     
     }

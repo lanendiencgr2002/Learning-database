@@ -58,7 +58,7 @@ public class AroundAspect {
      * ProceedingJoinPoint: 可以继续推进的切点
      */
 
-    @Around("pointCut()")
+    @Around("pointCut()") //pjp只是用来接收目标方法的参数，可以用别名
     public Object aroundAdvice(ProceedingJoinPoint pjp) throws Throwable {
         Object[] args = pjp.getArgs(); // 获取目标方法的参数
 

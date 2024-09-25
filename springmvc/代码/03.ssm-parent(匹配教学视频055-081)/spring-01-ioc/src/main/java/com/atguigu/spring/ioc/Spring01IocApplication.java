@@ -22,10 +22,40 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.Map;
 
+/*
+ * User bean = ioc.getBean(User.class); debug过程
+ * 最后会调用getSingleton() "三级缓存"  
+ * 有3次查找 单例对象池->早期单例对象池->单例对象工厂
+ * 单例对象池（成品区）：singletonObjects
+ * 早期单例对象池（半成品区）：earlySingletonObjects 容器启动完了这里就空了
+ * 单例对象工厂（加工区）：singletonFactories 容器启动完了这里就空了
+ * objectFactory<?> singletonFactories; objectFactory是一个接口
+ * 找不到会调用工厂的getObject()方法创建对象，并放入earlySingletonObjects(早期单例对象池)中
+ * 
+ * "三级缓存是为了解决"循环依赖问题  A依赖B，B依赖A 互相依赖时，有半成品区，可以提前将地址给对方
+ * 循环依赖是默认不支持的，如果有会报错，需要的开启的话在applicantion.properties中配置
+ * #允许循环引用 spring.main.allow-circular-references=true
+ * 
+ * debug过程
+ * 1. 在Map<String:Object>ssingletonObjects(单例对象池)中找，找到直接返回 
+ * 2. 如果找不到，在Map<String,Object>earlySingletonObjects(早期单例对象池)中找，找到直接返回
+ * 3. 如果还找不到，加锁，然后再重复1、2步骤 2次
+ * 4. 如果还找不到，在Map<String.ObjectFactory<?>>sinqletonFactories(单例对象工厂)中找，找到调用getObject()方法创建对象，并放入earlySingletonObjects(早期单例对象池)中
+ */
 
-/**
- * 这个是主入口类，称为主程序类
- * application.properties 就是这个项目的配置文件
+/*
+ * beanDefinitiopMap：spring在启动的时候，会扫描所有的组件，并把组件的信息放到这个map中
+ * 这个map的key是组件的名字，value是组件的定义信息，相当于BeanFactory的图纸
+ * singletonobjeqts：spring在启动的时候，会扫描所有的组件，并把组件的对象放到这个hashmap中
+ * 这个是造好的bean单例对象
+ * BeanFactory：按照图纸造对象，图纸就是beanDefinitionMap，对象就是singletonObjects
+ */
+
+/*
+ * AnnotationUtils：可以找方法上有没有注解，类上有没有注解等等
+ * ClassUtils：可以找类的全签名等等
+ * TypeUtils：可以找泛型类型
+ * ReflectionUtils：可以找方法等等
  */
 
 @SpringBootApplication

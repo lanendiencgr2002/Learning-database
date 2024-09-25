@@ -100,7 +100,7 @@ public class Spring01IocApplication {
         dao.saveDelivery();
     }
 
-    /** 演示了用spring的ResourceUtils，来获取类路劲的文件比如配置文件
+    /** 演示了用spring的ResourceUtils，来获取类路劲的文件比如配置文件内容
      *
      * @param args
      * @throws IOException

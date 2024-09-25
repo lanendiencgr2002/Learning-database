@@ -1,3 +1,4 @@
+@SuppressWarnings("all")
 public class interface_example {
     public static void main(String[] args) {
         // 测试默认方法
