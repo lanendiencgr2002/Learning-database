@@ -3,13 +3,9 @@ package com.atguigu.practice.exception;
 import lombok.Getter;
 
 public enum BizExceptionEnume {
-
-
     // ORDER_xxx：订单模块相关异常
     // PRODUCT_xxx：商品模块相关异常
-
     // 动态扩充.....
-
     ORDER_CLOSED(10001, "订单已关闭"),
     ORDER_NOT_EXIST(10002, "订单不存在"),
     ORDER_TIMEOUT(10003, "订单超时"),

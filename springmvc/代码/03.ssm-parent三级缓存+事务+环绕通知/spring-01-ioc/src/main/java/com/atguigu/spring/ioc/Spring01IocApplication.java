@@ -43,7 +43,7 @@ import java.util.Map;
  * 4. 如果还找不到，在Map<String.ObjectFactory<?>>sinqletonFactories(单例对象工厂)中找，找到调用getObject()方法创建对象，并放入earlySingletonObjects(早期单例对象池)中
  */
 
-/*
+/** 
  * beanDefinitiopMap：spring在启动的时候，会扫描所有的组件，并把组件的信息放到这个map中
  * 这个map的key是组件的名字，value是组件的定义信息，相当于BeanFactory的图纸
  * singletonobjects：spring在启动的时候，会扫描所有的组件，并把组件的对象放到这个hashmap中

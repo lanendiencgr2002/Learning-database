@@ -19,10 +19,8 @@ import java.util.Map;
 // 全局异常处理器
 //@ResponseBody
 //@ControllerAdvice //告诉SpringMVC，这个组件是专门负责进行全局异常处理的
-@RestControllerAdvice
+@RestControllerAdvice //@ResponseBody + @ControllerAdvice
 public class GlobalExceptionHandler {
-
-
     /**
      * 如果出现了异常：本类和全局都不能处理，
      * SpringBoot底层对SpringMVC有兜底处理机制；自适应处理（浏览器响应页面、移动端会响应json）

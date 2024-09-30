@@ -131,6 +131,54 @@ noRollbackFor
 
 
 
+# springmvc
+
+```markdown
+@RequestMapping
+@ResponseBody
+@RestController
+@Controller
+HttpServletRequest request
+HttpServletResponse response
+HttpEntity
+httpEntity.getBody()
+httpEntity.getHeaders()
+@RequestParam("headerImg") MultipartFile headerImgFile
+@CookieValue
+HandlerInterceptor
+preHandle
+postHandle
+afterCompletion
+Filter
+chain.doFilter
+@ExceptionHandler
+@ControllerAdvice
+@ExceptionHandler
+@RestControllerAdvice
+Enume
+数据校验
+@Valid
+BindingResult
+@Constraint
+ConstraintValidator<Gender, String>
+Pojo
+Dao
+TO
+VO
+DTO
+BO
+PO
+BeanUtils.copyProperties
+@Tag         
+@Parameter   
+@Parameters  
+@Schema      
+@Operation   
+@ApiResponse 
+Knife4j
+@JsonFormat
+```
+
 
 
 

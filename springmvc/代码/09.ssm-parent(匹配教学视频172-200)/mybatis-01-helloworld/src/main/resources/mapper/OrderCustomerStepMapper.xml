@@ -65,7 +65,7 @@
     </select>
 
 
-    <!--   查询订单 + 下单的客户 + 客户的其他所有订单 -->
+    <!--  超级分布查询: 查询订单 + 下单的客户 + 客户的其他所有订单 -->
     <select id="getOrderByIdAndCustomerAndOtherOrdersStep"
             resultMap="OrderCustomerStepRM">
         select * from t_order where id = #{id}

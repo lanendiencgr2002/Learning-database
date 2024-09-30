@@ -23,18 +23,12 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.util.Map;
 
-
-/**
- * 这个是主入口类，称为主程序类
- * application.properties 就是这个项目的配置文件
- */
-/*
- * @Profile("环境标识")多数据源也是特殊的条件注解，基础是@Conditional
+/* @Profile("环境标识")多数据源也是特殊的条件注解，基础是@Conditional
  * 可以标在方法和类上
  * 当这个环境被激活的时候，才会加入如下组件  默认是default环境 可以指定多个环境{x1,x2}
  * 在配置文件中指定环境：spring.profiles.active=x1,x2 //spring.profiles.active=dev
- * 
  */
+
 /*
  * ResourceUtils：获取资源文件
  * 例子：File file = ResourceUtils.getFile("classpath:abc.jpg");

@@ -88,7 +88,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * public String handle06(Person person)
  * 在bean/person中演示
  * 
- * 7. @RequestBody(注释请求参数):
+ * 7. @RequestBody(注释请求参数):获取请求体json数据
  * public String handle07(@RequestBody(required = false) Person person) 获取请求体json数据，自动转为person对象，required = false表示这个参数可以为空
  * public String handle08(@RequestBody String body(随意名)) 获取请求体json数据，自动转为字符串，后续需要手动转换为对象等等
  * 
@@ -151,7 +151,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 
 /*
- * @ControlLer：告诉Spring这是一个控制器（处理请求的组件）
+ * @Controller：告诉Spring这是一个控制器（处理请求的组件）
  * 
  * @RestController：是@Controller和@ResponseBody的组合，表示该类中的所有方法的返回值都是直接写入HTTP响应正文中
  * 

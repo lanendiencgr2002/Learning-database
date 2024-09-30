@@ -18,7 +18,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 // 校验注解 绑定 校验器
 @Documented
-@Constraint(validatedBy = {GenderValidator.class})  //校验器去真正完成校验功能。
+@Constraint(validatedBy = {GenderValidator.class})  //自定义校验器 就是这个类去真正完成校验功能。
 @Target({ FIELD })
 @Retention(RUNTIME)
 public @interface Gender {

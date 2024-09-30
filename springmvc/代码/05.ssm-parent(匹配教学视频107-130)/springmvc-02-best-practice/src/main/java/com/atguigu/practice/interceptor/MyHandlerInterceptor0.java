@@ -16,7 +16,7 @@ public class MyHandlerInterceptor0 implements HandlerInterceptor {
         System.out.println("MyHandlerInterceptor0...preHandle...");
         //放行； chain.doFilter(request,response);
         //String username = request.getParameter("username");
-//        response.getWriter().write("No Permission!");
+//        response.getWriter().write("No Permission!");  //如果是false，这里可以返回字符串
         return true;
     }
 

@@ -18,6 +18,20 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+/** 场景启动器：spring-boot-starter-xxx
+ * 官方写的：spring-boot-starter-*
+ * 第三方的：*-spring-boot-starter
+ * 在场景启动器中，有各种相关依赖
+ * 
+ * 把当前场景用的jar包都引入进来；
+ * 每个场景启动器都有一个基础依赖：spring-boot-starter 然后还有其他各种依赖
+ * spring-boot-starter-web
+ * spring-boot-starter-aop
+ * spring-boot-starter-data-jdbc
+ * spring-boot-starter-test
+ * spring-boot-starter-tomcat
+ * spring-boot-starter-json
+ */
 
 /**
  * 环境隔离：
