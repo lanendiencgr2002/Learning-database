@@ -11,18 +11,18 @@ person:
   age: 20
   birth-day: 2019/03/04 12:00:00
   like: true
-  child:
+  child: #child是类,child.name(String) child.age(Integer) child.birthday(Date类型) child.text(List<String>)
     name: 李四
     age: 18
     birth-day: 2019/03/04 12:00:00
-    text: ["haa", "bbb", "ccc"]
-  dogs:
+    text: ["haa", "bbb", "ccc"] #也可以用-表示数组
+  dogs: #dogs是List<Dog> dog.name dog.age
     - name: 旺财
       age: 1
     - name: 旺财2
       age: 2
     - {name: 旺财3, age: 3}
-  cats:
+  cats:  #cats是Map<String, Cat>
     bluecat:
       name: 蓝猫
       age: 1

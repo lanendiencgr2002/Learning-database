@@ -175,6 +175,29 @@ import java.util.Map;
  * 还可以传url:File file = ResourceUtils.getFile("https://www.baidu.com/abc.jpg");
  */
 
+/** @EnableConfigurationProperties
+ * 将类和配置文件进行绑定，并且将类注册为组件
+ * @EnableConfigurationProperties(DogProperties.class)
+ * @SpringBootApplication
+ * 启动类{}
+ * 
+ * DogProperties类：
+ * @ConfigurationProperties(prefix="dog")
+ * // 这里可以省略@Component注解，因为@EnableConfigurationProperties会自动将DogProperties注册为组件
+ * @Data
+ * public class DogProperties {
+ *     private String name;
+ *     private Integer age;
+ * }
+ */
+
+/** @ConfigurationProperties
+ * 首先得是容器组件：@Component/@Bean/@Configuration
+ * 然后标注在类上面
+ * @ConfigurationProperties(prefix="spring.datasource")
+ * 让当前类的所有属性，和配置文件中以prefix开头的所有配置项进行绑定
+ */
+
 /** @value：根据配置文件类中给变量赋值
  * @value在@Component/Service（将类标识为组件）等注解上，用于给组件的属性赋值
  * @value('字面值')：直接复制 

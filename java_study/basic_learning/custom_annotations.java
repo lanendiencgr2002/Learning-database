@@ -11,11 +11,32 @@
  * 
  * 元注解：注解的注解
  * @Retention(RetentionPolicy.RUNTIME)：指定注解的生命周期
- * SOURCE 源码时有效，编译时丢弃 CLASS(默认值) 保留到字节码，运行时丢弃 RUNTIME 保留到运行时
- * RUNTIME(开发中常用) 一直保留到运行阶段
+ *    SOURCE 源码时有效，编译时丢弃 CLASS(默认值) 保留到字节码，运行时丢弃 RUNTIME 保留到运行时
+ *    RUNTIME(开发中常用) 一直保留到运行阶段
+ * 
  * @Target(ElementType.METHOD)：指定注解可以在哪些位置上使用
- * TYPE类 接口, FIELD成员变量, METHOD成员方法，PARAMETER方法参数
- * CONSTRUCTOR构造器，LOCAL_VARIABLE局部变量，ANNOTATION_TYPE注解类型，PACKAGE包
+ *    TYPE类 接口, FIELD成员变量, METHOD成员方法，PARAMETER方法参数
+ *    CONSTRUCTOR构造器，LOCAL_VARIABLE局部变量，ANNOTATION_TYPE注解类型，PACKAGE包
+ * 
+ * @Inherited：指定注解可以被继承
+ *    @Inherited
+ *    @Retention(RetentionPolicy.RUNTIME)
+ *    @Target(ElementType.TYPE)
+ *    public @interface MyInheritedAnnotation {}
+ *    @MyInheritedAnnotation
+ *    public class ParentClass {}
+ *    public class ChildClass extends ParentClass {}
+ *    // ChildClass 自动继承 @MyInheritedAnnotation
+ * 
+ * @Documented：指定注解可以被文档化
+ *    @Documented
+ *    @Retention(RetentionPolicy.RUNTIME)
+ *    @Target(ElementType.TYPE)
+ *    public @interface MyDocumentedAnnotation {}
+ *    @MyDocumentedAnnotation
+ *    public class MyClass {}
+ *    // 在生成的API文档中，@MyDocumentedAnnotation 会出现在文档中
+ * 
  * pulic @interface 注解名 {
  * }
  * 
