@@ -176,10 +176,10 @@ import java.util.Map;
  */
 
 /** @EnableConfigurationProperties
- * 将类和配置文件进行绑定，并且将类注册为组件
+ * 将配置文件的属性的值跟类的属性的值进行绑定，并且将类注册为组件
  * @EnableConfigurationProperties(DogProperties.class)
  * @SpringBootApplication
- * 启动类{}
+ * 启动类{}·
  * 
  * DogProperties类：
  * @ConfigurationProperties(prefix="dog")

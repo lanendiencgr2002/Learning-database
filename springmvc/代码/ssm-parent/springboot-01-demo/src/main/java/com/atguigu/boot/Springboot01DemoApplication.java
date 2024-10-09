@@ -19,6 +19,82 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.scheduling.annotation.EnableAsync;
 
+
+/** 
+ * 
+ */
+
+/** 可观测性
+ * 1. 导入依赖 <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-actuator</artifactId></dependency>
+ * 2. 访问地址：http://localhost:8080/actuator
+ * 3. 这将展示出所有可以用的监控端点
+ * 4. 配置文件示例：
+ *    management:
+ *      endpoints:
+ *        enabled-by-default: true
+ *        web:
+ *          exposure:
+ *            include: '*'  # 表示所有端点都暴露
+ * 5. 可以查看beans，查看配置文件，查看环境变量，查看健康状况，查看日志文件，等等
+ * 最重要的端点：
+ * /actuator/threaddump：查看线程dump（每个线程信息）
+ * /actuator/heapdump：查看堆dump（堆内存快照）
+ * /actuator/metrics：查看项目指标（磁盘，内存，cpu，网络，文件句柄，线程池，等等）
+ * 
+ */
+
+/** 单元测试-断言机制
+ * | 方法 | 说明 |
+ * |------|------|
+ * | assertEquals | 判断两个对象或两个原始类型是否相等 |
+ * | assertNotEquals | 判断两个对象或两个原始类型是否不相等 |
+ * | assertSame | 判断两个对象引用是否指向同一个对象 |
+ * | assertNotSame | 判断两个对象引用是否指向不同的对象 |
+ * | assertTrue | 判断给定的布尔值是否为 true |
+ * | assertFalse | 判断给定的布尔值是否为 false |
+ * | assertNull | 判断给定的对象引用是否为 null |
+ * | assertNotNull | 判断给定的对象引用是否不为 null |
+ * | assertArrayEquals | 数组断言 |
+ * | assertAll | 组合断言 |
+ * | assertThrows | 异常断言 |
+ * | assertTimeout | 超时断言 |
+ * | fail | 快速失败 |
+ * 
+ * 示例： 测试单元中返回hello字符串才算成功，否则就是失败
+ * @Test
+ * void test02() {
+ *     // 1. 业务规定：返回hello字符串才算成功，否则就是失败
+ *     String result = helloService.sayHello();
+ *     // 2. 断言：判断字符串是否等于hello
+ *     Assertions.assertEquals("hello", result, "helloservice并没有返回hello");
+ * }
+ */
+
+/** 单元测试
+ * !@Test - 表示这是一个测试方法
+ * @ParameterizedTest - 表示这是一个参数化测试,下方会有详细介绍
+ * @RepeatedTest - 表示这个测试方法可以重复执行,下方会有详细介绍
+ * !@DisplayName - 为测试类或测试方法设置展示名称
+ * !@BeforeEach - 表示在每个单元测试之前执行
+ * !@AfterEach - 表示在每个单元测试之后执行
+ * !@BeforeAll - 表示在所有单元测试之前执行
+ * !@AfterAll - 表示在所有单元测试之后执行
+ * @Tag - 表示单元测试类别,类似于JUnit4中的@Categories
+ * @Disabled - 表示测试类或测试方法不执行,类似于JUnit4中的@Ignore
+ * @Timeout - 表示测试方法运行超过指定时间将会返回错误
+ * @ExtendWith - 为测试类或测试方法提供扩展引用
+ * 
+ * 示例： 展示测试方法名称
+ * @DisplayName("第一个测试")
+ * @Test
+ * void test01() {
+ *    log.info("测试通过");
+ * }
+ * 
+ * 
+ * 
+ */
+
 /** 外部化配置
  * 外部配置优先于内部配置
  * 最高优先级是：命令行参数
@@ -46,7 +122,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * 便于管理和切换不同环境的配置。
  */
 
- /** Profiles环境隔离-分组
+/** Profiles环境隔离-分组
  * 创建prod组，指定包含db和mq配置
  * spring.profiles.group.prod[o]=db
  * spring.profiles.group.prod[1]=mq
