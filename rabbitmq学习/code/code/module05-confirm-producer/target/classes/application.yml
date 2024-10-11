@@ -1,0 +1,12 @@
+spring:
+  rabbitmq:
+    host: 192.168.134.151
+    port: 5672
+    username: guest
+    password: 123456
+    virtual-host: /
+    publisher-confirm-type: CORRELATED # 交换机接收到消息，会返回一个确认信息
+    publisher-returns: true # 当消息无法路由到任何队列时 RabbitMQ 会将消息返回给生产者
+logging:
+  level:
+    com.atguigu.mq.config.MQProducerAckConfig: info
