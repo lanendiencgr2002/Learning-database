@@ -6,12 +6,17 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="module05-confirm-producer" />
+        <module name="module01-hello-world" />
+        <module name="module08-cluster-producer" />
+        <module name="module09-cluster-consumer" />
+        <module name="module02-work-way" />
         <module name="module10-stream" />
         <module name="module07-tx-producer" />
         <module name="module06-confirm-consumer" />
-        <module name="module05-confirm-producer" />
-        <module name="module01-hello-world" />
-        <module name="module02-work-way" />
+        <module name="module03-springboot-consumer" />
+        <module name="module11-federation-consumer" />
+        <module name="module04-springboot-producer" />
       </profile>
     </annotationProcessing>
   </component>

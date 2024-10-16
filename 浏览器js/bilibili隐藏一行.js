@@ -1,0 +1,1 @@
+javascript:(function() {  function removeElementByXPath(xpath) {    var element = document.evaluate(xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;    if (element) {      element.remove();    }  }    removeElementByXPath('//*[@id="biliMainHeader"]');  removeElementByXPath('//*[@id="viewbox_report"]');    alert('指定元素已被删除!');})();

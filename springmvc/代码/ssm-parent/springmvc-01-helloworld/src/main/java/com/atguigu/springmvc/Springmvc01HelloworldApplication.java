@@ -13,7 +13,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *     return person;
  * }
  * 
- * 在controller/RequestTestController中演示
+ * 在以下文件中演示：
+ * springmvc-01-helloworld\src\main\java\com\atguigu\springmvc\controller\RequestTestController.java
  * 2. 文件下载
  *      HttpEntity：拿到整个请求数据
  *      ResponseEntity：拿到整个响应数据（状态码，响应头，响应体）
@@ -47,10 +48,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @RequestMapping("/handle03")
  * public String handle03(String username,String password)
  * 
- * 在controller/RequestTestController中演示
+ * 在以下文件中演示：
+ * springmvc-01-helloworld\src\main\java\com\atguigu\springmvc\controller\RequestTestController.java
  * 3. 页面跳转
  * 
- * 在controller/PageTestController中演示
+ * 在以下文件中演示：
+ * springmvc-01-helloworld\src\main\java\com\atguigu\springmvc\controller\PageTestController.java
  */
 
 /** springmvc请求测试 
@@ -84,7 +87,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 6. 使用POJO，级联封装复杂对象
  * 各种各样的数据类型能不能被接到？
  * public String handle06(Person person)
- * 在bean/person中演示
+ * 
+ * 在以下文件中演示：
+ * springmvc-01-helloworld\src\main\java\com\atguigu\springmvc\bean\Person.java
  * 
  * 7. @RequestBody(注释请求参数):获取请求体json数据
  * public String handle07(@RequestBody(required = false) Person person) 获取请求体json数据，自动转为person对象，required = false表示这个参数可以为空
@@ -102,7 +107,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * public String handle08(Person person,  因为不是json格式了，而是文件，所以不能用@RequestBody
  * @RequestParam("headerImg") MultipartFile headerImgFile, 来接收单个文件
  * @RequestPart(和上面一样的其实)("LifeImg"）MultipartFile[] LifeImgFiles){ 来接收多个文件，源中，名相同的多个文件
- * 还剩具体的在controller/RequestTestController中演示
+ * 
+ * 在以下文件中演示：
+ * springmvc-01-helloworld\src\main\java\com\atguigu\springmvc\controller\RequestTestController.java
  * 
  * 9. 获取原始请求信息：
  * HttpEntity：封装请求头、请求体；把整个请求拿过来
@@ -131,7 +138,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *     String remoteHost = request.getRemoteHost(); //获取请求的远程主机
  *     int remotePort = request.getRemotePort(); //获取请求的远程端口
  * 
- * 都在controller/RequestTestController中演示
+ * 在以下文件中演示：
+ * springmvc-01-helloworld\src\main\java\com\atguigu\springmvc\controller\RequestTestController.java
  */
 
 /** json和序列化概念 
@@ -179,7 +187,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 表示produces=text/html;charset=UTF-8是必须的响应头，如果响应中不包含这个头，则不匹配
  * 例如：返回<h1>Hello World</h1>，浏览器会显示Hello World 如果是text/plain;charset=UTF-8，浏览器会显示<h1>Hello World</h1>
  * 
- * 在controller/hellocontroller中演示
+ * 在以下文件中演示：
+ * springmvc-01-helloworld\src\main\java\com\atguigu\springmvc\controller\HelloController.java
  */
 
 /** springmvc 

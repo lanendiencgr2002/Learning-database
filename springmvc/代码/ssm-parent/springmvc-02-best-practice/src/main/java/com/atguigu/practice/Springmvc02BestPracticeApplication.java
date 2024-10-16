@@ -45,7 +45,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @Operation        - 用于方法，描述方法作用
  * @ApiResponse      - 用于方法，描述响应状态码等
  * 
- * 在controller/EmployeeRestController 和 vo/req/EmployeeUpdateVo中演示
+ * 在以下文件中演示：
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\controller\EmployeeRestController.java
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\vo\req\EmployeeUpdateVo.java
  */
  
 /** 属性拷贝：BeanUtils.copyProperties(source, target)
@@ -53,7 +55,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * Employee employee = new Employee();
  * BeanUtils.copyProperties(vo,employee); 将vo中的属性拷贝到employee中
  * 
- * 在controller/EmployeeRestController中演示
+ * 在以下文件中演示：
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\controller\EmployeeRestController.java
  */
 
 /** 设计模式：单一职责
@@ -81,18 +84,24 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * gender.message=Gender must be: male, female
  * 
  * 想测试别的语言，可以改浏览器的语言，或者改请求头：Accept-Language：zh-CN 或者 en-US
- * 在advice中演示
+ * 
+ * 在以下文件中演示：
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\advice\GlobalExceptionHandler.java
  */
 
 /** 自定义校验器：
  * 自定义校验注解：
  * 1. 定义注解：@interface Gender
  * 2. 指定校验器：@Constraint(validatedBy = {GenderValidator.class})
- * 在annotation中演示
+ * 
+ * 在以下文件中演示：
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\annotation\Gender.java
  * 
  * 自定义校验器：
  * 定义校验器类实现ConstraintValidator<Gender, String>接口，重写isValid方法
- * 在validator中演示
+ * 
+ * 在以下文件中演示：
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\validator\GenderValidator.java
  */
 
 /** 全局数据校验：
@@ -189,7 +198,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *      this.msg = exceptionEnume.getMsg();
  * }}
  * 
- * 在exception/BizExceptionEnume中演示
+ * 在以下文件中演示：
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\advice\GlobalExceptionHandler.java
+ * springmvc-02-best-practice\src\main\java\exception\BizExceptionEnume.java
+ * springmvc-02-best-practice\src\main\java\exception\BizException.java
  */
 
 /** 处理异常的业务逻辑：
@@ -206,7 +218,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * public class BizException extends RuntimeException{有错误码，错误信息}
  * 然后就可以抛BizException  throw new BizException(5000,"错误信息");
  * 
- * 在exception/BizException中演示
+ * 在以下文件中演示：
+ * springmvc-02-best-practice\src\main\java\exception\BizException.java
  */
 
 /** springboot底层异常处理默认行为：
@@ -240,7 +253,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *     return R.error(500, e.getMessage());
  * }
  * 
- * 在advice(有增强的意思)中演示
+ * （advice有增强的意思）
+ * 在以下文件中演示：
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\advice\GlobalExceptionHandler.java
  */
 
 /** 类中的异常处理：
@@ -267,12 +282,13 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 
 /** 过滤器：
- * @WebFilter("/hello") //这个注解不能给过滤器用到
+ * @WebFilter("/hello") //这个注解不能给过滤器使用到（因为这是servlet的注解，在springboot失效）
  * @Component //注释在类上，就可以直接用了，默认拦截所有请求
  * 弄一个类实现Filter接口，重写3个方法，init，doFilter，destroy
  * 只用在doFilter()方法中调用chain.doFilter(request, response)放行;
  * 
- * 在filter中演示
+ * 在以下文件中演示：
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\filter\HelloFilter.java
  */
 
 /** 拦截器和过滤器区别：
@@ -290,7 +306,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * preHandle01=>preHandle02=>目标方法=>postHandle02=>postHandle01
  * 如果其中不管哪异常或中断，则afterCompletion2=>afterCompletion1 !!(preHandle返回true afterCompletion方法才会执行)
  * 
- * 在interceptor中演示
+ * 
+ * 在以下文件中演示：
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\interceptor\MyHandlerInterceptor0.java
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\interceptor\MyHandlerInterceptor1.java
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\interceptor\MyHandlerInterceptor2.java
  */
 
 /** 拦截器基础使用：
@@ -305,7 +325,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 		在实现方法中：
  * 			registry.addInterceptor(拦截器类名.class(或者@Autowired拦截器类)).addPathPatterns("/**表示所有路径，拦截路径");
  * 
- * 在interceptor中和config中演示
+ * 在以下文件中演示：
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\interceptor\MyHandlerInterceptor0.java
+ * springmvc-02-best-practice\src\main\java\com\atguigu\practice\config\MySpringMVCConfig.java
  */
 
 @SpringBootApplication

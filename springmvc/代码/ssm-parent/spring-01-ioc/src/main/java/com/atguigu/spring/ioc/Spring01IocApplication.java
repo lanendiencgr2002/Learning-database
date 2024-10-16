@@ -120,11 +120,15 @@ import java.util.Map;
  *    }
  * }
  * 
- * 在annotation 和  中演示
+ * 在以下文件中演示：
+ * spring-01-ioc\src\main\java\com\atguigu\spring\ioc\annotation\UUID.java
+ * spring-01-ioc\src\main\java\com\atguigu\spring\ioc\bean\User.java
  */
 
 /** @SpringBootTest:测试springboot功能，测试容器功能
- * 在test/下中演示
+ * 
+ * 在以下文件中演示：
+ * spring-01-ioc\src\test\java\com\atguigu\spring\ioc\Spring01IocApplicationTests.java
  */
 
 /** @Autowired是如何实现的？
@@ -167,7 +171,9 @@ import java.util.Map;
  * 当这个环境被激活的时候，才会加入如下组件  默认是default环境 可以指定多个环境{x1,x2}
  * 在配置文件中指定环境：spring.profiles.active=x1,x2 //spring.profiles.active=dev
  * 
- * 在config\DataSourceConfig 和 resources/application.properties中演示
+ * 在以下文件中演示：
+ * spring-01-ioc\src\main\java\com\atguigu\spring\ioc\config\DataSourceConfig.java
+ * spring-01-ioc\src\main\resources\application.properties
  */
 
 /** ResourceUtils：获取资源文件工具类
@@ -226,20 +232,23 @@ import java.util.Map;
 
 /** @Repository：如同@controller，@service等，标识数据访问层（DAO）
  * 
- * 在dao的userdao中演示
+ * 在以下文件中演示：
+ * spring-01-ioc\src\main\java\com\atguigu\spring\ioc\dao\UserDao.java
  */
 
 /** @Resource
  * @Resource 是 Java EE 提供的注解，Spring 框架支持使用它进行依赖注入。
  * 注入方式：优先按名称注入，其次按类型注入。如果不行就报错，复杂场景还是使用@Autowired
  * 
- * 在service的userservice中演示
+ * 在以下文件中演示：
+ * spring-01-ioc\src\main\java\com\atguigu\spring\ioc\service\UserService.java
  */
 
 /** @primary
  * 在@Bean上面，用@Autowire时，存在多个类型一样名字不同的组件，会优先用这个注解的
  * 
- * 在config中的personconfig中演示
+ * 在以下文件中演示：
+ * spring-01-ioc\src\main\java\com\atguigu\spring\ioc\config\PersonConfig.java
  */
 
 /** @Qualifier
@@ -248,27 +257,33 @@ import java.util.Map;
  * 
  * bean的名字：《@bean public 类 '对象名'{}》
  * 
- * 在service中的userservice中演示
+ * 在以下文件中演示：
+ * spring-01-ioc\src\main\java\com\atguigu\spring\ioc\service\UserService.java
  */
 
 /** @Autowired
  * @Autowired先根据类型去找，如果类型一样，再根据名字去找，找不到报错
  * 可以用@Qualifier("自定义bean的名字（@bean public 类 '对象名'{}）")指定bean的名字+变量
  * 或者一个类型多个名字中，可以在bean的时候给那些bean用@Primary指定优先使用,就只用一个不会报错了
- * @Autowire在controller的usercontroller中演示
+ * 
+ * 在以下文件中演示：
+ * spring-01-ioc\src\main\java\com\atguigu\spring\ioc\controller\UserController.java
  */
 
 /** @Conditional  
  * @Conditional(MacCondition.class)条件装配，当满足条件的时候（MacCondition.class中实现Condition接口重写match方法），这个组件才会被注册到容器中
  * 
- * 在config中的dogconfig中演示
+ * 在以下文件中演示：
+ * spring-01-ioc\src\main\java\com\atguigu\spring\ioc\config\DogConfig.java
  */
 
 /** @Bean
  * @Bean('自定义bean的名字') 没有的话bean的名字是（@bean public 类 '对象名'{})这里的对象名
  * 在@SpringBootApplication同级目录中能扫到@bean
  * 标注在方法上，返回值是组件类型，返回值就是组件类型，方法名就是组件的名字
- * 在config中的personconfig中演示
+ * 
+ * 在以下文件中演示：
+ * spring-01-ioc\src\main\java\com\atguigu\spring\ioc\config\PersonConfig.java
  */
 
 /** @Import(xx.class)
@@ -283,7 +298,8 @@ import java.util.Map;
  * 3、isSingleton()：返回要制造的bean对象是否是单实例的
  * 工厂也可以导入第三方bean（可以实现复杂的bean导入） 
  * 
- * 在factory/BYDFactory中演示
+ * 在以下文件中演示：
+ * spring-01-ioc\src\main\java\com\atguigu\spring\ioc\factory\BYDFactory.java
  */ 
 
 @SpringBootApplication

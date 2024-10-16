@@ -219,7 +219,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * 
  * 日志文件被删除之前，可以容纳的最大大小：
  * logging.logback.rollingpolicy.total-size-cap=100MB
- * 在test/LogTest/test02中演示
+ * 
+ * 在以下文件中演示：
+ * springboot-01-demo\src\test\java\com\atguigu\boot\LogTest.java
  * 
  * 日志文件保存的最大天数：
  * logging.logback.rollingpolicy.max-history=30
@@ -283,7 +285,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
  *    }
  * }
  * 
- * 在test/LogTest中演示
+ * 在以下文件中演示：
+ * springboot-01-demo\src\test\java\com\atguigu\boot\LogTest.java
  */
 
 /** 日志级别：
@@ -304,7 +307,8 @@ import org.springframework.scheduling.annotation.EnableAsync;
  * fetal：致命错误，级别最高，不常用 （致命错误）
  * none：不记录日志
  * 
- * 在test/LogTest中演示
+ * 在以下文件中演示：
+ * springboot-01-demo\src\test\java\com\atguigu\boot\LogTest.java
  */
 
 /** @Slf4j 注解的简单使用

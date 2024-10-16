@@ -14,7 +14,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 7、安全审计：
  * 8、自动化测试：
  * 
- * 在aspect/aroundaspect中演示
+ * 在以下文件中演示：
+ * spring-02-aop\src\main\java\com\atguigu\spring\aop\aspect\LogAspect.java
+ * spring-02-aop\src\main\java\com\atguigu\spring\aop\aspect\AroundAspect.java
  */
 
 /** 环绕通知的一个bug：关于异常的
@@ -33,13 +35,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 环绕通知：可以控制目标方法是否执行，修改目标方法参数、执行结果等。
  *      @Around：相当于上面4个结合 返回值是目标方法的返回值 
  *      
- * 在aspect/aroundaspect中演示
+ * 在以下文件中演示：
+ * spring-02-aop\src\main\java\com\atguigu\spring\aop\aspect\AroundAspect.java
  */
 
 /** @Order
  * 多切面的顺序：@Order(数字) 数字越小，优先级越高
  * 
- * 在aspect/authaspect,logaspect中演示
+ * 在以下文件中演示：
+ * spring-02-aop\src\main\java\com\atguigu\spring\aop\aspect\AuthAspect.java
+ * spring-02-aop\src\main\java\com\atguigu\spring\aop\aspect\LogAspect.java
  */
 
 /** @Pointcut
@@ -54,7 +59,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *  System.out.println("【切面 - 日志】【" + name + "】开始：参数：" + Arrays.toString(joinPoint.getArgs()));
  * }
  * 
- * 在aspect/logaspect中演示
+ * 在以下文件中演示：
+ * spring-02-aop\src\main\java\com\atguigu\spring\aop\aspect\LogAspect.java
  */
 
 /** 在切点表达式中，拿到连接点信息，返回值，异常信息
@@ -85,7 +91,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *  String name = signature.getName();
  *  System.out.println("【切面 - 日志】【" + name + "】异常：错误信息：【" + e.getMessage() + "】");
  * }
- * 在aspect/logaspect中演示
+ * 
+ * 在以下文件中演示：
+ * spring-02-aop\src\main\java\com\atguigu\spring\aop\aspect\LogAspect.java
  */
 
 /** 连接点,切入点,通知概念
@@ -134,11 +142,16 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 也就是实现一样的接口，调目标对象的方法，在方法前后加日志打印
  * 优点：同一种类型的所有对象都能代理
  * 缺点：范围太小了，只能负责部分接口代理功能
- * 在proxy/static/calculator中演示
+ * 
+ * 在以下文件中演示：
+ * spring-02-aop\src\main\java\com\atguigu\spring\aop\proxy\static\calculator\CalculatorStaticProxy.java
  * 3. 动态代理（拦截器）：
  * 定义：在运行期间，根据需要，动态的指定代理关系。一个代理，代理很多对象
  * 缺点：不好写
- * 在test/mathtest 和 proxy/dynamic/dynamicproxy中演示
+ * 
+ * 在以下文件中演示：
+ * spring-02-aop\src\test\java\com\atguigu\spring\aop\mathtest\MathTest.java
+ * spring-02-aop\src\main\java\com\atguigu\spring\aop\proxy\dynamic\dynamicproxy\CalculatorProxy.java
  * 4. aop
  * 步骤：
  * 1. 导入AOP 依赖 <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-aop</artifactId></dependency>
@@ -168,13 +181,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @annotation：只要方法上有这个注解就切
  *      @Before("@annotation(com.atguigu.spring.aop.annotation.Check)") 在执行方法上有@Check注解的方法前执行
  * 5. 测试 AOP 动态织入
- * 在aspect/logaspect中演示
+ * 
+ * 在以下文件中演示：
+ * spring-02-aop\src\main\java\com\atguigu\spring\aop\aspect\LogAspect.java
  */
 
 /** 设计模式：依赖倒置
  * 依赖接口，而不是依赖实现。实现可能会经常变。
  * 控制反转@component的是实现类，依赖注入@Autowired的是接口。
- * 在test/Spring02AopApplicationTests中演示
+ * 
+ * 在以下文件中演示：
+ * spring-02-aop\src\test\java\com\atguigu\spring\aop\Spring02AopApplicationTests.java
  */
 
 @SpringBootApplication

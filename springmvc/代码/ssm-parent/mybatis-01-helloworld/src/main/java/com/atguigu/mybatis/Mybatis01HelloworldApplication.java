@@ -14,7 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
  * 只扫描mapper，那个mapper包下不要放其他的，全放mapper
  * 然后就可以不用@mapper注解来指定mapper了
  * 
- * 在config/MyBatisConfig中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\config\MyBatisConfig.java
  */
 
 /** mybatis逆向生成
@@ -52,7 +53,8 @@ import org.springframework.transaction.annotation.Transactional;
  *     return new PageInfo<>(all);
  * }
  * 
- * 在controller/OrderRestController中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\controller\OrderRestController.java
  */
 
 /** mybatis分页插件 pagehelper 详细解释
@@ -117,7 +119,8 @@ import org.springframework.transaction.annotation.Transactional;
  * System.out.println("本页数据: " + info.getList());
  * }
  * 
- * 在Test/pagetest中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\test\java\com\atguigu\mybatis\PageTest.java
  */
 
 /** mybatis插件机制 -了解 不咋用得到
@@ -187,7 +190,11 @@ import org.springframework.transaction.annotation.Transactional;
  *     private Double empSalary;  // emp_salary
  * }
  * 
- * 在Test/Cachetest和bean/Emp和mapper/EmpMapper和对应的EmpMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\bean\Emp.java
+ * mybatis-01-helloworld\src\test\java\com\atguigu\mybatis\CacheTest.java
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\EmpMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\EmpMapper.xml
  */
 
 /** 动态sql xml的转义字符
@@ -236,7 +243,9 @@ import org.springframework.transaction.annotation.Transactional;
  *     </if>
  * </select>
  * 
- * 在mapper/EmpDynamicSQLMapper和对应的EmpDynamicSQLMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\EmpDynamicSQLMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\EmpDynamicSQLMapper.xml
  */
 
 /** mybatis开启事务
@@ -323,8 +332,9 @@ import org.springframework.transaction.annotation.Transactional;
  * </update>
  * 
  * 
- * 
- * 在mapper/EmpDynamicSQLMapper和对应的EmpDynamicSQLMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\EmpDynamicSQLMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\EmpDynamicSQLMapper.xml
  */
 
 /** 动态sql <choose> <when> <otherwise> 
@@ -347,7 +357,9 @@ import org.springframework.transaction.annotation.Transactional;
  * </select>
  * 
  * 
- * 在mapper/EmpDynamicSQLMapper和对应的EmpDynamicSQLMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\EmpDynamicSQLMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\EmpDynamicSQLMapper.xml
  */
 
 /** 动态sql <if> <where> <set> <trim>
@@ -424,7 +436,9 @@ import org.springframework.transaction.annotation.Transactional;
  * 也可以把suffix="where id = #{id}"去掉，在这加上where id = #{id}
  * </update>
  * 
- * 在mapper/EmpDynamicSQLMapper和对应的EmpDynamicSQLMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\EmpDynamicSQLMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\EmpDynamicSQLMapper.xml
  */
 
 /** 多对多咋查？
@@ -433,9 +447,11 @@ import org.springframework.transaction.annotation.Transactional;
  * 示例：
  * 查询所有客户所有订单
  * 
- * 
- * 在Test/StepTest/Test06和mapper/CustomerMapper和对应的CustomerMapper.xml中演示
- * 
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\bean\Customer.java
+ * mybatis-01-helloworld\src\test\java\com\atguigu\mybatis\StepTest.java
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\CustomerMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\CustomerMapper.xml
  */
 
 /** 延迟加载 -了解
@@ -456,7 +472,11 @@ import org.springframework.transaction.annotation.Transactional;
  * Customer customer = order.getCustomer();
  * System.out.println("customer = " + customer.getCustomerName());
  * 
- * 在Test/StepTest/Test05中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\bean\Customer.java
+ * mybatis-01-helloworld\src\test\java\com\atguigu\mybatis\StepTest.java
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\OrderCustomerStepMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\OrderCustomerStepMapper.xml
  */
 
 /** 超级分布查询 按照id查询订单以及下单的客户以及此客户的所有订单
@@ -464,7 +484,11 @@ import org.springframework.transaction.annotation.Transactional;
  * 查询订单 => 自定义结果集订单包含客户 => 查询客户 => 自定义结果集客户包含其他单
  * 如果此时 自定义结果集客户包含其他单 =>  自定义结果集订单(根据其他单号查) 就会导致死循环，方法无终结，stackoverflow
  * 
- * 在Test/StepTest和mapper/OrderCustomerStepMapper和对应的OrderCustomerStepMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\bean\Customer.java
+ * mybatis-01-helloworld\src\test\java\com\atguigu\mybatis\StepTest.java
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\OrderCustomerStepMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\OrderCustomerStepMapper.xml
  */
 
 /** MyBatis自动分布查询： 按照id查询订单以及下单的客户
@@ -504,8 +528,11 @@ import org.springframework.transaction.annotation.Transactional;
  *     where id = #{id}
  * </select>
  * 
- * 
- * 在Test/StepTest和mapper/OrderCustomerStepMapper和对应的OrderCustomerStepMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\bean\Customer.java
+ * mybatis-01-helloworld\src\test\java\com\atguigu\mybatis\StepTest.java
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\OrderCustomerStepMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\OrderCustomerStepMapper.xml
  */
 
 /** MyBatis自动分步查询机制：自动调用  按照id查询客户以及他下的所有订单
@@ -553,7 +580,11 @@ import org.springframework.transaction.annotation.Transactional;
  *     where id = #{id}
  * </select>
  * 
- * 在Test/StepTest和mapper/OrderCustomerStepMapper和对应的OrderCustomerStepMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\bean\Customer.java
+ * mybatis-01-helloworld\src\test\java\com\atguigu\mybatis\StepTest.java
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\OrderCustomerStepMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\OrderCustomerStepMapper.xml
  */
 
 /** 分步查询 - 了解  按照id查询客户以及他下的所有订单
@@ -567,7 +598,11 @@ import org.springframework.transaction.annotation.Transactional;
  * // 3. 组合一起
  * customer.setOrders(orders);
  * 
- * 在Test/StepTest和mapper/OrderCustomerStepMapper和对应的OrderCustomerStepMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\bean\Customer.java
+ * mybatis-01-helloworld\src\test\java\com\atguigu\mybatis\StepTest.java
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\OrderCustomerStepMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\OrderCustomerStepMapper.xml
  */
 
 /** 自定义结果集-ResultMap(mybatis返回值拓展) 一对一和一对多（用订单表和客户表举例子）按照订单id查询客户和按照id查询客户以及他下的所有订单
@@ -613,7 +648,11 @@ import org.springframework.transaction.annotation.Transactional;
  * left join 左连接，把左边的表(t_order)全部查出来，右边的表(t_customer)如果有就查，没有就null
  * on 连接条件 o.customer_id = c.id表示
  * 
- * 在bean/Order和Test/joinquerytest和mapper/OrderMapper和对应的OrderMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\bean\Order.java
+ * mybatis-01-helloworld\src\test\java\com\atguigu\mybatis\JoinQueryTest.java
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\OrderMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\OrderMapper.xml
  * 示例：一对多 按照id查询客户以及下的所有订单（客户表和订单表）用 collection：
  * @Data
  * public class Customer {
@@ -650,7 +689,11 @@ import org.springframework.transaction.annotation.Transactional;
  *     where c.id = #{id}
  * </select>
  * 
- * 在bean/Customer和Test/joinquerytest和mapper/CustomerMapper和对应的CustomerMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\bean\Customer.java
+ * mybatis-01-helloworld\src\test\java\com\atguigu\mybatis\JoinQueryTest.java
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\CustomerMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\CustomerMapper.xml
  */
 
 /** n对n的概念
@@ -660,7 +703,10 @@ import org.springframework.transaction.annotation.Transactional;
  * 例子：客户表 -> 订单表  外键放订单表里
  * 3. 多对多 如果是多对多需要一个中间表
  * 例子：学生表 -> 老师表  外键放学生_老师表 (sid tid)
- * 在mapper/EmpReturnValueMapper和对应的EmpReturnValueMapper.xml中演示
+ * 
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\EmpParamMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\EmpParamMapper.xml
  */
 
 /** MyBatis返回值
@@ -678,7 +724,9 @@ import org.springframework.transaction.annotation.Transactional;
  * </select>
  * 小提示：（有便利别名但不用）MyBatis 为 java.lang 下的很多数据类型都起了别名，只需要用Long, String, Double 等这些表示即可，不用写全类名
  * 
- * 在mapper/EmpReturnValueMapper和对应的EmpReturnValueMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\EmpReturnValueMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\EmpReturnValueMapper.xml
  * 2. 返回List、Map
  * ①. 返回集合：resuLtType="集合中元素全类名"
  * 比如：mapper：List<Emp> 配置文件：resultType="com.atguigu.mybatis.bean.Emp
@@ -688,7 +736,9 @@ import org.springframework.transaction.annotation.Transactional;
  * Map<Integer, Emp> resultType="com.atguigu.mybatis.bean.Emp"
  * 返回的是Emp{id=1, name="张三", age=30},Emp{id=2, name="李四", age=25},Emp{id=3, name="王五", age=35}
  * 
- * 在mapper/EmpReturnValueMapper和对应的EmpReturnValueMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\EmpReturnValueMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\EmpReturnValueMapper.xml
  * 3. 自定义结果集(1-1,1-N)
  * mybatis先用无参构造器，然后封装规则JavaBean中的属性名去数据库表中找对应列名的值。一一映射封装。
  * 和数据库对不上的字段封装为null，
@@ -723,7 +773,10 @@ import org.springframework.transaction.annotation.Transactional;
  *     where id = #{id}
  * </select>
  * 
- * 在mapper/EmpReturnValueMapper和对应的EmpReturnValueMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\bean\Emp.java
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\EmpReturnValueMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\EmpReturnValueMapper.xml
  * 4. 分步查询
  * 5. 延迟加载
  * 
@@ -731,7 +784,9 @@ import org.springframework.transaction.annotation.Transactional;
  * 1、开启驼峰命名
  * 2、1搞不定的，用自定义映射(ResultMap)(自定义结果集)
  * 
- * 在mapper/EmpReturnValueMapper和对应的EmpReturnValueMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\EmpReturnValueMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\EmpReturnValueMapper.xml
  */
 
 /** MyBatis参数取值
@@ -766,14 +821,17 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * 最佳实践：即使只有一个参数，也用 @Param 指定参数名
  * 
- * 在mapper/EmpParamMapper和对应的EmpParamMapper.xml中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\EmpParamMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\EmpParamMapper.xml
  */
 
 /** 如果方法中传参想传其他表的名字用#{}会报错，要用${}
  * 是${}有sql注入风险，如果要传表名，做一个防sql注入处理，可以让ai生成防sql注入的参数校验等等
  * from ${tableName}
  * 
- * 在test/Mybatis01HelloworldApplicationTests中演示
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\test\java\com\atguigu\mybatis\Mybatis01HelloworldApplicationTests.java
  */
 
 /** 配置文件中传参 #{}和${}
@@ -813,7 +871,9 @@ import org.springframework.transaction.annotation.Transactional;
  * 3. 方法中传对象，sql语句中参数用对象里边的属性（会自动做映射）
  * 4. 方法的返回类型为集合List<Emp>，配置返回类型为类Emp
  * 
- * 在mapper/EmpMapper中演示 和对应的EmpMapper.xml中配置sql语句
+ * 在以下文件中演示：
+ * mybatis-01-helloworld\src\main\java\com\atguigu\mybatis\mapper\EmpMapper.java
+ * mybatis-01-helloworld\src\main\resources\mapper\EmpMapper.xml
  */
 
 /** 为什么@Mapper接口而不搞实现类？

@@ -32,7 +32,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * {}中的值封装到filename变量中；filename满足\w+正则要求
  * /resources/xxx.dat：xxx是一个或多个字母
  * 
- * 在controller/EmployeeController中演示
+ * 在以下文件中演示：
+ * springmvc-restful-crud\src\main\java\com\atguigu\practice\controller\EmployeeRestController.java
  */
 
 /** @CrossOrigin和跨域概念
@@ -66,21 +67,27 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * 		}
  * XXX
  * }
- * 在controller/EmployeeController中演示
+ * 
+ * 在以下文件中演示：
+ * springmvc-restful-crud\src\main\java\com\atguigu\practice\controller\EmployeeRestController.java
  */
 
 /** 统一返回对象Result
  * code: 状态码
  * message: 消息
  * data: 数据
- * 在common/R中演示
+ * 
+ * 在以下文件中演示：
+ * springmvc-restful-crud\src\main\java\com\atguigu\practice\common\R.java
  * 
  * 示例：
  * @PostMapping("/employee")
  * public R add(@RequestBodyEmployeeemployee){
  * empLoyeeService.saveEmp(employee);
  * return R.ok(): //因为不用返回数据，所以空的R
- * 在controller/EmployeeController中演示
+ * 
+ * 在以下文件中演示：
+ * springmvc-restful-crud\src\main\java\com\atguigu\practice\controller\EmployeeRestController.java
  */
 
 /** @Get/Post/Put/Delete Mapping

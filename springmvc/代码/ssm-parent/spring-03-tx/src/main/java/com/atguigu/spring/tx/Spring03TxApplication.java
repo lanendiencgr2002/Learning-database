@@ -166,11 +166,15 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * isolation：隔离级别
  * timeout（同 timeoutString）：超时时间； 事务超时，秒为单位；
  * 
- * 在service/impl/userServiceImpl中演示
+ * 在以下文件中演示：
+ * spring-03-tx\src\main\java\com\atguigu\spring\tx\service\impl\UserServiceImpl.java
  */
 
 /** jdbcTemplate.增删改查 
- * 在test/spring03txapplicationtests 和 dao/bookdao 中演示
+ * 
+ * 在以下文件中演示：
+ * spring-03-tx\src\test\java\com\atguigu\spring\tx\Spring03TxApplicationTests.java
+ * spring-03-tx\src\main\java\com\atguigu\spring\tx\dao\BookDao.java
  */
 
 /** HikariDataSource 是最快的数据源，但只是增删改查快，springboot 默认的数据源
