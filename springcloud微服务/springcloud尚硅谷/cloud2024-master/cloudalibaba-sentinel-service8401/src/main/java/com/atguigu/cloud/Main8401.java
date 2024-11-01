@@ -4,6 +4,11 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
+/** sentinel
+ * 底层会在代码中加上try catch，如果抛出异常，会进入降级方法
+ * 就在@feignclient的fallback属性中指定降级方法
+ */
+
 /**
  * @auther zzyy
  * @create 2024-01-02 12:22

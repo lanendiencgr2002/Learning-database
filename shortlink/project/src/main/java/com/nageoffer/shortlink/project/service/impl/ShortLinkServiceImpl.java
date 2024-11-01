@@ -112,36 +112,42 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     @Value("${short-link.domain.default}")
     private String createShortLinkDefaultDomain;
 
+    // 创建短链接
     @Transactional(rollbackFor = Exception.class)
     @Override
     public ShortLinkCreateRespDTO createShortLink(ShortLinkCreateReqDTO requestParam) {
         // 短链接接口的并发量有多少？如何测试？详情查看：https://nageoffer.com/shortlink/question
+        // 验证白名单
         verificationWhitelist(requestParam.getOriginUrl());
+        // 生成短链接后缀 6位 62进制
         String shortLinkSuffix = generateSuffix(requestParam);
-        String fullShortUrl = StrBuilder.create(createShortLinkDefaultDomain)
+        // 生成完整短链接 短链接域名（从配置文件拿，带端口的，没http://的域名）+短链接后缀
+        String fullShortUrl = StrBuilder.create(createShortLinkDefaultDomain) 
                 .append("/")
                 .append(shortLinkSuffix)
                 .toString();
+        // 根据传参 创建短链接记录
         ShortLinkDO shortLinkDO = ShortLinkDO.builder()
-                .domain(createShortLinkDefaultDomain)
-                .originUrl(requestParam.getOriginUrl())
-                .gid(requestParam.getGid())
-                .createdType(requestParam.getCreatedType())
-                .validDateType(requestParam.getValidDateType())
-                .validDate(requestParam.getValidDate())
-                .describe(requestParam.getDescribe())
-                .shortUri(shortLinkSuffix)
-                .enableStatus(0)
-                .totalPv(0)
-                .totalUv(0)
-                .totalUip(0)
-                .delTime(0L)
-                .fullShortUrl(fullShortUrl)
-                .favicon(getFavicon(requestParam.getOriginUrl()))
+                .domain(createShortLinkDefaultDomain) // 短链接域名
+                .originUrl(requestParam.getOriginUrl()) // 原始链接
+                .gid(requestParam.getGid()) // 短链接gid
+                .createdType(requestParam.getCreatedType()) // 短链接创建类型
+                .validDateType(requestParam.getValidDateType()) // 短链接有效期类型
+                .validDate(requestParam.getValidDate()) // 短链接有效期
+                .describe(requestParam.getDescribe()) // 短链接描述
+                .shortUri(shortLinkSuffix) // 短链接后缀
+                .enableStatus(0) // 短链接状态 0：可用 1：不可用
+                .totalPv(0) // 总PV
+                .totalUv(0) // 总UV
+                .totalUip(0) // 总IP
+                .delTime(0L) // 删除时间
+                .fullShortUrl(fullShortUrl) // 完整短链接
+                .favicon(getFavicon(requestParam.getOriginUrl())) // 图标
                 .build();
+        // 创建短链接gid和全路径的映射关系 存入数据库
         ShortLinkGotoDO linkGotoDO = ShortLinkGotoDO.builder()
-                .fullShortUrl(fullShortUrl)
-                .gid(requestParam.getGid())
+                .fullShortUrl(fullShortUrl) // 完整短链接
+                .gid(requestParam.getGid()) // 短链接gid
                 .build();
         try {
             // 短链接项目有多少数据？如何解决海量数据存储？详情查看：https://nageoffer.com/shortlink/question
@@ -149,13 +155,13 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             // 短链接数据库分片键是如何考虑的？详情查看：https://nageoffer.com/shortlink/question
             shortLinkGotoMapper.insert(linkGotoDO);
         } catch (DuplicateKeyException ex) {
-            // 首先判断是否存在布隆过滤器，如果不存在直接新增
             if (!shortUriCreateCachePenetrationBloomFilter.contains(fullShortUrl)) {
                 shortUriCreateCachePenetrationBloomFilter.add(fullShortUrl);
             }
             throw new ServiceException(String.format("短链接：%s 生成重复", fullShortUrl));
         }
         // 项目中短链接缓存预热是怎么做的？详情查看：https://nageoffer.com/shortlink/question
+        // 解决：在大量请求下刚创建出来的数据库还没放到redis中 缓存预热
         stringRedisTemplate.opsForValue().set(
                 String.format(GOTO_SHORT_LINK_KEY, fullShortUrl),
                 requestParam.getOriginUrl(),
@@ -170,6 +176,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .build();
     }
 
+    // 创建短链接（加锁）
     @Override
     public ShortLinkCreateRespDTO createShortLinkByLock(ShortLinkCreateReqDTO requestParam) {
         verificationWhitelist(requestParam.getOriginUrl());
@@ -225,6 +232,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .build();
     }
 
+    // 批量创建短链接
     @Override
     public ShortLinkBatchCreateRespDTO batchCreateShortLink(ShortLinkBatchCreateReqDTO requestParam) {
         List<String> originUrls = requestParam.getOriginUrls();
@@ -252,19 +260,24 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .build();
     }
 
+    // 更新短链接
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateShortLink(ShortLinkUpdateReqDTO requestParam) {
+        // 验证白名单
         verificationWhitelist(requestParam.getOriginUrl());
+        // 查询短链接记录
         LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
                 .eq(ShortLinkDO::getGid, requestParam.getOriginGid())
                 .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
                 .eq(ShortLinkDO::getDelFlag, 0)
                 .eq(ShortLinkDO::getEnableStatus, 0);
         ShortLinkDO hasShortLinkDO = baseMapper.selectOne(queryWrapper);
+        // 如果短链接记录不存在，则抛出异常
         if (hasShortLinkDO == null) {
             throw new ClientException("短链接记录不存在");
         }
+        // 如果短链接记录存在，则更新短链接记录
         if (Objects.equals(hasShortLinkDO.getGid(), requestParam.getGid())) {
             LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
                     .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
@@ -331,12 +344,15 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             }
         }
         // 短链接如何保障缓存和数据库一致性？详情查看：https://nageoffer.com/shortlink/question
+        // 如果短链接有效期类型、有效期、原始链接发生变化，则删除缓存
         if (!Objects.equals(hasShortLinkDO.getValidDateType(), requestParam.getValidDateType())
                 || !Objects.equals(hasShortLinkDO.getValidDate(), requestParam.getValidDate())
                 || !Objects.equals(hasShortLinkDO.getOriginUrl(), requestParam.getOriginUrl())) {
             stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY, requestParam.getFullShortUrl()));
             Date currentDate = new Date();
+            // 如果短链接有效期小于当前时间，则删除空链接缓存
             if (hasShortLinkDO.getValidDate() != null && hasShortLinkDO.getValidDate().before(currentDate)) {
+                // 如果短链接有效期类型为永久有效，则不删除空链接缓存
                 if (Objects.equals(requestParam.getValidDateType(), VailDateTypeEnum.PERMANENT.getType()) || requestParam.getValidDate().after(currentDate)) {
                     stringRedisTemplate.delete(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, requestParam.getFullShortUrl()));
                 }
@@ -344,6 +360,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         }
     }
 
+    // 分页查询短链接
     @Override
     public IPage<ShortLinkPageRespDTO> pageShortLink(ShortLinkPageReqDTO requestParam) {
         IPage<ShortLinkDO> resultPage = baseMapper.pageLink(requestParam);
@@ -354,6 +371,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         });
     }
 
+    // 查询短链接分组数量
     @Override
     public List<ShortLinkGroupCountQueryRespDTO> listGroupShortLinkCount(List<String> requestParam) {
         QueryWrapper<ShortLinkDO> queryWrapper = Wrappers.query(new ShortLinkDO())
@@ -367,48 +385,65 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         return BeanUtil.copyToList(shortLinkDOList, ShortLinkGroupCountQueryRespDTO.class);
     }
 
+    // 短链接跳转 
     @SneakyThrows
     @Override
     public void restoreUrl(String shortUri, ServletRequest request, ServletResponse response) {
         // 短链接接口的并发量有多少？如何测试？详情查看：https://nageoffer.com/shortlink/question
-        // 面试中如何回答短链接是如何跳转长链接？详情查看：https://nageoffer.com/shortlink/question
+        // 获取短链接域名（会忽略端口，获取域名）
         String serverName = request.getServerName();
+        // 获取短链接端口
         String serverPort = Optional.of(request.getServerPort())
-                .filter(each -> !Objects.equals(each, 80))
+                .filter(each -> !Objects.equals(each, 80)) // 过滤掉80端口
                 .map(String::valueOf)
                 .map(each -> ":" + each)
                 .orElse("");
+        // 拼接短链接全路径
         String fullShortUrl = serverName + serverPort + "/" + shortUri;
+        // 从Redis中获取短链接全路径对应的原始链接
         String originalLink = stringRedisTemplate.opsForValue().get(String.format(GOTO_SHORT_LINK_KEY, fullShortUrl));
+        // 如果Redis中存在短链接全路径对应的原始链接，则跳转到原始链接
         if (StrUtil.isNotBlank(originalLink)) {
+            // 如果短链接跳转不为空，则统计短链接访问记录
             shortLinkStats(buildLinkStatsRecordAndSetUser(fullShortUrl, request, response));
+            // 跳转到原始链接
             ((HttpServletResponse) response).sendRedirect(originalLink);
             return;
         }
+        // 如果Redis中不存在短链接全路径对应的原始链接，则从布隆过滤器中获取短链接全路径是否存在
         boolean contains = shortUriCreateCachePenetrationBloomFilter.contains(fullShortUrl);
         if (!contains) {
+            // 如果布隆过滤器中不存在短链接全路径，则跳转到404页面
             ((HttpServletResponse) response).sendRedirect("/page/notfound");
             return;
         }
+        // 如果缓存中没有，布隆过滤器中也没有，则从Redis中获取短链接全路径是否为空
         String gotoIsNullShortLink = stringRedisTemplate.opsForValue().get(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl));
         if (StrUtil.isNotBlank(gotoIsNullShortLink)) {
+            // 如果Redis中存在这个链接为空链接，则跳转到404页面
             ((HttpServletResponse) response).sendRedirect("/page/notfound");
             return;
         }
+        // 如果这个链接跳转空链接没有，则从Redis中获取短链接全路径对应的原始链接
+        // 使用分布式锁，防止多个请求同时访问Redis，导致Redis缓存击穿
         RLock lock = redissonClient.getLock(String.format(LOCK_GOTO_SHORT_LINK_KEY, fullShortUrl));
         lock.lock();
         try {
             originalLink = stringRedisTemplate.opsForValue().get(String.format(GOTO_SHORT_LINK_KEY, fullShortUrl));
             if (StrUtil.isNotBlank(originalLink)) {
+                // 双重检测，防止缓存击穿
                 shortLinkStats(buildLinkStatsRecordAndSetUser(fullShortUrl, request, response));
                 ((HttpServletResponse) response).sendRedirect(originalLink);
                 return;
             }
+            // 从Redis中获取短链接全路径是否为空
             gotoIsNullShortLink = stringRedisTemplate.opsForValue().get(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl));
             if (StrUtil.isNotBlank(gotoIsNullShortLink)) {
+                // 如果Redis中存在短链接全路径对应的原始链接，则跳转到404页面
                 ((HttpServletResponse) response).sendRedirect("/page/notfound");
                 return;
             }
+            // 从数据库中获取短链接全路径对应的原始链接
             LambdaQueryWrapper<ShortLinkGotoDO> linkGotoQueryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
                     .eq(ShortLinkGotoDO::getFullShortUrl, fullShortUrl);
             ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(linkGotoQueryWrapper);
@@ -417,6 +452,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 ((HttpServletResponse) response).sendRedirect("/page/notfound");
                 return;
             }
+            // 从数据库中获取短链接全路径对应的原始链接
             LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
                     .eq(ShortLinkDO::getGid, shortLinkGotoDO.getGid())
                     .eq(ShortLinkDO::getFullShortUrl, fullShortUrl)
@@ -440,37 +476,52 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         }
     }
 
+    // 构建短链接统计记录并设置用户
     private ShortLinkStatsRecordDTO buildLinkStatsRecordAndSetUser(String fullShortUrl, ServletRequest request, ServletResponse response) {
+        // 定义用户标识是否首次访问
         AtomicBoolean uvFirstFlag = new AtomicBoolean();
+        // 获取请求中的Cookie
         Cookie[] cookies = ((HttpServletRequest) request).getCookies();
+        // 定义用户标识uuid
         AtomicReference<String> uv = new AtomicReference<>();
+        // 线程任务：设置用户标识
         Runnable addResponseCookieTask = () -> {
-            uv.set(UUID.fastUUID().toString());
-            Cookie uvCookie = new Cookie("uv", uv.get());
-            uvCookie.setMaxAge(60 * 60 * 24 * 30);
-            uvCookie.setPath(StrUtil.sub(fullShortUrl, fullShortUrl.indexOf("/"), fullShortUrl.length()));
-            ((HttpServletResponse) response).addCookie(uvCookie);
-            uvFirstFlag.set(Boolean.TRUE);
-            stringRedisTemplate.opsForSet().add(SHORT_LINK_STATS_UV_KEY + fullShortUrl, uv.get());
+            uv.set(UUID.fastUUID().toString()); // 设置用户标识uuid
+            Cookie uvCookie = new Cookie("uv", uv.get()); // 设置用户标识cookie
+            uvCookie.setMaxAge(60 * 60 * 24 * 30); // 设置用户标识cookie有效期
+            uvCookie.setPath(StrUtil.sub(fullShortUrl, fullShortUrl.indexOf("/"), fullShortUrl.length())); // 设置用户标识cookie路径
+            ((HttpServletResponse) response).addCookie(uvCookie); // 设置用户标识cookie
+            uvFirstFlag.set(Boolean.TRUE); // 设置用户标识是否首次访问
+            stringRedisTemplate.opsForSet().add(SHORT_LINK_STATS_UV_KEY + fullShortUrl, uv.get()); // 设置用户标识到Redis中
         };
+        // 如果请求中的Cookie不为空，则从Cookie中获取用户标识
         if (ArrayUtil.isNotEmpty(cookies)) {
             Arrays.stream(cookies)
-                    .filter(each -> Objects.equals(each.getName(), "uv"))
-                    .findFirst()
-                    .map(Cookie::getValue)
-                    .ifPresentOrElse(each -> {
+                    .filter(each -> Objects.equals(each.getName(), "uv")) // 过滤出用户标识cookie
+                    .findFirst() // 获取第一个用户标识cookie
+                    .map(Cookie::getValue) // 获取用户标识cookie的值
+                    .ifPresentOrElse(each -> { // 如果用户标识cookie的值不为空，则设置用户标识
+                        // 设置用户标识
                         uv.set(each);
+                        // 设置用户标识到Redis中
                         Long uvAdded = stringRedisTemplate.opsForSet().add(SHORT_LINK_STATS_UV_KEY + fullShortUrl, each);
+                        // 设置用户标识是否首次访问
                         uvFirstFlag.set(uvAdded != null && uvAdded > 0L);
                     }, addResponseCookieTask);
-        } else {
+        } else { // 如果请求中的Cookie为空，则设置用户标识
             addResponseCookieTask.run();
         }
+        // 获取用户真实IP
         String remoteAddr = LinkUtil.getActualIp(((HttpServletRequest) request));
+        // 获取用户操作系统
         String os = LinkUtil.getOs(((HttpServletRequest) request));
+        // 获取用户浏览器
         String browser = LinkUtil.getBrowser(((HttpServletRequest) request));
+        // 获取用户设备
         String device = LinkUtil.getDevice(((HttpServletRequest) request));
+        // 获取用户网络
         String network = LinkUtil.getNetwork(((HttpServletRequest) request));
+        // 设置用户IP到Redis中
         Long uipAdded = stringRedisTemplate.opsForSet().add(SHORT_LINK_STATS_UIP_KEY + fullShortUrl, remoteAddr);
         boolean uipFirstFlag = uipAdded != null && uipAdded > 0L;
         return ShortLinkStatsRecordDTO.builder()
@@ -487,6 +538,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 .build();
     }
 
+    // 短链接统计
     @Override
     public void shortLinkStats(ShortLinkStatsRecordDTO statsRecord) {
         Map<String, String> producerMap = new HashMap<>();
@@ -495,6 +547,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         shortLinkStatsSaveProducer.send(producerMap);
     }
 
+    // 生成短链接后缀
     private String generateSuffix(ShortLinkCreateReqDTO requestParam) {
         int customGenerateCount = 0;
         String shorUri;
@@ -516,6 +569,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         return shorUri;
     }
 
+    // 生成短链接后缀（加锁）
     private String generateSuffixByLock(ShortLinkCreateReqDTO requestParam) {
         int customGenerateCount = 0;
         String shorUri;
@@ -540,6 +594,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         return shorUri;
     }
 
+    // 获取图标
     @SneakyThrows
     private String getFavicon(String url) {
         URL targetUrl = new URL(url);
@@ -557,6 +612,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         return null;
     }
 
+    // 验证白名单
     private void verificationWhitelist(String originUrl) {
         Boolean enable = gotoDomainWhiteListConfiguration.getEnable();
         if (enable == null || !enable) {

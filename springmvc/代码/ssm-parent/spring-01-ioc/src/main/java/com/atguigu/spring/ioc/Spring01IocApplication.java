@@ -195,6 +195,8 @@ import java.util.Map;
  *     private String name;
  *     private Integer age;
  * }
+ * 
+ * 在配置文件中，如果属性名有下划线，在类中需要用驼峰命名
  */
 
 /** @ConfigurationProperties
@@ -202,6 +204,12 @@ import java.util.Map;
  * 然后标注在类上面
  * @ConfigurationProperties(prefix="spring.datasource")
  * 让当前类的所有属性，和配置文件中以prefix开头的所有配置项进行绑定
+ * 在配置文件中：
+ * max-access-count: 20
+ * 在类中需要用驼峰命名
+ * maxAccessCount: 20
+ * 
+ * 配置文件中，如果是数字，在类中可以用string接收，也可以用Integer接收
  */
 
 /** @value：根据配置文件类中给变量赋值

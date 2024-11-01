@@ -70,28 +70,38 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
     @Value("${short-link.group.max-num}")
     private Integer groupMaxNum;
 
+
+    // 已登录的用户，新增短链接分组
     @Override
     public void saveGroup(String groupName) {
         saveGroup(UserContext.getUsername(), groupName);
     }
 
+    // 注册后的用户，新增短链接分组
     @Override
     public void saveGroup(String username, String groupName) {
+        // 根据用户名，生成一个分组创建的分布式锁
         RLock lock = redissonClient.getLock(String.format(LOCK_GROUP_CREATE_KEY, username));
         lock.lock();
         try {
+            // 查询当前用户是否已经创建了groupMaxNum个分组
             LambdaQueryWrapper<GroupDO> queryWrapper = Wrappers.lambdaQuery(GroupDO.class)
                     .eq(GroupDO::getUsername, username)
                     .eq(GroupDO::getDelFlag, 0);
             List<GroupDO> groupDOList = baseMapper.selectList(queryWrapper);
+            // 如果当前用户已经创建了groupMaxNum个分组，则抛出异常
             if (CollUtil.isNotEmpty(groupDOList) && groupDOList.size() == groupMaxNum) {
                 throw new ClientException(String.format("已超出最大分组数：%d", groupMaxNum));
             }
+            // 重试测试设置为10次
             int retryCount = 0;
             int maxRetries = 10;
             String gid = null;
+            // 如果当前用户未创建分组，则创建一个分组
             while (retryCount < maxRetries) {
+                // 生成一个gid，并添加到数据库中，如果添加失败，则返回null
                 gid = saveGroupUniqueReturnGid();
+                // 如果gid不为空，则创建一个分组
                 if (StrUtil.isNotEmpty(gid)) {
                     GroupDO groupDO = GroupDO.builder()
                             .gid(gid)
@@ -100,15 +110,18 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
                             .name(groupName)
                             .build();
                     baseMapper.insert(groupDO);
+                    // 将gid添加到布隆过滤器中
                     gidRegisterCachePenetrationBloomFilter.add(gid);
                     break;
                 }
                 retryCount++;
             }
+            // 如果gid为空，则抛出异常
             if (StrUtil.isEmpty(gid)) {
                 throw new ServiceException("生成分组标识频繁");
             }
         } finally {
+            // 释放锁
             lock.unlock();
         }
     }
@@ -134,6 +147,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         return shortLinkGroupRespDTOList;
     }
 
+    // 更新短链接分组
     @Override
     public void updateGroup(ShortLinkGroupUpdateReqDTO requestParam) {
         LambdaUpdateWrapper<GroupDO> updateWrapper = Wrappers.lambdaUpdate(GroupDO.class)
@@ -145,6 +159,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         baseMapper.update(groupDO, updateWrapper);
     }
 
+    // 删除短链接分组
     @Override
     public void deleteGroup(String gid) {
         LambdaUpdateWrapper<GroupDO> updateWrapper = Wrappers.lambdaUpdate(GroupDO.class)
@@ -156,6 +171,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         baseMapper.update(groupDO, updateWrapper);
     }
 
+    // 排序短链接分组（根据前端传来的顺序）
     @Override
     public void sortGroup(List<ShortLinkGroupSortReqDTO> requestParam) {
         requestParam.forEach(each -> {
@@ -170,17 +186,22 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
         });
     }
 
+    // 生成一个gid，并添加到数据库中，如果添加失败，则返回null
     private String saveGroupUniqueReturnGid() {
         String gid = RandomGenerator.generateRandom();
+        // 如果gid已经存在，则返回null
         if (gidRegisterCachePenetrationBloomFilter.contains(gid)) {
             return null;
         }
+        // 创建一个包含gid的GroupUniqueDO对象
         GroupUniqueDO groupUniqueDO = GroupUniqueDO.builder()
                 .gid(gid)
                 .build();
+        // 添加到数据库中
         try {
             groupUniqueMapper.insert(groupUniqueDO);
         } catch (DuplicateKeyException e) {
+            // 如果添加失败，则返回null
             return null;
         }
         return gid;

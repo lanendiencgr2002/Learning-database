@@ -83,6 +83,7 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
     private final LinkDeviceStatsMapper linkDeviceStatsMapper;
     private final LinkNetworkStatsMapper linkNetworkStatsMapper;
 
+    // 单个短链接详情
     @Override
     public ShortLinkStatsRespDTO oneShortLinkStats(ShortLinkStatsReqDTO requestParam) {
         checkGroupBelongToUser(requestParam.getGid());
@@ -280,6 +281,7 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                 .build();
     }
 
+    // 分组短链接详情
     @Override
     public ShortLinkStatsRespDTO groupShortLinkStats(ShortLinkGroupStatsReqDTO requestParam) {
         checkGroupBelongToUser(requestParam.getGid());
@@ -444,22 +446,31 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                 .build();
     }
 
+    // 单个短链接访问记录
     @Override
     public IPage<ShortLinkStatsAccessRecordRespDTO> shortLinkStatsAccessRecord(ShortLinkStatsAccessRecordReqDTO requestParam) {
+        // 先分页查询，再查是不是新老访客，再赋值分页查询结果
+        // 1. 检查用户是否属于该分组
         checkGroupBelongToUser(requestParam.getGid());
+        // 2. 构建查询条件
         LambdaQueryWrapper<LinkAccessLogsDO> queryWrapper = Wrappers.lambdaQuery(LinkAccessLogsDO.class)
                 .eq(LinkAccessLogsDO::getFullShortUrl, requestParam.getFullShortUrl())
                 .between(LinkAccessLogsDO::getCreateTime, requestParam.getStartDate(), requestParam.getEndDate())
                 .eq(LinkAccessLogsDO::getDelFlag, 0)
                 .orderByDesc(LinkAccessLogsDO::getCreateTime);
+        // 3. 查询分页数据  
         IPage<LinkAccessLogsDO> linkAccessLogsDOIPage = linkAccessLogsMapper.selectPage(requestParam, queryWrapper);
+        // 4. 判断是否存在数据
         if (CollUtil.isEmpty(linkAccessLogsDOIPage.getRecords())) {
             return new Page<>();
         }
+        // 5. 如果存在数据，转换为DTO对象
         IPage<ShortLinkStatsAccessRecordRespDTO> actualResult = linkAccessLogsDOIPage.convert(each -> BeanUtil.toBean(each, ShortLinkStatsAccessRecordRespDTO.class));
+        // 6. 获取用户信息列表
         List<String> userAccessLogsList = actualResult.getRecords().stream()
-                .map(ShortLinkStatsAccessRecordRespDTO::getUser)
+                .map(ShortLinkStatsAccessRecordRespDTO::getUser) // 对每个记录，获取用户信息
                 .toList();
+        // 7. 获取用户访问类型
         List<Map<String, Object>> uvTypeList = linkAccessLogsMapper.selectUvTypeByUsers(
                 requestParam.getGid(),
                 requestParam.getFullShortUrl(),
@@ -468,6 +479,7 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                 requestParam.getEndDate(),
                 userAccessLogsList
         );
+        // 8. 判断新老访客，设置新老访客 这里逻辑是根据访问时间在某个时间段内，判断是新访客还是旧访客
         actualResult.getRecords().forEach(each -> {
             String uvType = uvTypeList.stream()
                     .filter(item -> Objects.equals(each.getUser(), item.get("user")))
@@ -480,6 +492,7 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
         return actualResult;
     }
 
+    // 分组短链接访问记录
     @Override
     public IPage<ShortLinkStatsAccessRecordRespDTO> groupShortLinkStatsAccessRecord(ShortLinkGroupStatsAccessRecordReqDTO requestParam) {
         checkGroupBelongToUser(requestParam.getGid());
@@ -510,6 +523,7 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
         return actualResult;
     }
 
+    // 检查用户是否属于该分组
     public void checkGroupBelongToUser(String gid) throws ServiceException {
         String username = Optional.ofNullable(UserContext.getUsername())
                 .orElseThrow(() -> new ServiceException("用户未登录"));

@@ -70,6 +70,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
     private final StringRedisTemplate stringRedisTemplate;
     private final GroupService groupService;
 
+    // 获取用户信息（根据用户名）
     @Override
     public UserRespDTO getUserByUsername(String username) {
         LambdaQueryWrapper<UserDO> queryWrapper = Wrappers.lambdaQuery(UserDO.class)
@@ -83,11 +84,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         return result;
     }
 
+    // 判断用户名是否存在（用于注册）
     @Override
     public Boolean hasUsername(String username) {
         return !userRegisterCachePenetrationBloomFilter.contains(username);
     }
 
+    // 注册用户
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void register(UserRegisterReqDTO requestParam) {
@@ -112,6 +115,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         }
     }
 
+    // 更新用户信息
     @Override
     public void update(UserUpdateReqDTO requestParam) {
         if (!Objects.equals(requestParam.getUsername(), UserContext.getUsername())) {
@@ -122,6 +126,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         baseMapper.update(BeanUtil.toBean(requestParam, UserDO.class), updateWrapper);
     }
 
+    // 用户登录
     @Override
     public UserLoginRespDTO login(UserLoginReqDTO requestParam) {
         // 1. 查询用户账号密码无注销是否正确
@@ -158,11 +163,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         return new UserLoginRespDTO(uuid);
     }
 
+    // 检查用户是否登录
     @Override
     public Boolean checkLogin(String username, String token) {
         return stringRedisTemplate.opsForHash().get(USER_LOGIN_KEY + username, token) != null;
     }
 
+    // 用户登出
     @Override
     public void logout(String username, String token) {
         if (checkLogin(username, token)) {

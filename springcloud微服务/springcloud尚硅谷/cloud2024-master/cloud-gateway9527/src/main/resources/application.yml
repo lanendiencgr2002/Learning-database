@@ -18,10 +18,10 @@ spring:
           uri: lb://cloud-payment-service                #匹配后提供服务的路由地址
           predicates:
             - Path=/pay/gateway/get/**              # 断言，路径相匹配的进行路由
-            - After=2023-12-30T23:02:39.079979400+08:00[Asia/Shanghai]
-            #- Cookie=username,zzyy
+            - After=2023-12-30T23:02:39.079979400+08:00[Asia/Shanghai] # 断言，时间在指定时间之后
+            #- Cookie=username,zzyy # 断言，cookie中要有username参数
             # - Header=X-Request-Id, \d+ # 请求头要有X-Request-Id属性并且值为整数的正则表达式
-            #- Host=**.atguigu.com
+            #- Host=**.atguigu.com # 断言，主机名匹配
             #- Query=username, \d+  #这是get请求参数 要有参数名username并且值还要是整数才能路由
             #- RemoteAddr=192.168.124.1/24 # 外部访问我的IP限制，最大跨度不超过32，目前是1~24它们是 CIDR 表示法。
             #- My=gold #自定义了myroutepredicate 值为gold， 会报错，缺少shortcutFieldOrder方法的实现

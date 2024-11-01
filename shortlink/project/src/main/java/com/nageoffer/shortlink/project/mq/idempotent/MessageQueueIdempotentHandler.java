@@ -33,6 +33,7 @@ public class MessageQueueIdempotentHandler {
 
     private final StringRedisTemplate stringRedisTemplate;
 
+    // 幂等标识前缀
     private static final String IDEMPOTENT_KEY_PREFIX = "short-link:idempotent:";
 
     /**
@@ -41,8 +42,10 @@ public class MessageQueueIdempotentHandler {
      * @param messageId 消息唯一标识
      * @return 消息是否消费过
      */
+    // 判断当前消息是否消费过（根据消息id）
     public boolean isMessageBeingConsumed(String messageId) {
         String key = IDEMPOTENT_KEY_PREFIX + messageId;
+        // 防止空指针 如果key不存在和异常返回false 如果用==就会null==false就会空指针异常
         return Boolean.FALSE.equals(stringRedisTemplate.opsForValue().setIfAbsent(key, "0", 2, TimeUnit.MINUTES));
     }
 

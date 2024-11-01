@@ -26,7 +26,8 @@ public class RestTemplateConfig
         return new RestTemplate();
     }
 
-    @Bean //随机负载 默认本来是轮询
+    // 配置负载均衡策略
+    @Bean // 随机负载 默认本来是轮询 
     ReactorLoadBalancer<ServiceInstance> randomLoadBalancer(Environment environment,
                                                             LoadBalancerClientFactory loadBalancerClientFactory) {
         String name = environment.getProperty(LoadBalancerClientFactory.PROPERTY_NAME);

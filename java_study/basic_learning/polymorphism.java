@@ -1,6 +1,6 @@
 public class polymorphism {
     public static void main(String[] args){
-        System.out.println("向上转型示例");
+        System.out.println("向上转型示例");  
         Animal a = new Dog();
         a.eat(); // 调用Dog的eat方法
         // a.fetchStick(); // 错误：Animal类型没有fetchStick方法

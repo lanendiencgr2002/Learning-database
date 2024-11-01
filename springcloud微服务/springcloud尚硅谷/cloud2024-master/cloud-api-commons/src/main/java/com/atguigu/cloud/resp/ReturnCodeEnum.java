@@ -46,7 +46,8 @@ public enum ReturnCodeEnum
     //2 构造
     private final String code; // 自定义的状态码
     private final String message; // 自定义的描述信息
-
+    
+    // 构造方法
     ReturnCodeEnum(String code, String message)
     {
         this.code = code;
@@ -55,6 +56,7 @@ public enum ReturnCodeEnum
 
     //3 遍历
     //3.1 传统版
+    // 根据code获取枚举对象
     public static ReturnCodeEnum getReturnCodeEnumV1(String code)
     {
         for (ReturnCodeEnum element : ReturnCodeEnum.values()) {
@@ -66,9 +68,13 @@ public enum ReturnCodeEnum
         return null;
     }
     //3.2 Stream流式计算版
+    // 根据code获取枚举对象
     public static ReturnCodeEnum getReturnCodeEnumV2(String code)
     {
-        return Arrays.stream(ReturnCodeEnum.values()).filter(x -> x.getCode().equalsIgnoreCase(code)).findFirst().orElse(null);
+        return Arrays.stream(ReturnCodeEnum.values())
+            .filter(x -> x.getCode().equalsIgnoreCase(code))
+            .findFirst()
+            .orElse(null);
     }
 
 

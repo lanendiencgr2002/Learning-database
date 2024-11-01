@@ -116,9 +116,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * public String handle09(HttpEntity<String> httpEntity){ //这样是json的字符串格式
  *     String requestEntity = httpEntity.getBody(); //获取请求体
  *     HttpHeaders headers = httpEntity.getHeaders(); //获取请求头
- *     return requestEntity;
+ *     return requestEntity;  //返回请求体
  * }
- * 自动转为类：
+ * 自动转为类： // 将请求体的json数据，自动转为类
  * public String handle10(HttpEntity<Person> httpEntity){ //这样是json的类格式
  *     Person person = httpEntity.getBody(); //获取请求体
  *     HttpHeaders headers = httpEntity.getHeaders(); //获取请求头
@@ -126,7 +126,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * }
  * 
  * 10. 原生api：
- * publicvoidhandle10(HttpServletRequest request,
+ * public void handle10(HttpServletRequest request,
  * HttpServletResponse response,还可以加接收请求方法等 HttpMethod method, HttpSession session, Model model, ModelMap modelMap){
  *     String requestUrl = request.getRequestURL().toString(); //获取请求的url
  *     String requestURI = request.getRequestURI(); //获取请求的uri
@@ -137,6 +137,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *     String remoteAddr = request.getRemoteAddr(); //获取请求的远程地址
  *     String remoteHost = request.getRemoteHost(); //获取请求的远程主机
  *     int remotePort = request.getRemotePort(); //获取请求的远程端口
+ * 
+ * 请求参数还可以是ServletRequest request
+ * 它是HttpServletRequest 的父接口。
+ * 包含了一些基本的方法，如获取参数、属性等。 比如：
+ * getSeviceName() 获取请求的服务名子
+ * getParameter() 获取请求参数  
+ * getParameterNames() 获取请求参数名
+ * getAttribute() 获取请求属性
+ * ServletResponse response同理
  * 
  * 在以下文件中演示：
  * springmvc-01-helloworld\src\main\java\com\atguigu\springmvc\controller\RequestTestController.java

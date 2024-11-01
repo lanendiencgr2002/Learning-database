@@ -39,10 +39,10 @@ public class LinkUtil {
      * @param validDate 有效期时间
      * @return 有限期时间戳
      */
-    public static long getLinkCacheValidTime(Date validDate) {
-        return Optional.ofNullable(validDate)
-                .map(each -> DateUtil.between(new Date(), each, DateUnit.MS))
-                .orElse(DEFAULT_CACHE_VALID_TIME);
+    public static long getLinkCacheValidTime(Date validDate) { //传入有效期时间
+        return Optional.ofNullable(validDate) //如果有效期时间不为空，则计算有效期时间戳
+                .map(each -> DateUtil.between(new Date(), each, DateUnit.MS)) // map方法，将有效期时间转换为时间戳 new date是当前时间
+                .orElse(DEFAULT_CACHE_VALID_TIME); //如果有效期时间为空（永久），则使用默认缓存有效时间（一个月的毫秒值）
     }
 
     /**

@@ -26,6 +26,10 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
+/** implements InitializingBean
+ * 在spring启动时，就会把规则加载进sentinel中
+ */
+
 /**
  * 初始化限流配置
  */
@@ -34,12 +38,17 @@ public class SentinelRuleConfig implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() throws Exception {
+        // 创建限流规则
         List<FlowRule> rules = new ArrayList<>();
         FlowRule createOrderRule = new FlowRule();
+        // 设置资源名称
         createOrderRule.setResource("create_short-link");
+        // qps限流 按照qps来限制
         createOrderRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+        // 限流阈值 一秒最多1次
         createOrderRule.setCount(1);
         rules.add(createOrderRule);
+        // 加载限流规则
         FlowRuleManager.loadRules(rules);
     }
 }

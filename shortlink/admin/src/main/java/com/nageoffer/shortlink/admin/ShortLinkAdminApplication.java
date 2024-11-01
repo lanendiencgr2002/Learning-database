@@ -23,6 +23,37 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
+/** 流量风控
+ * 通过过滤器和redislua脚本实现限流
+ * 
+ * 在以下文件中演示：
+ * admin\src\main\java\com\nageoffer\shortlink\admin\common\biz\user\UserFlowRiskControlFilter.java
+ */
+
+/** 过滤器步长一般设置为大一点 比如 1 10 100 然后中间插的话，可以设置为5 50 25等
+ */
+
+/** @ConditionalOnProperty
+ * 
+ * 只有当配置文件中 short-link.flow-limit.enable=true 时，才会创建这个Bean
+ * @ConditionalOnProperty(
+ *     name = "short-link.flow-limit.enable",  // 配置属性的名称
+ *     havingValue = "true"                    // 期望的值
+ * )
+ * 
+ * 在以下文件中演示：
+ * admin\src\main\java\com\nageoffer\shortlink\admin\config\UserConfiguration.java
+ */
+
+/** @SneakyThrows
+ * 来自 Lombok 库
+ * 用于捕获并抛出异常，使代码更简洁
+ * 不使用@SneakyThrows，则需要手动捕获异常
+ * public void doSomething() throws Exception {
+ *    throw new Exception("出错了");
+ * }
+ */
+
 /** @JSONField(name="id")
  * 来自 Fastjson2 库
  * 标记在类的属性上，当对象转换为 JSON 时，userId 字段将被表示为 "id"。 会生成json然后{id:xxx}
@@ -147,7 +178,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * 数据库层面添加唯一索引。
  */
 
-/** 布隆过滤器 解决缓存穿透问题
+/** 布隆过滤器 解决缓存穿透问题（缓存中没有，透过缓存查数据库）
  * 
  * 在以下文件中演示：
  * admin\src\main\java\com\nageoffer\shortlink\admin\config\RBloomFilterConfiguration.java
@@ -168,8 +199,7 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
  * 然后在类中 private final xxx;来注入
  */
 
-/**
- * 短链接后管应用
+/** 短链接后管应用
  */
 @SpringBootApplication
 @EnableDiscoveryClient

@@ -49,6 +49,7 @@ public class OrderController
 
     @Resource
     private DiscoveryClient discoveryClient;
+    
     @GetMapping("/consumer/discovery")
     public String discovery()
     {

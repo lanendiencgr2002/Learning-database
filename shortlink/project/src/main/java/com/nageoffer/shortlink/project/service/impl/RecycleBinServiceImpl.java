@@ -44,47 +44,55 @@ import static com.nageoffer.shortlink.project.common.constant.RedisKeyConstant.G
 @Service
 @RequiredArgsConstructor
 public class RecycleBinServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLinkDO> implements RecycleBinService {
-
     private final StringRedisTemplate stringRedisTemplate;
 
+    // 移入回收站
     @Override
     public void saveRecycleBin(RecycleBinSaveReqDTO requestParam) {
         LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
-                .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
-                .eq(ShortLinkDO::getGid, requestParam.getGid())
-                .eq(ShortLinkDO::getEnableStatus, 0)
-                .eq(ShortLinkDO::getDelFlag, 0);
+                .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl()) // 根据短链接全路径查询
+                .eq(ShortLinkDO::getGid, requestParam.getGid()) // 根据分组标识查询
+                .eq(ShortLinkDO::getEnableStatus, 0) // 查询未删除
+                .eq(ShortLinkDO::getDelFlag, 0); // 查询未删除
         ShortLinkDO shortLinkDO = ShortLinkDO.builder()
-                .enableStatus(1)
+                .enableStatus(1) // 把启用关了
                 .build();
+        // 修改启动状态为关闭
         baseMapper.update(shortLinkDO, updateWrapper);
+        // 删除缓存
         stringRedisTemplate.delete(String.format(GOTO_SHORT_LINK_KEY, requestParam.getFullShortUrl()));
     }
 
+    // 分页查询回收站短链接
     @Override
     public IPage<ShortLinkPageRespDTO> pageShortLink(ShortLinkRecycleBinPageReqDTO requestParam) {
+        // 分页查询回收站短链接
         IPage<ShortLinkDO> resultPage = baseMapper.pageRecycleBinLink(requestParam);
-        return resultPage.convert(each -> {
+        // 转换为类对象
+        return resultPage.convert(each -> { // each代表页面数据中的每一个元素
             ShortLinkPageRespDTO result = BeanUtil.toBean(each, ShortLinkPageRespDTO.class);
             result.setDomain("http://" + result.getDomain());
             return result;
         });
     }
 
+    // 恢复回收站短链接
     @Override
     public void recoverRecycleBin(RecycleBinRecoverReqDTO requestParam) {
         LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
                 .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
                 .eq(ShortLinkDO::getGid, requestParam.getGid())
-                .eq(ShortLinkDO::getEnableStatus, 1)
-                .eq(ShortLinkDO::getDelFlag, 0);
+                .eq(ShortLinkDO::getEnableStatus, 1) // 查询未启用
+                .eq(ShortLinkDO::getDelFlag, 0); // 查询未删除
         ShortLinkDO shortLinkDO = ShortLinkDO.builder()
-                .enableStatus(0)
+                .enableStatus(0) // 修改为启用
                 .build();
         baseMapper.update(shortLinkDO, updateWrapper);
+        // 删除缓存 短链接空值跳转
         stringRedisTemplate.delete(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, requestParam.getFullShortUrl()));
     }
 
+    // 从回收站移除短链接
     @Override
     public void removeRecycleBin(RecycleBinRemoveReqDTO requestParam) {
         LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)

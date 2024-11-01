@@ -32,18 +32,24 @@ public class HashUtil {
     private static final int SIZE = CHARS.length;
 
     private static String convertDecToBase62(long num) {
+        // 将num转换为62进制
         StringBuilder sb = new StringBuilder();
+        // 每次余62，来转换为62进制
         while (num > 0) {
             int i = (int) (num % SIZE);
             sb.append(CHARS[i]);
             num /= SIZE;
         }
+        // 将sb反转，因为每次都是从低位开始计算的
         return sb.reverse().toString();
     }
 
     public static String hashToBase62(String str) {
+        // 用hutool的murmurhash生成32位（32位的二进制数 int型变量）的hash值
         int i = MurmurHash.hash32(str);
+        // 如果i小于0，则取Integer.MAX_VALUE - i（取反），否则取i
         long num = i < 0 ? Integer.MAX_VALUE - (long) i : i;
+        // 将num转换为62进制
         return convertDecToBase62(num);
     }
 }

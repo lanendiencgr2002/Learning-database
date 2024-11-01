@@ -36,9 +36,13 @@ public class UserConfiguration {
      */
     @Bean
     public FilterRegistrationBean<UserTransmitFilter> globalUserTransmitFilter() {
+        // 创建一个FilterRegistrationBean对象
         FilterRegistrationBean<UserTransmitFilter> registration = new FilterRegistrationBean<>();
+        // 设置过滤器
         registration.setFilter(new UserTransmitFilter());
+        // 设置过滤器拦截的URL模式
         registration.addUrlPatterns("/*");
+        // 设置过滤器执行顺序 越小越先执行
         registration.setOrder(0);
         return registration;
     }

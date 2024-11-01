@@ -7,9 +7,9 @@ spring:
       host: localhost
       port: 8500
       discovery:
-        service-name: ${spring.application.name}
+        service-name: ${spring.application.name} # 将当前服务注册进consul
       config:
-        profile-separator: '-' # default value is ","，we update '-'
+        profile-separator: '-' # default value is ","，we update '-' 配置的分隔符
         format: YAML
 #        watch: # kv动态刷新间隔时间
 #          wait-time: 1

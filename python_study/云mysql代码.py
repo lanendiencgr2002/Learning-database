@@ -40,7 +40,18 @@ def 测试插入数据():
     conn.commit()  # 提交更改
     cursor.close()  # 关闭游标
     print('插入数据成功')
+def 测试查询数据():
+    global conn
+    if not 测试选择数据库('wechat_pyq'):return
+    cursor = conn.cursor()  # 创建游标对象
+    cursor.execute("SELECT * FROM wechat_main")
+    results = cursor.fetchall()
+    for row in results:
+        print(row)
+    cursor.close()  # 关闭游标
 if __name__ == '__main__':
     测试插入数据()
+    # 测试查询数据()
     if conn:
         conn.close()  # 关闭数据库连接
+    

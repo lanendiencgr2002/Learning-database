@@ -25,25 +25,41 @@ import java.util.function.Predicate;
 public class MyRoutePredicateFactory extends AbstractRoutePredicateFactory<MyRoutePredicateFactory.Config>
 {
 
+    // 调用父类的构造方法，传入config类的信息
     public MyRoutePredicateFactory()
     {
         super(MyRoutePredicateFactory.Config.class);
     }
 
     //这个Config类就是我们的路由断言规则，重要
-    @Validated
+    // 比如访问：http://localhost:9527/api/vip?userType=diamond 网关会检查userType参数
+    // 如果不匹配或没有userType参数，就拒绝访问
+    @Validated // 启用参数校验
     public static class Config
     {
         @Setter@Getter@NotEmpty
         private String userType; //钻/金/银和yml配置的会员等级
     }
     
+    /** # 简短格式(有shortcutFieldOrder()时)
+     * predicates:
+     *  - MyRoute=diamond
+     * 
+     * # 或完整格式
+     * predicates:
+     *  - name: MyRoute
+     *    args:
+     *      userType: diamond
+     * 
+     */
     // 处理短格式，比如 userType=diamond
     @Override
     public List<String> shortcutFieldOrder() {
         return Collections.singletonList("userType");
     }
 
+
+    
     @Override
     public Predicate<ServerWebExchange> apply(MyRoutePredicateFactory.Config config)
     {

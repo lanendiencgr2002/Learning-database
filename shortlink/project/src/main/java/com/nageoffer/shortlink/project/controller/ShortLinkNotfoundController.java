@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 /**
  * 短链接不存在跳转控制器
+ * 为什么单独做控制器？
+ * 因为404页面是静态页面（不像别的返回json，@ResponseBody），需要单独做控制器
  */
 @Controller
 public class ShortLinkNotfoundController {

@@ -6,11 +6,11 @@ spring:
     name: cloud-consumer-order
   ####Spring Cloud Consul for Service Discovery
   cloud:
-    consul:
-      host: localhost
-      port: 8500
-      discovery:
-        prefer-ip-address: true #优先使用服务ip进行注册
-        service-name: ${spring.application.name}
+    consul: # consul 配置
+      host: localhost # 主机
+      port: 8500 # 端口
+      discovery: # 服务发现配置
+        prefer-ip-address: true # 优先使用服务ip进行注册 服务会将自己的 IP 地址（而不是主机名）注册到 Consul
+        service-name: ${spring.application.name} # 服务名cloud-consumer-order
 
 # welcome to atguigu ,if you need help ,please send email to zzyybs@126.com

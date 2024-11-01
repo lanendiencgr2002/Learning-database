@@ -67,6 +67,8 @@ import java.util.Objects;
 import static com.nageoffer.shortlink.project.common.constant.RedisKeyConstant.LOCK_GID_UPDATE_KEY;
 import static com.nageoffer.shortlink.project.common.constant.ShortLinkConstant.AMAP_REMOTE_URL;
 
+
+
 /**
  * 短链接监控状态保存消息队列消费者
  */
@@ -92,21 +94,28 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
 
+    // 消费者监听消息
     @Override
     public void onMessage(MapRecord<String, String, String> message) {
+        // 获取消息的stream
         String stream = message.getStream();
+        // 获取消息的id
         RecordId id = message.getId();
         if (messageQueueIdempotentHandler.isMessageBeingConsumed(id.toString())) {
             // 判断当前的这个消息流程是否执行完成
             if (messageQueueIdempotentHandler.isAccomplish(id.toString())) {
+                // 如果消息处理完成，则直接返回
                 return;
             }
+            // 如果消息未处理完成，则抛出异常
             throw new ServiceException("消息未完成流程，需要消息队列重试");
         }
+        // 使用try捕获异常，如果有异常则删除消息，防止消息处理出错，但是下次id消息进来不会处理（因为在redis里边标记已处理了）
         try {
             Map<String, String> producerMap = message.getValue();
             ShortLinkStatsRecordDTO statsRecord = JSON.parseObject(producerMap.get("statsRecord"), ShortLinkStatsRecordDTO.class);
             actualSaveShortLinkStats(statsRecord);
+            // redis的消息不像rocketmq可以自动删除消息完的消息3天-x天，所以需要手动删除消息
             stringRedisTemplate.opsForStream().delete(Objects.requireNonNull(stream), id.getValue());
         } catch (Throwable ex) {
             // 某某某情况宕机了
@@ -114,6 +123,7 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
             log.error("记录短链接监控消费异常", ex);
             throw ex;
         }
+        
         messageQueueIdempotentHandler.setAccomplish(id.toString());
     }
 

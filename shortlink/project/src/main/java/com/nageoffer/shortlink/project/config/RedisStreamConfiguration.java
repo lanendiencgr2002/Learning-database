@@ -45,10 +45,12 @@ import static com.nageoffer.shortlink.project.common.constant.RedisKeyConstant.S
 @Configuration
 @RequiredArgsConstructor
 public class RedisStreamConfiguration {
-
+    // 注入redis连接工厂
     private final RedisConnectionFactory redisConnectionFactory;
+    // redis消费者绑定
     private final ShortLinkStatsSaveConsumer shortLinkStatsSaveConsumer;
 
+    // 消息的消费者执行逻辑是通过一个线程池来执行的，不指定就会用默认的，这里是自定义
     @Bean
     public ExecutorService asyncStreamConsumer() {
         AtomicInteger index = new AtomicInteger();
@@ -67,6 +69,7 @@ public class RedisStreamConfiguration {
         );
     }
 
+    // 监听绑定
     @Bean
     public Subscription shortLinkStatsSaveConsumerSubscription(ExecutorService asyncStreamConsumer) {
         StreamMessageListenerContainer.StreamMessageListenerContainerOptions<String, MapRecord<String, String, String>> options =
@@ -74,7 +77,7 @@ public class RedisStreamConfiguration {
                         .builder()
                         // 一次最多获取多少条消息
                         .batchSize(10)
-                        // 执行从 Stream 拉取到消息的任务流程
+                        // 执行从 Stream 拉取到消息的任务流程 这里不绑定线程池，就会使用默认的
                         .executor(asyncStreamConsumer)
                         // 如果没有拉取到消息，需要阻塞的时间。不能大于 ${spring.data.redis.timeout}，否则会超时
                         .pollTimeout(Duration.ofSeconds(3))
@@ -85,8 +88,11 @@ public class RedisStreamConfiguration {
                         .consumer(Consumer.from(SHORT_LINK_STATS_STREAM_GROUP_KEY, "stats-consumer"))
                         .autoAcknowledge(true)
                         .build();
+        // 创建监听容器
         StreamMessageListenerContainer<String, MapRecord<String, String, String>> listenerContainer = StreamMessageListenerContainer.create(redisConnectionFactory, options);
+        // 注册监听
         Subscription subscription = listenerContainer.register(streamReadRequest, shortLinkStatsSaveConsumer);
+        // 启动监听
         listenerContainer.start();
         return subscription;
     }

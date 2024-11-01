@@ -97,12 +97,12 @@ public class ShortLinkPageRespDTO {
     private Integer totalPv;
 
     /**
-     * 今日PV
+     * 今日PV 访问量
      */
     private Integer todayPv;
 
     /**
-     * 历史UV
+     * 历史UV 独立访客数
      */
     private Integer totalUv;
 
@@ -112,12 +112,12 @@ public class ShortLinkPageRespDTO {
     private Integer todayUv;
 
     /**
-     * 历史UIP
+     * 历史UIP 独立IP数
      */
     private Integer totalUip;
 
     /**
-     * 今日UIP
+     * 今日UIP 独立IP数
      */
     private Integer todayUip;
 }
