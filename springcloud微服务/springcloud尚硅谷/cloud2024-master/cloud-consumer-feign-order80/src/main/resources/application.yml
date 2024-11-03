@@ -50,7 +50,7 @@ spring:
 #            PayFeignApi: debug
 
 
-# Resilience4j CircuitBreaker 按照次数：COUNT_BASED 的例子
+# Resilience4j CircuitBreaker 按照次数：COUNT_BASED（计数器） 的例子
 #  6次访问中当执行方法的失败率达到50%时CircuitBreaker将进入开启OPEN状态(保险丝跳闸断电)拒绝所有请求。
 #  等待5秒后，CircuitBreaker 将自动从开启OPEN状态过渡到半开HALF_OPEN状态，允许一些请求通过以测试服务是否恢复正常。
 #  如还是异常CircuitBreaker 将重新进入开启OPEN状态；如正常将进入关闭CLOSE闭合状态恢复正常处理请求。
@@ -68,11 +68,11 @@ spring:
 #        recordExceptions:
 #          - java.lang.Exception
 #    instances:
-#      cloud-payment-service:
-#        baseConfig: default
+#      cloud-payment-service: # 配在哪个微服务上
+#        baseConfig: default # 使用哪个配置
 
 
-# Resilience4j CircuitBreaker 按照时间：TIME_BASED 的例子
+# Resilience4j CircuitBreaker 按照时间：TIME_BASED（基于时间的滑动窗口） 的例子
 #resilience4j:
 #  timelimiter:
 #    configs:
@@ -100,12 +100,12 @@ spring:
 #  bulkhead:
 #    configs:
 #      default:
-#        maxConcurrentCalls: 2 # 隔离允许并发线程执行的最大数量
-#        maxWaitDuration: 1s # 当达到并发调用数量时，新的线程的阻塞时间，我只愿意等待1秒，过时不候进舱壁兜底fallback
+#        maxConcurrentCalls: 2 # 隔离允许并发线程执行的最大数量 默认值25
+#        maxWaitDuration: 1s # 当达到并发调用数量时，新的线程的阻塞时间，我只愿意等待1秒，过时不候进舱壁兜底fallback 默认值0
 #    instances:
-#      cloud-payment-service:
-#        baseConfig: default
-#  timelimiter:
+#      cloud-payment-service: # 配在哪个微服务上
+#        baseConfig: default # 使用哪个配置使用default配置
+#  timelimiter: 
 #    configs:
 #      default:
 #        timeout-duration: 20s

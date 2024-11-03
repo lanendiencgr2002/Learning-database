@@ -13,13 +13,13 @@
 maven命令clean install 然后打成jar包，然后在其他项目中引入这个jar包的坐标
 
 5. cloud-consumer-feign-order80：
-演示了OpenFeign
+演示了OpenFeign，CircuitBreaker断路器(Resilience4j)
 
 3. cloud-consumer-order80：
-演示了RestTemplate，服务注册进consul
+演示了RestTemplate，服务注册进consul，Micrometer+ZipKin搭建链路监控
 
 2. cloud-provider-payment8001：
-演示了（服务注册进consul），consul的分布式配置管理
+演示了（服务注册进consul），consul的分布式配置管理，导入Micrometer+ZipKin的依赖
 
 4. cloud-provider-payment8002：
 作为第二个支付服务，演示了consul的负载均衡
@@ -30,7 +30,8 @@ maven命令clean install 然后打成jar包，然后在其他项目中引入这�
 
 . cloudalibaba-provider-payment9001：
 
-. cloudalibaba-sentinel-gateway9528：
+6. cloudalibaba-sentinel-gateway9528：
+演示了Gateway
 
 . cloudalibaba-sentinel-service8401：
 

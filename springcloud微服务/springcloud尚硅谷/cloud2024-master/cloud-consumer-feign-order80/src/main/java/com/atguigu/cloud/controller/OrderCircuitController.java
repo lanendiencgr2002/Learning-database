@@ -23,8 +23,13 @@ public class OrderCircuitController
     @Resource
     private PayFeignApi payFeignApi;
 
+    /**
+     * 断路器熔断降级COUNT_BASED  时间也可以用，看配置文件
+     * @param id
+     * @return
+     */
     @GetMapping(value = "/feign/pay/circuit/{id}")
-    @CircuitBreaker(name = "cloud-payment-service", fallbackMethod = "myCircuitFallback")
+    @CircuitBreaker(name = "cloud-payment-service", fallbackMethod = "myCircuitFallback") //name调用哪个微服务名起效
     public String myCircuitBreaker(@PathVariable("id") Integer id)
     {
         return payFeignApi.myCircuit(id);
@@ -40,7 +45,8 @@ public class OrderCircuitController
      * @param id
      * @return
      */
-    /*@GetMapping(value = "/feign/pay/bulkhead/{id}")
+    //type = Bulkhead.Type.SEMAPHORE 信号量舱壁  还可以选线程池
+    /*@GetMapping(value = "/feign/pay/bulkhead/{id}") 
     @Bulkhead(name = "cloud-payment-service",fallbackMethod = "myBulkheadFallback",type = Bulkhead.Type.SEMAPHORE)
     public String myBulkhead(@PathVariable("id") Integer id)
     {
