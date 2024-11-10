@@ -14,7 +14,7 @@ import org.springframework.web.client.RestTemplate;
 public class RestTemplateConfig
 {
     @Bean
-    @LoadBalanced //赋予RestTemplate负载均衡的能力
+    @LoadBalanced //赋予RestTemplate负载均衡的能力（nacos自带负载均衡不加可找不着服务名）
     public RestTemplate restTemplate()
     {
         return new RestTemplate();

@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @create 2024-01-01 16:58
  */
 @RestController
-@RefreshScope //在控制器类加入@RefreshScope注解使当前类下的配置支持Nacos的动态刷新功能。
+@RefreshScope //在控制器类加入@RefreshScope注解使当前类下的配置支持Nacos的动态刷新功能（nacos配置一改，这里会自动更新）
 public class NacosConfigClientController
 {
     @Value("${config.info}")

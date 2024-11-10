@@ -23,6 +23,7 @@ public class PayAlibabaController
     @Value("${server.port}")
     private String serverPort;
 
+    // 测试nacos服务注册
     @GetMapping(value = "/pay/nacos/{id}")
     public String getPayInfo(@PathVariable("id") Integer id)
     {

@@ -20,6 +20,7 @@ public class OrderNacosController
     @Value("${service-url.nacos-user-service}")
     private String serverURL;
 
+    // 测试nacos服务消费
     @GetMapping(value = "/consumer/pay/nacos/{id}")
     public String paymentInfo(@PathVariable("id") Integer id)
     {
@@ -28,6 +29,7 @@ public class OrderNacosController
     }
 
     //===================================
+    // 测试feign服务消费 feign（sentinel）
     @Resource
     private PayFeignSentinelApi payFeignSentinelApi;
 

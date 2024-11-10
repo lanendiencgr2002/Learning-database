@@ -38,10 +38,11 @@ public class MyRoutePredicateFactory extends AbstractRoutePredicateFactory<MyRou
     public static class Config
     {
         @Setter@Getter@NotEmpty
-        private String userType; //钻/金/银和yml配置的会员等级
+        private String userType; //检查userType参数 钻/金/银和yml配置的会员等级
     }
     
-    /** # 简短格式(有shortcutFieldOrder()时)
+    /** 当有shortcutFieldOrder()时，可以简短格式 在配置文件中可以用简短格式 不然要用kv完整格式 ，配置了这个 两个格式都可以使用
+     * # 简短格式(有shortcutFieldOrder()时)
      * predicates:
      *  - MyRoute=diamond
      * 
@@ -70,15 +71,16 @@ public class MyRoutePredicateFactory extends AbstractRoutePredicateFactory<MyRou
             {
                 //检查request的参数里面，userType是否为指定的值，符合配置就通过
                 //http://localhost:9527/pay/gateway/get/1?userType=diamond
+                // 是否存在userType参数
                 String userType = serverWebExchange.getRequest().getQueryParams().getFirst("userType");
-                if (userType == null) {
-                    return false;
+                if (userType == null) { // 不存在userType参数
+                    return false; // 返回false，拒绝访问
                 }
                 //如果说参数存在，就和config的数据进行比较
-                if(userType.equalsIgnoreCase(config.getUserType())){
-                    return true;
+                if(userType.equalsIgnoreCase(config.getUserType())){ //能匹配上对应值 config.getUserType() 是yml配置的会员等级 MyRoute=diamond
+                    return true; // 返回true，允许访问
                 }
-                return false;
+                return false; // 返回false，拒绝访问
             }
         };
     }
