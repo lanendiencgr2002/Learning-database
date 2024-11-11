@@ -4,10 +4,134 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
+/** Sentinel整合openfeign 实现fallback服务降级
+ * 83通过openfeign调用9001时，异常访问，访问者要有fallback服务降级处理，但是通过feign方法调用的各有不同，每个都有独自的fallback就会乱
+ * 
+ * 1. 修改通过Sentinel提供服务couldalibaba-provider-payment9001
+ *  1. 改pom <!--openfeign-->   <!--alibaba-sentinel-->
+ *   cloudalibaba-provider-payment9001\pom.xml
+ *  2. 写yml sentinel
+ *  cloudalibaba-provider-payment9001\src\main\resources\application.yml
+ *  3. 主启动类 添加@EnableFeignClients注解
+ *  cloudalibaba-provider-payment9001\src\main\java\com\atguigu\cloud\Main9001.java
+ *  4. 业务类  openfeign+sentinel进行服务降级和流量监控的整合处理case
+ *  cloudalibaba-provider-payment9001\src\main\java\com\atguigu\cloud\controller\PayAlibabaController.java
+ * 2. 修改cloud-api-commons  定义feign接口
+ *  1. 改pom <!--openfeign--> <!--alibaba-sentinel--> 
+ *  cloud-api-commons\pom.xml
+ *  2. 新建接口类  PayFeignSentinelApi
+ *  cloud-api-commons\src\main\java\com\atguigu\cloud\apis\PayFeignSentinelApi.java 
+ *  3. 统一处理异常类 PayFeignSentinelApiFallBack
+ *  cloud-api-commons\src\main\java\com\atguigu\cloud\apis\PayFeignSentinelApiFallBack.java
+ * 3. 修改couldalibaba-consumer-nacos-order83  通过openfeign调用9001
+ *  1. 改pom  <!-- 引入自己定义的api通用包 --> <!--openfeign--> <!--alibaba-sentinel-->
+ *  cloudalibaba-consumer-nacos-order83\pom.xml
+ *  2. 改yml  激活Sentinel对Feign的支持
+ *  cloudalibaba-consumer-nacos-order83\src\main\resources\application.yml
+ *  3. 启动类开启openfeign注解 @EnableFeignClients
+ *  cloudalibaba-consumer-nacos-order83\src\main\java\com\atguigu\cloud\Main83.java
+ *  4. 业务类  OrderNacosController
+ *  cloudalibaba-consumer-nacos-order83\src\main\java\com\atguigu\cloud\controller\OrderNacosController.java
+ * 
+ * 4. 试着运行下 如果报错，springboot+springcloud版本太高导致和阿里巴巴Sentinel不兼容 要么降低springboot和springcloud版本
+ * 要么升级Sentinel版本（如果能解决）
+ * 
+ * 5. 在Sentinel控制台配置限流规则 给服务提供方couldalibaba-provider-payment9001
+ * 
+ * 在cloudalibaba-sentinel-service8401\src\main\java\com\atguigu\cloud\service\PaymentService.java
+ * 添加openfeign注解
+ */
+
+/** Sentinel规则持久化
+ * 微服务重启后，配置好的就会消失
+ * 
+ * 怎么解决？  （nacos自带持久化到本地数据库derby，微服务可能经常重启，所以需要持久化到nacos）
+ * 将限流配置规则持久化进Nacos保存，只要刷新8401某个rest地址，
+ * sentinel控制台的流控规则就能看到，只要Nacos里面的配置不删除， （nacos自带持久化到本地数据库derby）
+ * 针对8401上sentinel上的流控规则持续有效
+ * 
+ * 1. 导入依赖  <!--SpringCloud ailibaba sentinel-datasource-nacos -->
+ * cloudalibaba-sentinel-service8401\pom.xml
+ * 2. 配置文件application.yml    datasource
+ * cloudalibaba-sentinel-service8401\src\main\resources\application.yml
+ * 
+ * 配置文件中的 rule-type：
+ * 在RuleType类中： 有flow、authority、degrade、system、paramFlow
+ * flow：流量控制规则
+ * authority：授权规则
+ * degrade：熔断降级规则
+ * system：系统保护规则
+ * paramFlow：热点规则
+ * 3. 添加nacos业务规则
+ * dataid：填{cloudalibaba-sentinel-service}  在配置文件application.yml中
+ * group：填DEFAULT_GROUP  在配置文件application.yml的ds1 groupId中
+ * 选json
+ * 内容为
+{
+    "resource": "/rateLimit/byUrl",
+    "limitApp": "default",
+    "grade": 1,
+    "count": 1,
+    "strategy": 0,
+    "controlBehavior": 0,
+    "clusterMode": false
+}   
+ * resource: 资源名称
+ * limitApp: 来源应用
+ * grade: 阈值类型，0表示线程数，1表示QPS
+ * count: 单机阈值
+ * strategy: 流控模式，0表示直接，1表示关联，2表示链路
+ * controlBehavior: 流控效果，0表示快速失败，1表示预热，2表示排队等待
+ * clusterMode: 是否集群
+ * 
+ * 4. 重启微服务一看还是没，再请求下接口，会发现还在
+ */
+
+/** Sentinel授权规则
+ * 有授权，可以访问，没有授权，不能访问  也就是黑白名单
+ * 
+ * 1. 测试接口
+ * cloudalibaba-sentinel-service8401\src\main\java\com\atguigu\cloud\controller\EmpowerController.java
+ * 2. 授权规则类 实现接口重写方法 设置对应要检查的参数 如果这个参数是test1，test2就不能访问 
+ * cloudalibaba-sentinel-service8401\src\main\java\com\atguigu\cloud\handler\MyRequestOriginParser.java
+ * 3. sentinel面板上配置
+ * 资源名称：empower
+ * 流控应用：test1，test2
+ * 授权模式：黑名单
+ */
+
+/** Sentinel热点规则
+ * - 热点参数限流：
+ * 普通正常限流：含有第一个参数，超过1秒钟一个后，达到阈值1后马上被限流
+ * 1. 编写方法等，找到对应的资源名称，配置热点参数限流
+ * cloudalibaba-sentinel-service8401\src\main\java\com\atguigu\cloud\controller\RateLimitController.java
+ * 2. 在sentinel控制台配置限流规则876754345678965435678976544567890-76544567890-
+ * 新增热点规则：
+ *  参数索引：0 表示监控第一个参数  （只要含有第一个参数 访问xx次 就会触发限流）
+ * 
+ * - 参数例外项：
+ * 参数等于某个值触发限流
+ * 假如当第一个参数为5时它的阈值可以达到200或其它值
+ * 1. 在sentinel控制台配置限流规则
+ * 参数类型：String等等
+ * 参数值：5
+ * 限流阈值：200
+ */
+
 /** @SentinelResource注解
+ * SentinelResource是一个流量防卫防护组件注解用于指定防护资源，对配置的资源进行流量控制、熔断降级等功能。
+ * 主要参数：
+ * - value：指定要保护的资源名称，必需项（不能为空）
+ * - blockHandler：指定限流降级时调用的方法
+ * - fallback：指定业务异常时调用的方法
+ *  返回类型与原方法一致
+ *  参数类型需要和原方法匹配
+ *  默认需要和原方法在同一个类中
+ * - exceptionsToIgnore：指定哪些异常被忽略，不会计入异常统计
+ *  不指定时，所有异常都会被统计
  * 
- * 
- * 
+ * 在以下文件中演示：
+ * cloudalibaba-sentinel-service8401\src\main\java\com\atguigu\cloud\controller\RateLimitController.java
  */
 
 /** Sentinel熔断规则：慢调用比例、异常比例、异常数

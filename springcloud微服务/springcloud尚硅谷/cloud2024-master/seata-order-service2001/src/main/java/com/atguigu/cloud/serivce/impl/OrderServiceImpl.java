@@ -40,13 +40,14 @@ public class OrderServiceImpl implements OrderService
         log.info("---------------开始新建订单: "+"\t"+"xid: "+xid);
         //订单新建时默认初始订单状态是零
         order.setStatus(0);
+        // 插入订单到数据库 能不能成功
         int result = orderMapper.insertSelective(order);
         // 插入订单成功后获得插入mysql的实体对象
         Order orderFromDB = null;
 
         if(result > 0)
         {
-            // 从mysql里面查出刚插入的记录
+            // 从mysql里面查出刚插入的记录  插入进去再查一下
             orderFromDB = orderMapper.selectOne(order);
             log.info("-----> 新建订单成功,orderFromDB info: "+orderFromDB);
             System.out.println();

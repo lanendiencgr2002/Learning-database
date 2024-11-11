@@ -17,10 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class RateLimitController
 {
+    // 在sentinel控制台配置限流规则，然后访问这个地址，就会触发限流
     @GetMapping("/rateLimit/byUrl")
     public String byUrl()
     {
-        return "按rest地址限流测试OK";
+        return "按rest地址限流测试OK"; 
     }
 
 
@@ -39,7 +40,7 @@ public class RateLimitController
     }
 
 
-    //按SentinelResource资源名称限流+自定义限流返回+服务降级处理
+    //按SentinelResource资源名称限流+自定义限流返回+服务降级处理      在sentinel控制台配置中找资源名为那个的节点然后配置
     //流量过了会触发服务限流，然后调用blockHandler，自定义限流返回内容
     //出异常了会触发服务降级，然后调用fallback，自定义降级返回内容  如果有全局异常捕获，就不会有这个
     @GetMapping("/rateLimit/doAction/{p1}")

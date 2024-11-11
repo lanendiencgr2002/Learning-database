@@ -32,7 +32,7 @@ import java.util.*; // 导入所有集合类
 public class GatewayConfiguration {
     private final List<ViewResolver> viewResolvers; // 视图解析器列表
     private final ServerCodecConfigurer serverCodecConfigurer; // 服务器编码配置
-
+    // 构造函数，初始化视图解析器和编码配置
     public GatewayConfiguration(ObjectProvider<List<ViewResolver>> viewResolversProvider,
                                 ServerCodecConfigurer serverCodecConfigurer) {
         this.viewResolvers = viewResolversProvider.getIfAvailable(Collections::emptyList); // 获取视图解析器
@@ -63,7 +63,9 @@ public class GatewayConfiguration {
     // 处理和自定义返回的异常信息
     private void initBlockHandler() {
         Set<GatewayFlowRule> rules = new HashSet<>(); // 创建限流规则集合
-        rules.add(new GatewayFlowRule("pay_routh1").setCount(2).setIntervalSec(1)); // 添加规则：每秒最多 2 次请求
+        rules.add(new GatewayFlowRule("pay_routh1")
+                .setCount(2)  // 每秒最多 2 次请求
+                .setIntervalSec(1)); // 添加规则：每秒最多 2 次请求
 
         GatewayRuleManager.loadRules(rules); // 加载限流规则
 

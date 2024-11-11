@@ -36,18 +36,23 @@ maven命令clean install 然后打成jar包，然后在其他项目中引入这�
 7. cloudalibaba-provider-payment9001：
 演示了服务注册进nacos
 
-. cloudalibaba-sentinel-gateway9528：
+10. cloudalibaba-sentinel-gateway9528：
+演示了通过gateway网关整合sentinel
 
-9. cloudalibaba-sentinel-service8401：
-演示了sentinel介绍，限流，熔断，降级等
+11. cloudalibaba-sentinel-service8401：
+演示了sentinel介绍，限流，熔断，降级等，规则持久化，授权规则，热点规则，熔断规则，流控效果，流控模式，整合openfeign等
 
-. mybatis_generator2024：
+15. mybatis_generator2024：
+无，改两个配置文件，然后运行插件生成
 
-. seata-account-service2003：
+14. seata-account-service2003：
+无
 
-. seata-order-service2001：
+12. seata-order-service2001：
+演示了seata分布式事务介绍，RM，TM，TC，实现分布式事务（AT模式）
 
-. seata-storage-service2002：
+13. seata-storage-service2002：
+无
 
 # 引入服务注册与发现
 

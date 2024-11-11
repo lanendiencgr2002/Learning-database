@@ -25,12 +25,12 @@ mybatis:
 # ========================seata===================
 seata:
   registry:
-    type: nacos
+    type: nacos  # 注册的类型 表示注册到nacos
     nacos:
-      server-addr: 127.0.0.1:8848
-      namespace: ""
-      group: SEATA_GROUP
-      application: seata-server
+      server-addr: 127.0.0.1:8848 # 注册进nacos
+      namespace: ""              # 命名空间
+      group: SEATA_GROUP        # 组
+      application: seata-server  # 服务名
   tx-service-group: default_tx_group # 事务组，由它获得TC服务的集群名称
   service:
     vgroup-mapping: # 点击源码分析

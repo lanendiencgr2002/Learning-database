@@ -5,7 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
-
+/** nacos自带持久化
+ * nacos的数据会默认持久化到内嵌数据库derby中，也可以自行配置持久化
+ */
 
 /** nacos服务消费，对应服务注册
  * 1. 导入依赖 <!--nacos-discovery--> <!--loadbalancer-->

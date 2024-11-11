@@ -16,9 +16,9 @@ spring:
       datasource:
         ds1:
           nacos:
-            server-addr: localhost:8848
-            dataId: ${spring.application.name}
-            groupId: DEFAULT_GROUP
-            data-type: json
-            rule-type: flow # com.alibaba.cloud.sentinel.datasource.RuleType
-
+            server-addr: localhost:8848 # nacos服务地址
+            dataId: ${spring.application.name} # 配置文件中的dataId
+            groupId: DEFAULT_GROUP # 配置文件中的groupId
+            data-type: json # 就是nacos里配置的data-type
+            rule-type: flow # com.alibaba.cloud.sentinel.datasource.RuleType #流控规则
+        #可以配置多个datasource，多个规则 ds2：等等
