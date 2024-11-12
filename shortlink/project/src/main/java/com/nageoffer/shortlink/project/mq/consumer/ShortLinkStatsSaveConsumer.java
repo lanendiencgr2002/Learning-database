@@ -97,7 +97,8 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
     // 消费者监听消息
     @Override
     public void onMessage(MapRecord<String, String, String> message) {
-        // 获取消息的stream
+        // MapRecord 是 Spring Data Redis 提供的一个类，用于表示 Redis Stream 中的消息记录。
+        // 获取消息的stream 
         String stream = message.getStream();
         // 获取消息的id
         RecordId id = message.getId();
@@ -114,6 +115,7 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
         try {
             Map<String, String> producerMap = message.getValue();
             ShortLinkStatsRecordDTO statsRecord = JSON.parseObject(producerMap.get("statsRecord"), ShortLinkStatsRecordDTO.class);
+            // 保存短链接监控状态
             actualSaveShortLinkStats(statsRecord);
             // redis的消息不像rocketmq可以自动删除消息完的消息3天-x天，所以需要手动删除消息
             stringRedisTemplate.opsForStream().delete(Objects.requireNonNull(stream), id.getValue());

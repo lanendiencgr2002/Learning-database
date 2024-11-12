@@ -23,6 +23,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
+/** url = "${aggregation.remote-url:}",
+ * 首先会尝试从配置文件（如application.properties或application.yml）中读取aggregation.remote-url的值
+ * 如果配置文件中没有找到aggregation.remote-url的值，则使用默认值""（空字符串）
+ * 
+ * 在以下文件中演示：
+ * admin\src\main\java\com\nageoffer\shortlink\admin\remote\ShortLinkActualRemoteService.java
+ */
+
 /** 流量风控
  * 通过过滤器和redislua脚本实现限流
  * 

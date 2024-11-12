@@ -38,8 +38,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * SpringCloud Gateway Token 拦截器
+/** SpringCloud Gateway Token 拦截器
  */
 @Component
 public class TokenValidateGatewayFilterFactory extends AbstractGatewayFilterFactory<Config> {
@@ -51,24 +50,31 @@ public class TokenValidateGatewayFilterFactory extends AbstractGatewayFilterFact
         this.stringRedisTemplate = stringRedisTemplate;
     }
 
+    // 过滤器
     @Override
     public GatewayFilter apply(Config config) {
         return (exchange, chain) -> {
             ServerHttpRequest request = exchange.getRequest();
             String requestPath = request.getPath().toString();
             String requestMethod = request.getMethod().name();
+            // 判断请求路径是否在白名单中   
             if (!isPathInWhiteList(requestPath, requestMethod, config.getWhitePathList())) {
+                // 获取请求头中的username和token
                 String username = request.getHeaders().getFirst("username");
                 String token = request.getHeaders().getFirst("token");
                 Object userInfo;
+                // 判断username和token是否不为空，并且redis中存在该用户信息
                 if (StringUtils.hasText(username) && StringUtils.hasText(token) && (userInfo = stringRedisTemplate.opsForHash().get("short-link:login:" + username, token)) != null) {
+                    // 如果存在,或者redis中存在该用户信息，则将userId和realName设置到请求头中
                     JSONObject userInfoJsonObject = JSON.parseObject(userInfo.toString());
                     ServerHttpRequest.Builder builder = exchange.getRequest().mutate().headers(httpHeaders -> {
                         httpHeaders.set("userId", userInfoJsonObject.getString("id"));
                         httpHeaders.set("realName", URLEncoder.encode(userInfoJsonObject.getString("realName"), StandardCharsets.UTF_8));
                     });
+                    // 返回给下一个过滤器
                     return chain.filter(exchange.mutate().request(builder.build()).build());
                 }
+                // 如果不存在，则返回401状态码
                 ServerHttpResponse response = exchange.getResponse();
                 response.setStatusCode(HttpStatus.UNAUTHORIZED);
                 return response.writeWith(Mono.fromSupplier(() -> {
