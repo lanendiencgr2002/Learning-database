@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.nageoffer.shortlink.project.config;
 
 import com.baomidou.mybatisplus.annotation.DbType;
@@ -25,19 +8,42 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * 数据库持久层配置类
+ * 数据库配置类
+ * 
+ * 该配置类主要用于设置MyBatis-Plus的相关功能，包括：
+ * 1. 分页插件的配置
+ * 2. 数据库类型的指定
+ * 3. 性能优化相关配置
+ * 
+ * 注意：这些配置会影响所有使用MyBatis-Plus的数据库操作
  */
 @Configuration
 public class DataBaseConfiguration {
 
     /**
-     * 分页插件
+     * 配置MyBatis-Plus分页插件
+     * 
+     * 功能特点：
+     * 1. 支持多种数据库的分页查询
+     * 2. 自动优化分页SQL
+     * 3. 提供了完整的分页参数
+     * 
+     * 使用场景：
+     * - 列表查询需要分页时
+     * - 大数据量查询需要分批处理时
+     * 
+     * @return 配置好的MybatisPlusInterceptor实例
      */
     @Bean
     @ConditionalOnMissingBean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
+        // 创建MyBatis-Plus拦截器
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        
+        // 添加分页插件，并指定数据库类型为MySQL
+        // 分页插件会自动优化SQL，无需手动编写count查询
         interceptor.addInnerInterceptor(new PaginationInnerInterceptor(DbType.MYSQL));
+        
         return interceptor;
     }
 }

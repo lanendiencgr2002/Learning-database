@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.nageoffer.shortlink.project.config;
 
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
@@ -26,29 +9,49 @@ import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
 
-/** implements InitializingBean
- * 在spring启动时，就会把规则加载进sentinel中
- */
-
 /**
- * 初始化限流配置
+ * Sentinel 限流规则配置类
+ * 实现 InitializingBean 接口，确保在 Spring 容器启动时自动初始化限流规则
+ * 
+ * 主要功能：
+ * 1. 为短链接创建接口配置 QPS 限流规则
+ * 2. 通过 Sentinel 实现分布式限流控制
+ * 3. 在应用启动时自动加载限流规则
  */
 @Component
 public class SentinelRuleConfig implements InitializingBean {
 
+    /**
+     * Spring 容器初始化完成后自动执行该方法
+     * 用于设置和加载 Sentinel 限流规则
+     * 
+     * 当前配置：
+     * - 限制创建短链接接口的访问频率
+     * - 采用 QPS 限流模式
+     * - 限流阈值设置为每秒 1 次请求
+     */
     @Override
     public void afterPropertiesSet() throws Exception {
-        // 创建限流规则
+        // 创建限流规则集合
         List<FlowRule> rules = new ArrayList<>();
-        FlowRule createOrderRule = new FlowRule();
-        // 设置资源名称
-        createOrderRule.setResource("create_short-link");
-        // qps限流 按照qps来限制
-        createOrderRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
-        // 限流阈值 一秒最多1次
-        createOrderRule.setCount(1);
-        rules.add(createOrderRule);
+        // 添加创建短链接的限流规则
+        rules.add(createShortLinkFlowRule());
         // 加载限流规则
         FlowRuleManager.loadRules(rules);
+    }
+
+    /**
+     * 创建短链接接口的限流规则
+     * @return FlowRule 限流规则对象
+     */
+    private FlowRule createShortLinkFlowRule() {
+        FlowRule createOrderRule = new FlowRule();
+        // 设置被限流的资源名称，与 @SentinelResource 注解值保持一致
+        createOrderRule.setResource("create_short-link");
+        // 设置限流模式为 QPS 模式，适用于高并发场景
+        createOrderRule.setGrade(RuleConstant.FLOW_GRADE_QPS);
+        // 设置 QPS 阈值为 1，即每秒最多处理 1 个请求
+        createOrderRule.setCount(1);
+        return createOrderRule;
     }
 }

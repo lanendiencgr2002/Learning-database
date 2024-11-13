@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.nageoffer.shortlink.project.config;
 
 import com.nageoffer.shortlink.project.mq.consumer.ShortLinkStatsSaveConsumer;
@@ -40,60 +23,81 @@ import static com.nageoffer.shortlink.project.common.constant.RedisKeyConstant.S
 import static com.nageoffer.shortlink.project.common.constant.RedisKeyConstant.SHORT_LINK_STATS_STREAM_TOPIC_KEY;
 
 /**
- * Redis Stream 消息队列配置
+ * Redis Stream 消息队列配置类
+ * 该配置类用于设置短链接统计数据的异步处理机制
+ * 通过 Redis Stream 实现消息的生产和消费
  */
 @Configuration
 @RequiredArgsConstructor
 public class RedisStreamConfiguration {
-    // 注入redis连接工厂
+    // Redis连接工厂，用于创建Redis连接
     private final RedisConnectionFactory redisConnectionFactory;
-    // redis消费者绑定
+    // 短链接统计数据保存的消费者，处理具体的消息消费逻辑
     private final ShortLinkStatsSaveConsumer shortLinkStatsSaveConsumer;
 
-    // 消息的消费者执行逻辑是通过一个线程池来执行的，不指定就会用默认的，这里是自定义
+    /**
+     * 创建自定义的异步消费者线程池
+     * 用于处理Stream消息的消费任务
+     * 采用单线程模式，避免并发处理带来的数据一致性问题
+     */
     @Bean
     public ExecutorService asyncStreamConsumer() {
         AtomicInteger index = new AtomicInteger();
-        return new ThreadPoolExecutor(1,
-                1,
-                60,
-                TimeUnit.SECONDS,
-                new SynchronousQueue<>(),
+        return new ThreadPoolExecutor(
+                1,                          // 核心线程数
+                1,                          // 最大线程数
+                60,                         // 空闲线程存活时间
+                TimeUnit.SECONDS,           // 时间单位
+                new SynchronousQueue<>(),   // 使用同步队列，确保任务即时处理
                 runnable -> {
+                    // 自定义线程工厂，设置线程名称和守护线程属性
                     Thread thread = new Thread(runnable);
                     thread.setName("stream_consumer_short-link_stats_" + index.incrementAndGet());
                     thread.setDaemon(true);
                     return thread;
                 },
-                new ThreadPoolExecutor.DiscardOldestPolicy()
+                new ThreadPoolExecutor.DiscardOldestPolicy() // 当队列满时，丢弃最老的任务
         );
     }
 
-    // 监听绑定
+    /**
+     * 配置短链接统计数据保存的消费者订阅
+     * 设置消息监听容器的各项参数，并启动监听
+     */
     @Bean
     public Subscription shortLinkStatsSaveConsumerSubscription(ExecutorService asyncStreamConsumer) {
+        // 配置消息监听容器的选项
         StreamMessageListenerContainer.StreamMessageListenerContainerOptions<String, MapRecord<String, String, String>> options =
                 StreamMessageListenerContainer.StreamMessageListenerContainerOptions
                         .builder()
-                        // 一次最多获取多少条消息
-                        .batchSize(10)
-                        // 执行从 Stream 拉取到消息的任务流程 这里不绑定线程池，就会使用默认的
-                        .executor(asyncStreamConsumer)
-                        // 如果没有拉取到消息，需要阻塞的时间。不能大于 ${spring.data.redis.timeout}，否则会超时
-                        .pollTimeout(Duration.ofSeconds(3))
+                        .batchSize(10)                      // 每次批量获取10条消息
+                        .executor(asyncStreamConsumer)      // 使用自定义的线程池执行消费任务
+                        .pollTimeout(Duration.ofSeconds(3)) // 拉取消息的超时时间，需小于Redis的超时时间
                         .build();
+
+        // 配置Stream读取请求
         StreamMessageListenerContainer.StreamReadRequest<String> streamReadRequest =
-                StreamMessageListenerContainer.StreamReadRequest.builder(StreamOffset.create(SHORT_LINK_STATS_STREAM_TOPIC_KEY, ReadOffset.lastConsumed()))
-                        .cancelOnError(throwable -> false)
-                        .consumer(Consumer.from(SHORT_LINK_STATS_STREAM_GROUP_KEY, "stats-consumer"))
-                        .autoAcknowledge(true)
+                StreamMessageListenerContainer.StreamReadRequest
+                        .builder(StreamOffset.create(
+                                SHORT_LINK_STATS_STREAM_TOPIC_KEY,    // Stream的主题key
+                                ReadOffset.lastConsumed()))           // 从上次消费的位置开始读取
+                        .cancelOnError(throwable -> false)           // 发生错误时不取消订阅
+                        .consumer(Consumer.from(
+                                SHORT_LINK_STATS_STREAM_GROUP_KEY,    // 消费者组名称
+                                "stats-consumer"))                    // 消费者名称
+                        .autoAcknowledge(true)                       // 自动确认消息
                         .build();
-        // 创建监听容器
-        StreamMessageListenerContainer<String, MapRecord<String, String, String>> listenerContainer = StreamMessageListenerContainer.create(redisConnectionFactory, options);
-        // 注册监听
+
+        // 创建并配置监听容器
+        StreamMessageListenerContainer<String, MapRecord<String, String, String>> listenerContainer = 
+                StreamMessageListenerContainer.create(redisConnectionFactory, options);
+        
+        // 注册消息监听器并获取订阅对象
         Subscription subscription = listenerContainer.register(streamReadRequest, shortLinkStatsSaveConsumer);
-        // 启动监听
+        
+        // 启动监听容器
         listenerContainer.start();
+        
         return subscription;
     }
 }

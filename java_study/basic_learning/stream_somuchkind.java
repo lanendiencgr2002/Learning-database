@@ -1,7 +1,7 @@
 import java.util.*;
 import java.util.stream.*;
 
-public class stream_example {
+public class stream_somuchkind {
     public static void main(String[] args) {
         List<String> names = Arrays.asList("张三丰", "张无忌", "张翠山", "张良", "张学友");
         System.out.println("Stream操作示例：");

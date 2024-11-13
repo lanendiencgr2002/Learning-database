@@ -1,19 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package com.nageoffer.shortlink.admin.common.convention.result;
 
@@ -23,12 +8,23 @@ import com.nageoffer.shortlink.admin.common.convention.exception.AbstractExcepti
 import java.util.Optional;
 
 /**
- * 全局返回对象构造器
+ * Results 工具类：统一响应结果构造器
+ * 
+ * 设计目的：
+ * 1. 提供统一的接口响应格式，确保API返回数据的一致性
+ * 2. 简化响应对象的创建过程，避免重复代码
+ * 3. 支持多种响应场景（成功/失败/异常）的统一处理
+ * 
+ * 使用说明：
+ * - 成功场景：使用 success() 或 success(T data)
+ * - 失败场景：使用 failure() 相关重载方法
+ * - 异常场景：通过 failure(AbstractException) 处理自定义异常
  */
 public final class Results {
 
     /**
-     * 构造成功响应
+     * 构造无数据的成功响应
+     * 适用场景：操作成功但无需返回数据的接口（如：删除、更新操作）
      */
     public static Result<Void> success() {
         return new Result<Void>()
@@ -36,7 +32,10 @@ public final class Results {
     }
 
     /**
-     * 构造带返回数据的成功响应
+     * 构造带数据的成功响应
+     * 适用场景：需要返回业务数据的查询类接口
+     * 
+     * @param data 业务数据，支持任意类型
      */
     public static <T> Result<T> success(T data) {
         return new Result<T>()
@@ -45,7 +44,10 @@ public final class Results {
     }
 
     /**
-     * 构建服务端失败响应
+     * 构造默认的失败响应
+     * 适用场景：
+     * 1. 系统发生未预期的异常
+     * 2. 不需要特定错误信息时的通用错误响应
      */
     public static Result<Void> failure() {
         return new Result<Void>()
@@ -54,7 +56,13 @@ public final class Results {
     }
 
     /**
-     * 通过 {@link AbstractException} 构建失败响应
+     * 构造基于自定义异常的失败响应
+     * 处理逻辑：
+     * 1. 优先使用异常中的错误码和消息
+     * 2. 如果异常中的错误信息为空，则使用默认的服务错误信息
+     * 3. 通过 Optional 优雅处理空值情况
+     * 
+     * @param abstractException 业务异常对象，包含错误码和错误信息
      */
     public static Result<Void> failure(AbstractException abstractException) {
         String errorCode = Optional.ofNullable(abstractException.getErrorCode())
@@ -67,7 +75,11 @@ public final class Results {
     }
 
     /**
-     * 通过 errorCode、errorMessage 构建失败响应
+     * 构造自定义错误码和消息的失败响应
+     * 适用场景：需要返回特定错误信息的场合
+     * 
+     * @param errorCode 错误码
+     * @param errorMessage 错误消息
      */
     public static Result<Void> failure(String errorCode, String errorMessage) {
         return new Result<Void>()

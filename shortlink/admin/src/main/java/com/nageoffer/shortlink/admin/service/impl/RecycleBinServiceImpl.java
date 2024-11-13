@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.nageoffer.shortlink.admin.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
@@ -36,25 +19,51 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * URL 回收站接口实现层
+ * URL 回收站服务实现类
+ * 
+ * 负责处理短链接回收站相关的业务逻辑
+ * 主要功能包括分页查询用户回收站中的短链接
  */
 @Service(value = "recycleBinServiceImplByAdmin")
 @RequiredArgsConstructor
 public class RecycleBinServiceImpl implements RecycleBinService {
 
+    // 远程短链接服务，用于调用实际的短链接操作
     private final ShortLinkActualRemoteService shortLinkActualRemoteService;
+
+    // 用户分组数据访问对象，用于查询用户分组信息
     private final GroupMapper groupMapper;
 
+    /**
+     * 分页查询回收站中的短链接
+     * 
+     * @param requestParam 分页查询请求参数
+     * @return 分页的短链接响应数据
+     * @throws ServiceException 当用户没有分组信息时抛出异常
+     */
     @Override
     public Result<Page<ShortLinkPageRespDTO>> pageRecycleBinShortLink(ShortLinkRecycleBinPageReqDTO requestParam) {
+        // 构建查询条件：查询当前用户未删除的分组
         LambdaQueryWrapper<GroupDO> queryWrapper = Wrappers.lambdaQuery(GroupDO.class)
-                .eq(GroupDO::getUsername, UserContext.getUsername())
-                .eq(GroupDO::getDelFlag, 0);
+                .eq(GroupDO::getUsername, UserContext.getUsername()) // 匹配当前登录用户
+                .eq(GroupDO::getDelFlag, 0); // 仅查询未删除的分组
+
+        // 执行查询，获取用户的分组列表
         List<GroupDO> groupDOList = groupMapper.selectList(queryWrapper);
+
+        // 检查用户是否有分组，如果没有分组则抛出异常
         if (CollUtil.isEmpty(groupDOList)) {
             throw new ServiceException("用户无分组信息");
         }
+
+        // 将用户的分组ID列表设置到请求参数中，用于后续的远程查询
         requestParam.setGidList(groupDOList.stream().map(GroupDO::getGid).toList());
-        return shortLinkActualRemoteService.pageRecycleBinShortLink(requestParam.getGidList(), requestParam.getCurrent(), requestParam.getSize());
+
+        // 调用远程服务，分页查询回收站中的短链接
+        return shortLinkActualRemoteService.pageRecycleBinShortLink(
+            requestParam.getGidList(), 
+            requestParam.getCurrent(), 
+            requestParam.getSize()
+        );
     }
 }

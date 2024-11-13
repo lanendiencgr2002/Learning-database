@@ -1,19 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package com.nageoffer.shortlink.admin.common.convention.exception;
 
@@ -24,22 +9,33 @@ import org.springframework.util.StringUtils;
 import java.util.Optional;
 
 /**
- * 抽象项目中三类异常体系，客户端异常、服务端异常以及远程服务调用异常
- *
- * @see ClientException
- * @see ServiceException
- * @see RemoteException
+ * 抽象异常基类，统一处理系统中的三类异常：
+ * 1. 客户端异常 (ClientException)
+ * 2. 服务端异常 (ServiceException)
+ * 3. 远程调用异常 (RemoteException)
+ * 
+ * 该类继承自RuntimeException，实现了统一的异常处理机制
  */
-@Getter
+@Getter  // Lombok注解，自动生成所有字段的getter方法
 public abstract class AbstractException extends RuntimeException {
 
+    // 错误码，用于标识具体的异常类型
     public final String errorCode;
 
+    // 错误信息，用于描述异常详情
     public final String errorMessage;
 
+    /**
+     * 构造函数
+     * @param message 异常消息
+     * @param throwable 原始异常
+     * @param errorCode 错误码接口
+     */
     public AbstractException(String message, Throwable throwable, IErrorCode errorCode) {
-        super(message, throwable);
-        this.errorCode = errorCode.code();
-        this.errorMessage = Optional.ofNullable(StringUtils.hasLength(message) ? message : null).orElse(errorCode.message());
+        super(message, throwable);  // 调用父类RuntimeException的构造函数
+        this.errorCode = errorCode.code();  // 设置错误码
+        // 使用Optional处理消息，如果message为空则使用errorCode中的默认消息
+        this.errorMessage = Optional.ofNullable(StringUtils.hasLength(message) ? message : null)
+                                  .orElse(errorCode.message());
     }
 }

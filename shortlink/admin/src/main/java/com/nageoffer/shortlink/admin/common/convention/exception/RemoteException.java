@@ -1,19 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package com.nageoffer.shortlink.admin.common.convention.exception;
 
@@ -21,22 +6,46 @@ import com.nageoffer.shortlink.admin.common.convention.errorcode.BaseErrorCode;
 import com.nageoffer.shortlink.admin.common.convention.errorcode.IErrorCode;
 
 /**
- * 远程服务调用异常
+ * 远程服务调用异常类
+ * 用于处理微服务架构中的远程调用异常，例如：
+ * - 服务调用超时
+ * - 服务不可用
+ * - 网络连接异常
+ * - 远程服务返回错误
  */
 public class RemoteException extends AbstractException {
 
+    /**
+     * 使用自定义消息构造异常，使用默认的远程调用错误码
+     * @param message 自定义错误消息
+     */
     public RemoteException(String message) {
         this(message, null, BaseErrorCode.REMOTE_ERROR);
     }
 
+    /**
+     * 使用自定义消息和错误码构造异常
+     * @param message 自定义错误消息
+     * @param errorCode 错误码
+     */
     public RemoteException(String message, IErrorCode errorCode) {
         this(message, null, errorCode);
     }
 
+    /**
+     * 完整的构造函数
+     * @param message 自定义错误消息
+     * @param throwable 原始异常
+     * @param errorCode 错误码
+     */
     public RemoteException(String message, Throwable throwable, IErrorCode errorCode) {
         super(message, throwable, errorCode);
     }
 
+    /**
+     * 重写toString方法，提供更清晰的异常信息输出
+     * @return 格式化的异常信息字符串
+     */
     @Override
     public String toString() {
         return "RemoteException{" +

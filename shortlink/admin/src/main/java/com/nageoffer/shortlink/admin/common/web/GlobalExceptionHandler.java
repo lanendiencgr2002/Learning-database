@@ -1,19 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 
 package com.nageoffer.shortlink.admin.common.web;
 
@@ -40,6 +25,17 @@ import java.util.Optional;
 
 /**
  * 全局异常处理器
+ * 
+ * 设计目的：
+ * 1. 统一处理系统中的各类异常，确保响应格式一致性
+ * 2. 避免异常堆栈信息泄露到前端
+ * 3. 将异常转换为友好的错误提示
+ * 4. 集中化的日志记录，便于问题追踪
+ * 
+ * 处理的异常类型：
+ * 1. 参数验证异常（MethodArgumentNotValidException）
+ * 2. 业务异常（AbstractException及其子类）
+ * 3. 未捕获的系统异常（Throwable）
  */
 @Component("globalExceptionHandlerByAdmin")
 @Slf4j
@@ -47,40 +43,72 @@ import java.util.Optional;
 public class GlobalExceptionHandler {
 
     /**
-     * 拦截参数验证异常
+     * 处理参数验证失败异常
+     * 
+     * 处理逻辑：
+     * 1. 获取第一个验证失败的字段错误信息
+     * 2. 记录请求方法、URL和错误信息
+     * 3. 返回统一格式的错误响应
+     * 
+     * @param request HTTP请求对象，用于获取请求信息
+     * @param ex 参数验证异常对象
+     * @return 统一格式的错误响应
      */
     @SneakyThrows
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public Result validExceptionHandler(HttpServletRequest request, MethodArgumentNotValidException ex) {
+        // 获取绑定结果中的第一个字段错误
         BindingResult bindingResult = ex.getBindingResult();
         FieldError firstFieldError = CollectionUtil.getFirst(bindingResult.getFieldErrors());
+        // 使用Optional优雅处理空值情况
         String exceptionStr = Optional.ofNullable(firstFieldError)
                 .map(FieldError::getDefaultMessage)
                 .orElse(StrUtil.EMPTY);
+        // 记录错误日志，包含请求方法、URL和错误信息
         log.error("[{}] {} [ex] {}", request.getMethod(), getUrl(request), exceptionStr);
         return Results.failure(BaseErrorCode.CLIENT_ERROR.code(), exceptionStr);
     }
 
     /**
-     * 拦截应用内抛出的异常
+     * 处理业务异常
+     * 
+     * 处理逻辑：
+     * 1. 区分是否有根异常，决定日志记录方式
+     * 2. 记录详细的请求信息和异常堆栈
+     * 3. 转换为统一的错误响应
+     * 
+     * @param request HTTP请求对象
+     * @param ex 业务异常对象
+     * @return 统一格式的错误响应
      */
     @ExceptionHandler(value = {AbstractException.class})
     public Result abstractException(HttpServletRequest request, AbstractException ex) {
         if (ex.getCause() != null) {
+            // 如果有根异常，记录完整堆栈信息
             log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), ex.toString(), ex.getCause());
             return Results.failure(ex);
         }
+        // 否则只记录异常信息
         log.error("[{}] {} [ex] {}", request.getMethod(), request.getRequestURL().toString(), ex.toString());
         return Results.failure(ex);
     }
 
     /**
-     * 拦截未捕获异常
+     * 处理未预期的系统异常
+     * 
+     * 处理逻辑：
+     * 1. 记录详细的错误日志
+     * 2. 特殊处理聚合模式下的异常
+     * 3. 返回统一的系统错误响应
+     * 
+     * @param request HTTP请求对象
+     * @param throwable 未知异常对象
+     * @return 统一格式的错误响应
      */
     @ExceptionHandler(value = Throwable.class)
     public Result defaultErrorHandler(HttpServletRequest request, Throwable throwable) {
         log.error("[{}] {} ", request.getMethod(), getUrl(request), throwable);
-        // 注意，此处是为了聚合模式添加的代码，正常不需要该判断
+        // 处理聚合模式下的特殊异常
         if (Objects.equals(throwable.getClass().getSuperclass().getSimpleName(), AbstractException.class.getSimpleName())) {
             String errorCode = ReflectUtil.getFieldValue(throwable, "errorCode").toString();
             String errorMessage = ReflectUtil.getFieldValue(throwable, "errorMessage").toString();
@@ -89,6 +117,12 @@ public class GlobalExceptionHandler {
         return Results.failure();
     }
 
+    /**
+     * 获取完整的请求URL（包含查询参数）
+     * 
+     * @param request HTTP请求对象
+     * @return 完整的请求URL字符串
+     */
     private String getUrl(HttpServletRequest request) {
         if (StringUtils.isEmpty(request.getQueryString())) {
             return request.getRequestURL().toString();

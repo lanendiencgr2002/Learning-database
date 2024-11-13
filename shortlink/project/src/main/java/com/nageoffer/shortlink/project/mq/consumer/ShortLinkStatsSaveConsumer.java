@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.nageoffer.shortlink.project.mq.consumer;
 
 import cn.hutool.core.date.DateUtil;
@@ -70,13 +53,16 @@ import static com.nageoffer.shortlink.project.common.constant.ShortLinkConstant.
 
 
 /**
- * 短链接监控状态保存消息队列消费者
+ * 短链接监控状态保存消费者
+ * 该类负责消费Redis Stream中的短链接访问统计数据，并将统计数据持久化到数据库中
+ * 包括访问量、访客数、IP数、地理位置、操作系统、浏览器等多维度统计信息
  */
 @Slf4j
 @Component
 @RequiredArgsConstructor
 public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRecord<String, String, String>> {
 
+    // 注入所需的数据访问层组件
     private final ShortLinkMapper shortLinkMapper;
     private final ShortLinkGotoMapper shortLinkGotoMapper;
     private final RedissonClient redissonClient;
@@ -91,58 +77,74 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
     private final StringRedisTemplate stringRedisTemplate;
     private final MessageQueueIdempotentHandler messageQueueIdempotentHandler;
 
+    // 高德地图API密钥，用于IP地址解析
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
 
-    // 消费者监听消息
+    /**
+     * 消费Redis Stream消息的方法
+     * @param message Redis Stream中的消息记录
+     */
     @Override
     public void onMessage(MapRecord<String, String, String> message) {
-        // MapRecord 是 Spring Data Redis 提供的一个类，用于表示 Redis Stream 中的消息记录。
-        // 获取消息的stream 
         String stream = message.getStream();
-        // 获取消息的id
         RecordId id = message.getId();
+        
+        // 消息幂等性检查
         if (messageQueueIdempotentHandler.isMessageBeingConsumed(id.toString())) {
-            // 判断当前的这个消息流程是否执行完成
             if (messageQueueIdempotentHandler.isAccomplish(id.toString())) {
-                // 如果消息处理完成，则直接返回
-                return;
+                return; // 消息已处理完成，直接返回
             }
-            // 如果消息未处理完成，则抛出异常
             throw new ServiceException("消息未完成流程，需要消息队列重试");
         }
-        // 使用try捕获异常，如果有异常则删除消息，防止消息处理出错，但是下次id消息进来不会处理（因为在redis里边标记已处理了）
+
         try {
+            // 解析消息内容  消息是一个KEY VALUE 结构
             Map<String, String> producerMap = message.getValue();
             ShortLinkStatsRecordDTO statsRecord = JSON.parseObject(producerMap.get("statsRecord"), ShortLinkStatsRecordDTO.class);
-            // 保存短链接监控状态
+            
+            // 执行统计数据保存
             actualSaveShortLinkStats(statsRecord);
-            // redis的消息不像rocketmq可以自动删除消息完的消息3天-x天，所以需要手动删除消息
+            
+            // 处理完成后删除Redis Stream中的消息
             stringRedisTemplate.opsForStream().delete(Objects.requireNonNull(stream), id.getValue());
+            
         } catch (Throwable ex) {
-            // 某某某情况宕机了
+            // 发生异常时清除消息处理标记并抛出异常
             messageQueueIdempotentHandler.delMessageProcessed(id.toString());
             log.error("记录短链接监控消费异常", ex);
             throw ex;
         }
         
+        // 标记消息处理完成
         messageQueueIdempotentHandler.setAccomplish(id.toString());
     }
 
+    /**
+     * 实际保存短链接统计数据的方法
+     * 包括：访问统计、地理位置、操作系统、浏览器、设备、网络等多维度数据
+     * @param statsRecord 统计数据记录
+     */
     public void actualSaveShortLinkStats(ShortLinkStatsRecordDTO statsRecord) {
         String fullShortUrl = statsRecord.getFullShortUrl();
+        // 获取读写锁，确保并发安全
         RReadWriteLock readWriteLock = redissonClient.getReadWriteLock(String.format(LOCK_GID_UPDATE_KEY, fullShortUrl));
         RLock rLock = readWriteLock.readLock();
         rLock.lock();
         try {
+            // 查询短链接GID
             LambdaQueryWrapper<ShortLinkGotoDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
                     .eq(ShortLinkGotoDO::getFullShortUrl, fullShortUrl);
             ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(queryWrapper);
             String gid = shortLinkGotoDO.getGid();
+            
+            // 获取当前时间信息
             Date currentDate = statsRecord.getCurrentDate();
             int hour = DateUtil.hour(currentDate, true);
             Week week = DateUtil.dayOfWeekEnum(currentDate);
             int weekValue = week.getIso8601Value();
+
+            // 保存基础访问统计信息
             LinkAccessStatsDO linkAccessStatsDO = LinkAccessStatsDO.builder()
                     .pv(1)
                     .uv(statsRecord.getUvFirstFlag() ? 1 : 0)
@@ -153,6 +155,8 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
                     .date(currentDate)
                     .build();
             linkAccessStatsMapper.shortLinkStats(linkAccessStatsDO);
+
+            // 调用高德地图API解析IP地址获取地理位置信息
             Map<String, Object> localeParamMap = new HashMap<>();
             localeParamMap.put("key", statsLocaleAmapKey);
             localeParamMap.put("ip", statsRecord.getRemoteAddr());
@@ -161,6 +165,8 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
             String infoCode = localeResultObj.getString("infocode");
             String actualProvince = "未知";
             String actualCity = "未知";
+            
+            // 解析并保存地理位置统计信息
             if (StrUtil.isNotBlank(infoCode) && StrUtil.equals(infoCode, "10000")) {
                 String province = localeResultObj.getString("province");
                 boolean unknownFlag = StrUtil.equals(province, "[]");
@@ -175,6 +181,8 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
                         .build();
                 linkLocaleStatsMapper.shortLinkLocaleState(linkLocaleStatsDO);
             }
+
+            // 保存操作系统统计
             LinkOsStatsDO linkOsStatsDO = LinkOsStatsDO.builder()
                     .os(statsRecord.getOs())
                     .cnt(1)
@@ -182,6 +190,8 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
                     .date(currentDate)
                     .build();
             linkOsStatsMapper.shortLinkOsState(linkOsStatsDO);
+
+            // 保存浏览器统计
             LinkBrowserStatsDO linkBrowserStatsDO = LinkBrowserStatsDO.builder()
                     .browser(statsRecord.getBrowser())
                     .cnt(1)
@@ -189,6 +199,8 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
                     .date(currentDate)
                     .build();
             linkBrowserStatsMapper.shortLinkBrowserState(linkBrowserStatsDO);
+
+            // 保存设备统计
             LinkDeviceStatsDO linkDeviceStatsDO = LinkDeviceStatsDO.builder()
                     .device(statsRecord.getDevice())
                     .cnt(1)
@@ -196,6 +208,8 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
                     .date(currentDate)
                     .build();
             linkDeviceStatsMapper.shortLinkDeviceState(linkDeviceStatsDO);
+
+            // 保存网络环境统计
             LinkNetworkStatsDO linkNetworkStatsDO = LinkNetworkStatsDO.builder()
                     .network(statsRecord.getNetwork())
                     .cnt(1)
@@ -203,6 +217,8 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
                     .date(currentDate)
                     .build();
             linkNetworkStatsMapper.shortLinkNetworkState(linkNetworkStatsDO);
+
+            // 保存访问日志
             LinkAccessLogsDO linkAccessLogsDO = LinkAccessLogsDO.builder()
                     .user(statsRecord.getUv())
                     .ip(statsRecord.getRemoteAddr())
@@ -214,7 +230,11 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
                     .fullShortUrl(fullShortUrl)
                     .build();
             linkAccessLogsMapper.insert(linkAccessLogsDO);
+
+            // 更新短链接统计数据
             shortLinkMapper.incrementStats(gid, fullShortUrl, 1, statsRecord.getUvFirstFlag() ? 1 : 0, statsRecord.getUipFirstFlag() ? 1 : 0);
+
+            // 更新今日统计数据
             LinkStatsTodayDO linkStatsTodayDO = LinkStatsTodayDO.builder()
                     .todayPv(1)
                     .todayUv(statsRecord.getUvFirstFlag() ? 1 : 0)
@@ -224,6 +244,7 @@ public class ShortLinkStatsSaveConsumer implements StreamListener<String, MapRec
                     .build();
             linkStatsTodayMapper.shortLinkTodayState(linkStatsTodayDO);
         } finally {
+            // 释放锁
             rLock.unlock();
         }
     }
