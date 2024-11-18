@@ -6,45 +6,20 @@ github: 'https://github.com/lanendiencgr2002'
 
 # 邓依伦
 
+- 联系方式：13631902746
+- 邮件：lanendiencgr@gmail.com
+
+>
+
 - [https://github.com/lanendiencgr2002](https://github.com/lanendiencgr2002)
 
 >
 
-- lanendiencgr@gmail.com
-- Java后端
+- Java后端开发工程师
 
 >
 
-- 电话: 13631902746
-
 ![头像](https://static.todev.cc/resume/avatar.svg)
-
-## 个人总结
-
-- 精通Java，深入理解Java SE核心概念和集合、多线程、I/O等
-- 熟练使用Spring Boot、MyBatis和MyBatisPlus进行后端开发
-- 熟练使用Redis、RabbitMQ等中间件
-- 具备良好的系统设计能力和问题解决能力
-
-## 专业技能
-
-1. **编程语言**
-   - 精通Java，深入理解Java SE核心概念和集合、多线程、I/O等
-   - 热练掌握Python、JavaScript
-
-2. **开发框架**
-   - 前端：熟练使用Vue.js、Ajax、VueElement等前端Bootstrap、CSS和jQuery
-   - 后端：精通Spring Boot、MyBatis和MyBatisPlus
-   - 高并发分布式缓存Redis和消息中间件：熟练使用MySQL、异步消息引擎Redis
-
-3. **云服务和中间件**
-   - 熟练使用ElasticSearch和集群技术解决搜索与消息队列
-   - 精通Spring Cloud Alibaba主要组件
-
-4. **其他技能**
-   - 熟练使用YOLOv8
-   - 熟练使用相关开发工具（如Copilot、Claude3.5、Cursor等）
-   - 熟练使用pyside2和pyqt5进行GUI开发
 
 ## 项目经历
 
@@ -63,6 +38,12 @@ SpringBoot、SpringCloud Alibaba、RocketMQ、ShardingSphere、Redis、MySQL、S
 - 使用Redisson分布式读写锁确保高并发下数据一致性，通过Redis实现消息幂等性处理
 - 基于ShardingSphere实现数据分片，并设计路由表支持短链接分页查询功能
 - 集成Sentinel实现接口级别限流和降级，保障系统的稳定性和可用性
+
+## 专业技能
+
+- Mysql：熟悉分库分表，sql优化，锁，MVCC等
+- Redis：熟悉主从复制，哨兵，集群，布隆过滤器，淘汰策略等
+- RocketMQ：熟悉RocketMQ消息中间件，能够解决消息重复消费、顺序消费、消息丢失以及消息积压等常见问题
 
 ## 教育经历
 ### 肇庆学院
