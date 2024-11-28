@@ -1,0 +1,6 @@
+```python
+需求 = self.ui.lineEdit_2.text()
+模型 = self.ui.comboBox.currentText()
+oprt.将剪贴板的字格式化(需求, 模型)
+self.ui.lineEdit.setText(oprt.从剪贴板上获取最近文本())
+```

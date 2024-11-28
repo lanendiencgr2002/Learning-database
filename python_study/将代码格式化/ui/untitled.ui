@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>359</width>
+    <height>406</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <widget class="QPushButton" name="pushButton">
+        <property name="font">
+         <font>
+          <pointsize>27</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>处理剪贴板问题</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_5">
+        <property name="font">
+         <font>
+          <pointsize>27</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>关闭自动功能</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="lineEdit_2">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>格式化这段文本，不要多加字</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLineEdit" name="lineEdit">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QComboBox" name="comboBox_3">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <item>
+         <property name="text">
+          <string>python</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>java</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>markdown</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>c++</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>html</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>JavaScript</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_4">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>23</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>加上代码块</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QComboBox" name="comboBox">
+      <item>
+       <property name="text">
+        <string>gpt-3.5-turbo-0125</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>gpt-3.5-turbo</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>gpt-4-0125-preview</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item>
+     <widget class="QComboBox" name="comboBox_2">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <item>
+       <property name="text">
+        <string>格式化这段文本，不要多加字</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>格式化这段文本，不要多加字，用markdown语法</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>格式化这段文本，自动加换行，不要多加字</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>格式化这段文本，自动处理格式，用markdown语法，不要多加字</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>给每一行代码加上中文注释</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>在原有代码的基础上，完善这部分的代码的功能</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>根据注释完善代码，在原来代码的基础上，按照注释往下增加代码</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>解释代码意思</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>概括一下意思</string>
+       </property>
+      </item>
+      <item>
+       <property name="text">
+        <string>翻译</string>
+       </property>
+      </item>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="pushButton_3">
+        <property name="font">
+         <font>
+          <pointsize>17</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>置顶</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButton_2">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>17</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>取消置顶</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>359</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menu">
+    <property name="title">
+     <string>文本</string>
+    </property>
+    <addaction name="actiontxtfile"/>
+   </widget>
+   <addaction name="menu"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="action">
+   <property name="text">
+    <string>账号密码</string>
+   </property>
+  </action>
+  <action name="actiontxtfile">
+   <property name="text">
+    <string>txt文件</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

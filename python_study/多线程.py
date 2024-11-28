@@ -21,7 +21,7 @@ Lock不支持嵌套，RLock支持嵌套（可重入锁，锁多次解多次）
 '''
 
 import threading
-from concurrent.futures import ThreadPoolExecutor
+from concurrent.futures import ThreadPoolExecutor, as_completed
 import time
 import random
 
@@ -58,7 +58,7 @@ def 线程池回调测试():
         future = pool.submit(线程的函数, i) # 系统会自动分配线程来执行线程的函数
         future.add_done_callback(线程池回调函数) # 回调函数会在线程执行完毕后执行
         # print(future.result()) # 获取线程的返回值 这个会阻塞直到线程执行完毕得到返回值
-    pool.shutdown(wait=True) # 等待所有线程执行完毕
+    pool.shutdown(wait=True) # 等待所有线程执行完毕   pool.shutdown是关闭线程池的意思
     print('线程池执行完毕')
 
 def 线程池简单测试():
@@ -94,9 +94,39 @@ def 线程简单案例():
     t1.start() # 当前线程准备就绪（等待CPU调度，具体时间是由CPU来决定）
     # t1.join() # 等待当前线程的任务执行完毕(t1)后再向下继续执行。 放start后面
 
+def 线程等待案例():
+    任务列表 = []
+    pool = ThreadPoolExecutor(5)  # 创建一个只有5个线程的线程池
+    
+    # 提交10个任务
+    for i in range(10):
+        future = pool.submit(线程的函数, i)
+        任务列表.append(future)
+    
+    # 方法1：使用as_completed()等待 - 谁先完成先处理谁的结果
+    for future in as_completed(任务列表):
+        print(f'任务完成，结果：{future.result()}')
+    
+def 简单动态任务分配_方法1():
+    待处理数据 = list(range(20))
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        # map会自动管理线程池，维持3个活动线程
+        for result in pool.map(线程的函数, 待处理数据):
+            print(f'任务完成，结果：{result}')
+
+def 简单动态任务分配_方法2():
+    待处理数据 = list(range(20))
+    with ThreadPoolExecutor(max_workers=3) as pool:
+        futures = [pool.submit(线程的函数, i) for i in 待处理数据]
+        for future in as_completed(futures):
+            print(f'任务完成，结果：{future.result()}')
+
 if __name__ == '__main__':
     # 线程类测试()
     # 获取当前执行的线程()
     # 线程池简单测试()
     # 线程池回调测试()
     线程池最终统一获取结果()
+    # 线程等待案例()
+    简单动态任务分配_方法1()
+    简单动态任务分配_方法2()

@@ -3,7 +3,6 @@ package com.nageoffer.shortlink.gateway;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-
 /** 没有网关存在的一些问题：
  * 1. 路由管理&服务发现困难
  * 2. 安全性难以管理：
@@ -26,3 +25,4 @@ public class GatewayServiceApplication {
         SpringApplication.run(GatewayServiceApplication.class, args);
     }
 }
+

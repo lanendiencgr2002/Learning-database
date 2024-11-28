@@ -1,0 +1,580 @@
+{
+    "Banyan Tree Kuala Lumpur": {
+        "company_name": "Banyan Tree Kuala Lumpur",
+        "total_emails": 8,
+        "domains": {
+            "banyantree.com": {
+                "count": 4,
+                "percentage": 50.0,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 4
+            },
+            "ravellihotels.it": {
+                "count": 2,
+                "percentage": 25.0,
+                "main_pattern": "firstnamelastname",
+                "pattern_count": 2
+            },
+            "squarespace.com": {
+                "count": 1,
+                "percentage": 12.5,
+                "main_pattern": "firstnamelastname",
+                "pattern_count": 1
+            },
+            "avanihotels.com": {
+                "count": 1,
+                "percentage": 12.5,
+                "main_pattern": "firstnamelastname",
+                "pattern_count": 1
+            }
+        },
+        "email_patterns": {
+            "firstnamelastname": {
+                "count": 4,
+                "percentage": 50.0
+            },
+            "firstname.lastname": {
+                "count": 4,
+                "percentage": 50.0
+            }
+        },
+        "sorted_domains": [
+            "banyantree.com",
+            "ravellihotels.it",
+            "squarespace.com",
+            "avanihotels.com"
+        ],
+        "sorted_patterns": [
+            "firstnamelastname",
+            "firstname.lastname"
+        ]
+    },
+    "EQ Kuala Lumpur": {
+        "company_name": "EQ Kuala Lumpur",
+        "total_emails": 10,
+        "domains": {
+            "kul.equatorial.com": {
+                "count": 9,
+                "percentage": 90.0,
+                "main_pattern": "firstnamelastname",
+                "pattern_count": 9
+            },
+            "equatorial.com": {
+                "count": 1,
+                "percentage": 10.0,
+                "main_pattern": "firstnamelastname",
+                "pattern_count": 1
+            }
+        },
+        "email_patterns": {
+            "firstnamelastname": {
+                "count": 10,
+                "percentage": 100.0
+            }
+        },
+        "sorted_domains": [
+            "kul.equatorial.com",
+            "equatorial.com"
+        ],
+        "sorted_patterns": [
+            "firstnamelastname"
+        ]
+    },
+    "Grand Hyatt Kuala Lumpur": {
+        "company_name": "Grand Hyatt Kuala Lumpur",
+        "total_emails": 43,
+        "domains": {
+            "hyatt.com": {
+                "count": 42,
+                "percentage": 97.7,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 42
+            },
+            "westin.com": {
+                "count": 1,
+                "percentage": 2.3,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 1
+            }
+        },
+        "email_patterns": {
+            "firstname.lastname": {
+                "count": 43,
+                "percentage": 100.0
+            }
+        },
+        "sorted_domains": [
+            "hyatt.com",
+            "westin.com"
+        ],
+        "sorted_patterns": [
+            "firstname.lastname"
+        ]
+    },
+    "Hilton Kuala Lumpur": {
+        "company_name": "Hilton Kuala Lumpur",
+        "total_emails": 12,
+        "domains": {
+            "hiltonalhabtoorcity.com": {
+                "count": 9,
+                "percentage": 75.0,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 9
+            },
+            "hilton.com": {
+                "count": 2,
+                "percentage": 16.7,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 2
+            },
+            "must.edu.my": {
+                "count": 1,
+                "percentage": 8.3,
+                "main_pattern": "firstnamelastname",
+                "pattern_count": 1
+            }
+        },
+        "email_patterns": {
+            "firstname.lastname": {
+                "count": 11,
+                "percentage": 91.7
+            },
+            "firstnamelastname": {
+                "count": 1,
+                "percentage": 8.3
+            }
+        },
+        "sorted_domains": [
+            "hiltonalhabtoorcity.com",
+            "hilton.com",
+            "must.edu.my"
+        ],
+        "sorted_patterns": [
+            "firstname.lastname",
+            "firstnamelastname"
+        ]
+    },
+    "Hotel Indigo Kuala Lumpur On The Park": {
+        "company_name": "Hotel Indigo Kuala Lumpur On The Park",
+        "total_emails": 2,
+        "domains": {
+            "ihgplc.com": {
+                "count": 1,
+                "percentage": 50.0,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 1
+            },
+            "shangri-la.com": {
+                "count": 1,
+                "percentage": 50.0,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 1
+            }
+        },
+        "email_patterns": {
+            "firstname.lastname": {
+                "count": 2,
+                "percentage": 100.0
+            }
+        },
+        "sorted_domains": [
+            "ihgplc.com",
+            "shangri-la.com"
+        ],
+        "sorted_patterns": [
+            "firstname.lastname"
+        ]
+    },
+    "Hyatt Place Kuala Lumpur, Bukit Jalil": {
+        "company_name": "Hyatt Place Kuala Lumpur, Bukit Jalil",
+        "total_emails": 4,
+        "domains": {
+            "thebrewhouse.my": {
+                "count": 4,
+                "percentage": 100.0,
+                "main_pattern": "firstnamelastname",
+                "pattern_count": 4
+            }
+        },
+        "email_patterns": {
+            "firstnamelastname": {
+                "count": 4,
+                "percentage": 100.0
+            }
+        },
+        "sorted_domains": [
+            "thebrewhouse.my"
+        ],
+        "sorted_patterns": [
+            "firstnamelastname"
+        ]
+    },
+    "One World Hotel Petaling Jaya": {
+        "company_name": "One World Hotel Petaling Jaya",
+        "total_emails": 16,
+        "domains": {
+            "oneworldhotel.com.my": {
+                "count": 14,
+                "percentage": 87.5,
+                "main_pattern": "firstname_lastname",
+                "pattern_count": 14
+            },
+            "swissgarden.com": {
+                "count": 2,
+                "percentage": 12.5,
+                "main_pattern": "firstnamelastname",
+                "pattern_count": 2
+            }
+        },
+        "email_patterns": {
+            "firstname_lastname": {
+                "count": 14,
+                "percentage": 87.5
+            },
+            "firstnamelastname": {
+                "count": 2,
+                "percentage": 12.5
+            }
+        },
+        "sorted_domains": [
+            "oneworldhotel.com.my",
+            "swissgarden.com"
+        ],
+        "sorted_patterns": [
+            "firstname_lastname",
+            "firstnamelastname"
+        ]
+    },
+    "Pullman Kuala Lumpur City Centre Hotel & Residences": {
+        "company_name": "Pullman Kuala Lumpur City Centre Hotel & Residences",
+        "total_emails": 30,
+        "domains": {
+            "pullman-klcc.com": {
+                "count": 27,
+                "percentage": 90.0,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 26
+            },
+            "sfr.fr": {
+                "count": 2,
+                "percentage": 6.7,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 2
+            },
+            "pullman-kualalumpur-citycentre.com": {
+                "count": 1,
+                "percentage": 3.3,
+                "main_pattern": "firstnamelastname",
+                "pattern_count": 1
+            }
+        },
+        "email_patterns": {
+            "firstname.lastname": {
+                "count": 28,
+                "percentage": 93.3
+            },
+            "firstnamelastname": {
+                "count": 2,
+                "percentage": 6.7
+            }
+        },
+        "sorted_domains": [
+            "pullman-klcc.com",
+            "sfr.fr",
+            "pullman-kualalumpur-citycentre.com"
+        ],
+        "sorted_patterns": [
+            "firstname.lastname",
+            "firstnamelastname"
+        ]
+    },
+    "Putrajaya Marriott Hotel": {
+        "company_name": "Putrajaya Marriott Hotel",
+        "total_emails": 6,
+        "domains": {
+            "marriott.com": {
+                "count": 3,
+                "percentage": 50.0,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 3
+            },
+            "marriottputrajaya.com": {
+                "count": 1,
+                "percentage": 16.7,
+                "main_pattern": "firstnamelastname",
+                "pattern_count": 1
+            },
+            "dorsetthotels.com": {
+                "count": 1,
+                "percentage": 16.7,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 1
+            },
+            "marriotthotels.com": {
+                "count": 1,
+                "percentage": 16.7,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 1
+            }
+        },
+        "email_patterns": {
+            "firstname.lastname": {
+                "count": 5,
+                "percentage": 83.3
+            },
+            "firstnamelastname": {
+                "count": 1,
+                "percentage": 16.7
+            }
+        },
+        "sorted_domains": [
+            "marriott.com",
+            "marriottputrajaya.com",
+            "dorsetthotels.com",
+            "marriotthotels.com"
+        ],
+        "sorted_patterns": [
+            "firstname.lastname",
+            "firstnamelastname"
+        ]
+    },
+    "Renaissance Kuala Lumpur Hotel & Convention Centre": {
+        "company_name": "Renaissance Kuala Lumpur Hotel & Convention Centre",
+        "total_emails": 8,
+        "domains": {
+            "linkedinmembership.id": {
+                "count": 4,
+                "percentage": 50.0,
+                "main_pattern": "firstnamelastname",
+                "pattern_count": 4
+            },
+            "marriott.com": {
+                "count": 1,
+                "percentage": 12.5,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 1
+            },
+            "renaissancehotels.com": {
+                "count": 1,
+                "percentage": 12.5,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 1
+            },
+            "hilton.com": {
+                "count": 1,
+                "percentage": 12.5,
+                "main_pattern": "firstnamelastname",
+                "pattern_count": 1
+            },
+            "klrenaissance.com": {
+                "count": 1,
+                "percentage": 12.5,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 1
+            }
+        },
+        "email_patterns": {
+            "firstnamelastname": {
+                "count": 5,
+                "percentage": 62.5
+            },
+            "firstname.lastname": {
+                "count": 3,
+                "percentage": 37.5
+            }
+        },
+        "sorted_domains": [
+            "linkedinmembership.id",
+            "marriott.com",
+            "renaissancehotels.com",
+            "hilton.com",
+            "klrenaissance.com"
+        ],
+        "sorted_patterns": [
+            "firstnamelastname",
+            "firstname.lastname"
+        ]
+    },
+    "Sheraton Imperial Kuala Lumpur Hotel": {
+        "company_name": "Sheraton Imperial Kuala Lumpur Hotel",
+        "total_emails": 3,
+        "domains": {
+            "sheraton.com": {
+                "count": 2,
+                "percentage": 66.7,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 2
+            },
+            "parkroyalgroup.com": {
+                "count": 1,
+                "percentage": 33.3,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 1
+            }
+        },
+        "email_patterns": {
+            "firstname.lastname": {
+                "count": 3,
+                "percentage": 100.0
+            }
+        },
+        "sorted_domains": [
+            "sheraton.com",
+            "parkroyalgroup.com"
+        ],
+        "sorted_patterns": [
+            "firstname.lastname"
+        ]
+    },
+    "Sheraton Petaling Jaya Hotel": {
+        "company_name": "Sheraton Petaling Jaya Hotel",
+        "total_emails": 4,
+        "domains": {
+            "sheraton.com": {
+                "count": 4,
+                "percentage": 100.0,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 4
+            }
+        },
+        "email_patterns": {
+            "firstname.lastname": {
+                "count": 4,
+                "percentage": 100.0
+            }
+        },
+        "sorted_domains": [
+            "sheraton.com"
+        ],
+        "sorted_patterns": [
+            "firstname.lastname"
+        ]
+    },
+    "Sofitel Kuala Lumpur Damansara": {
+        "company_name": "Sofitel Kuala Lumpur Damansara",
+        "total_emails": 10,
+        "domains": {
+            "sofitel.com": {
+                "count": 10,
+                "percentage": 100.0,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 10
+            }
+        },
+        "email_patterns": {
+            "firstname.lastname": {
+                "count": 10,
+                "percentage": 100.0
+            }
+        },
+        "sorted_domains": [
+            "sofitel.com"
+        ],
+        "sorted_patterns": [
+            "firstname.lastname"
+        ]
+    },
+    "The St. Regis Kuala Lumpur_1 copy.csv": {
+        "company_name": "The St. Regis Kuala Lumpur_1 copy.csv",
+        "total_emails": 9,
+        "domains": {
+            "stregis.com": {
+                "count": 8,
+                "percentage": 88.9,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 8
+            },
+            "pullman-klcc.com": {
+                "count": 1,
+                "percentage": 11.1,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 1
+            }
+        },
+        "email_patterns": {
+            "firstname.lastname": {
+                "count": 9,
+                "percentage": 100.0
+            }
+        },
+        "sorted_domains": [
+            "stregis.com",
+            "pullman-klcc.com"
+        ],
+        "sorted_patterns": [
+            "firstname.lastname"
+        ]
+    },
+    "The Westin Kuala Lumpur": {
+        "company_name": "The Westin Kuala Lumpur",
+        "total_emails": 6,
+        "domains": {
+            "westin.com": {
+                "count": 6,
+                "percentage": 100.0,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 6
+            }
+        },
+        "email_patterns": {
+            "firstname.lastname": {
+                "count": 6,
+                "percentage": 100.0
+            }
+        },
+        "sorted_domains": [
+            "westin.com"
+        ],
+        "sorted_patterns": [
+            "firstname.lastname"
+        ]
+    },
+    "Traders Hotel, Kuala Lumpur": {
+        "company_name": "Traders Hotel, Kuala Lumpur",
+        "total_emails": 1,
+        "domains": {
+            "tradershotels.com": {
+                "count": 1,
+                "percentage": 100.0,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 1
+            }
+        },
+        "email_patterns": {
+            "firstname.lastname": {
+                "count": 1,
+                "percentage": 100.0
+            }
+        },
+        "sorted_domains": [
+            "tradershotels.com"
+        ],
+        "sorted_patterns": [
+            "firstname.lastname"
+        ]
+    },
+    "WOLO Kuala Lumpur": {
+        "company_name": "WOLO Kuala Lumpur",
+        "total_emails": 1,
+        "domains": {
+            "hymgroup.com.my": {
+                "count": 1,
+                "percentage": 100.0,
+                "main_pattern": "firstname.lastname",
+                "pattern_count": 1
+            }
+        },
+        "email_patterns": {
+            "firstname.lastname": {
+                "count": 1,
+                "percentage": 100.0
+            }
+        },
+        "sorted_domains": [
+            "hymgroup.com.my"
+        ],
+        "sorted_patterns": [
+            "firstname.lastname"
+        ]
+    }
+}

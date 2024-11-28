@@ -19,6 +19,7 @@ def 计时(f):
         print(f'{f.__name__} 耗时：{time.time()-start:.4f}秒')
         return result
     return wrapper
+
 @计时
 def 问gpt(问题,提示词=提示词):
     第一个网址 = "https://bot.tgmeng.com/adminapi/chatapi/chat/message"

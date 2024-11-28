@@ -1,0 +1,28 @@
+为 Crowne Plaza Kuala Lumpur City Centre, an IHG Hotel 找到了总经理信息：{'name': 'Kuljit Singh', 'phone': None, 'email': None}
+为 Renaissance Kuala Lumpur Hotel & Convention Centre 找到了总经理信息：{'name': 'Bipan Kapur', 'phone': None, 'email': None}
+为 W Kuala Lumpur Hotel 找到了总经理信息：{'name': 'Volker Burth', 'phone': None, 'email': None}
+为 Hyatt Place Kuala Lumpur Bukit Jalil 找到了总经理信息：{'name': 'Bennett Peter', 'phone': None, 'email': None}
+为 Banyan Signatures Pavilion Kuala Lumpur 找到了总经理信息：{'name': 'Rudy Oretti', 'phone': None, 'email': None}
+为 Sheraton Imperial Kuala Lumpur Hotel 找到了总经理信息：{'name': 'Paul Gill', 'phone': None, 'email': None}
+为 InterContinental Kuala Lumpur, an IHG Hotel 找到了总经理信息：{'name': 'Meera Raj', 'phone': None, 'email': None}
+为 Hotel Indigo Kuala Lumpur On The Park 找到了总经理信息：{'name': 'Ashleigh Garside', 'phone': None, 'email': None}
+为 Pan Pacific Serviced Suites Kuala Lumpur 找到了总经理信息：{'name': 'Allan Wong', 'phone': None, 'email': None}
+为 Traders Hotel, Kuala Lumpur 找到了总经理信息：{'name': 'Daniel Kaeflein', 'phone': '(60 3) 2332 9888', 'email': 'sachin.tyagi@tradershotels.com'}
+为 Four Points by Sheraton Kuala Lumpur, City Centre 找到了总经理信息：{'name': 'Bipan Kapur', 'phone': 'None', 'email': 'None'}
+为 Banyan Tree Kuala Lumpur 找到了总经理信息：{'name': 'Rudy Oretti', 'phone': 'None', 'email': 'None'}
+为 Le Meridien Putrajaya 找到了总经理信息：{'name': 'Kumar Renoo', 'phone': None, 'email': None}
+为 JW Marriott Hotel Kuala Lumpur 找到了总经理信息：{'name': 'Mahmoud Skaf', 'phone': None, 'email': None}
+为 Hotel Indigo Kuala Lumpur on the Park 找到了总经理信息：{'name': 'Ashleigh Garside', 'phone': None, 'email': None}
+为 One World Hotel 找到了总经理信息：{'name': 'Chris Niuh Ban Hock', 'phone': None, 'email': None}
+为 DoubleTree by Hilton Putrajaya Lakeside 找到了总经理信息：{'name': 'Ian Barrow', 'phone': None, 'email': None}
+为 Mandarin Oriental, Kuala Lumpur 找到了总经理信息：{'name': 'Martin Schnider', 'phone': None, 'email': None}
+为 Shangri-La Kuala Lumpur 找到了总经理信息：{'name': 'Daniel P. Kaeflein', 'phone': None, 'email': None}
+为 Four Seasons Hotel Kuala Lumpur 找到了总经理信息：{'name': 'Blaise Montandon', 'phone': None, 'email': None}
+为 EQ Kuala Lumpur 找到了总经理信息：{'name': 'Gerard Walker', 'phone': '+603 - 2789 7777', 'email': 'info@kul.equatorial.com'}
+为 One World Hotel Petaling Jaya 找到了总经理信息：{'name': 'Chris Niuh Ban Hock', 'phone': None, 'email': None}
+为 Grand Millennium Kuala Lumpur 找到了总经理信息：{'name': 'Peter D. Gibbons', 'phone': None, 'email': 'g*****r@grandmillenniumkl.com'}
+为 Le Méridien Kuala Lumpur 找到了总经理信息：{'name': 'Michael Delargy', 'phone': None, 'email': None}
+为 Hilton Kuala Lumpur 找到了总经理信息：{'name': 'Linda Pecoraro', 'phone': None, 'email': None}
+为 DoubleTree by Hilton Kuala Lumpur 找到了总经理信息：{'name': 'Ian Barrow', 'phone': None, 'email': None}
+为 The Westin Kuala Lumpur 找到了总经理信息：{'name': 'Daniel Burstein', 'phone': None, 'email': None}
+为 The Ritz-Carlton, Kuala Lumpur 找到了总经理信息：{'name': 'Sasitharan Bathumalai', 'phone': 'None', 'email': 'None'}

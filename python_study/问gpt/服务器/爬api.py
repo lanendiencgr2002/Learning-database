@@ -1,7 +1,6 @@
 import json
 from DrissionPage import ChromiumPage, ChromiumOptions
 from concurrent.futures import ThreadPoolExecutor
-import 切换到当前目录
 
 def 初始化dp():
     co = ChromiumOptions().set_local_port(9222)
@@ -121,5 +120,4 @@ if __name__ == '__main__':
     # 全都都删除直到删完()
     一键添加令牌获取key()
     print("结束")
-
 
