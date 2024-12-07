@@ -2,6 +2,7 @@ import sys
 import time
 import threading
 import win32clipboard
+import os
 from collections import OrderedDict
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSystemTrayIcon, QMenu, QMessageBox
 from PyQt5.QtCore import Qt, QPoint, pyqtSignal, QObject
@@ -45,18 +46,30 @@ class TranslationManager(QMainWindow):
         self.last_text = ""
 
     def create_tray_icon(self):
-        self.tray_icon = QSystemTrayIcon(self)
-        self.tray_icon.setIcon(QIcon(ICON_PATH))
-        
-        tray_menu = QMenu()
-        close_windows_action = tray_menu.addAction("关闭所有翻译窗口")
-        close_windows_action.triggered.connect(self.close_all_windows)
-        tray_menu.addSeparator()
-        exit_action = tray_menu.addAction("退出程序")
-        exit_action.triggered.connect(self.close_application)
-        
-        self.tray_icon.setContextMenu(tray_menu)
-        self.tray_icon.show()
+        try:
+            self.tray_icon = QSystemTrayIcon(self)
+            icon_path = str(ICON_PATH)  # 将 Path 对象转换为字符串
+            print(f"正在加载托盘图标: {icon_path}")  # 打印图标路径
+            
+            if not os.path.exists(icon_path):
+                print(f"错误：图标文件不存在: {icon_path}")
+                return
+            
+            self.tray_icon.setIcon(QIcon(icon_path))
+            
+            # 创建托盘菜单
+            tray_menu = QMenu()
+            close_windows_action = tray_menu.addAction("关闭所有翻译窗口")
+            close_windows_action.triggered.connect(self.close_all_windows)
+            tray_menu.addSeparator()
+            exit_action = tray_menu.addAction("退出程序")
+            exit_action.triggered.connect(self.close_application)
+            
+            self.tray_icon.setContextMenu(tray_menu)
+            self.tray_icon.show()
+            print("托盘图标创建成功")
+        except Exception as e:
+            print(f"创建托盘图标时出错: {str(e)}")
 
     def start_listeners(self):
         self.clipboard_thread = threading.Thread(target=self.clipboard_listener, daemon=True)
