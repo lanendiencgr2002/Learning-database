@@ -34,8 +34,10 @@ class TranslationWindow(QMainWindow):
         super().__init__()
         self.init_ui()
         self.init_signals()
+        self.translator = DeepLTranslator()
+        self.is_first_run = True  # 添加标志位
+        self.last_text = ""  # 初始化为空字符串
         self.start_listeners()
-        self.translator = DeepLTranslator()  # 使用DeepL翻译器
         
     def init_ui(self):
         """初始化UI组件"""
@@ -67,7 +69,7 @@ class TranslationWindow(QMainWindow):
         
         Args:
             text: 输入文本
-            english_threshold: 英文字符占比阈值，默认0.5（50%）
+            english_threshold: 英文字符占比阈值，默认0.5（50%��
         
         Returns:
             bool: True表示需要翻译（英文占主导），False表示不需要翻译（中文占主导）
@@ -111,13 +113,20 @@ class TranslationWindow(QMainWindow):
         """剪贴板监听线程"""
         while True:
             try:
-                text = self.get_clipboard_text()
-                if text and text != self.last_text and self.is_translated(text):
-                    print(f"检测到新的英文内容: {text[:50]}...")
+                if self.is_first_run:
+                    self.last_text = self.get_clipboard_text()  # 第一次运行时只记录内容
+                    self.is_first_run = False
+                    time.sleep(CLIPBOARD_CHECK_INTERVAL)
+                    continue
+                
+                current_text = self.get_clipboard_text()
+                # 只有当内容变化且需要翻译时才处理
+                if current_text and current_text != self.last_text and self.is_translated(current_text):
+                    print(f"检测到新的英文内容: {current_text[:50]}...")
                     cursor_pos = QCursor.pos()
-                    self.last_text = text
-                    translation = self.translate_text(text)
+                    translation = self.translate_text(current_text)
                     self.signal_handler.show_translation_signal.emit(translation, cursor_pos)
+                self.last_text = current_text  # 更新last_text
             except Exception as e:
                 print(f"剪贴板监听错误: {e}")
             time.sleep(CLIPBOARD_CHECK_INTERVAL)

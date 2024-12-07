@@ -3,7 +3,7 @@ import json
 
 class DeepLTranslator:
     def __init__(self):
-        self.api_url = "https://api.deeplx.org/qU8Nj8Tq-7LPuNbD-e56bf_NhKApAYL1QVq-JUjQFI0/translate"
+        self.api_url = "https://deeplx.doi9.top/translate"
         self.headers = {
             "User-Agent": "Apifox/1.0.0 (https://apifox.com)",
             "Content-Type": "application/json"
