@@ -8,7 +8,7 @@ import java.lang.reflect.*;
 public class object_data_saver {
     public static void main(String[] args) throws IllegalAccessException, IOException {
         //创建一个对象
-        Person p = new Person("张三", 20);
+        Person_R1234 p = new Person_R1234("张三", 20);
         //把对象里面所有的成员变量名和值保存到本地文件中
         saveObject(p);
     }
@@ -17,8 +17,12 @@ public class object_data_saver {
     public static void saveObject(Object obj) throws IllegalAccessException, IOException {
         //1.获取字节码文件的对象
         Class<?> clazz = obj.getClass();
-        //2. 创建IO流
-        // BufferedWriter bw = new BufferedWriter(new FileWriter("myreflect\\a.txt"));
+        
+        //生成随机数
+        String randomNum = String.valueOf(System.currentTimeMillis() % 10000);
+        
+        //2. 创建IO流 - 使用带随机数的文件名
+        // BufferedWriter bw = new BufferedWriter(new FileWriter("myreflect\\person" + randomNum + ".txt"));
 
         //3. 获取所有的成员变量
         Field[] fields = clazz.getDeclaredFields();
@@ -36,10 +40,11 @@ public class object_data_saver {
 
         // bw.close();
     }
-    public static class Person {
+    // 将 Person 改名为 Person_R1234 (R代表Random)
+    public static class Person_R1234 {
         private String name;
         private int age;
-        public Person(String name, int age) {
+        public Person_R1234(String name, int age) {
             this.name = name;
             this.age = age;
         }

@@ -1,163 +1,111 @@
+/**
+ * Java多态中的向上转型和向下转型说明：
+ * 
+ * 1. 向上转型（Upcasting）
+ *    - 定义：将子类对象赋值给父类引用
+ *    - 示例：Animal dog = new Dog();
+ *    - 特点：
+ *      a) 自动进行，不需要强制类型转换
+ *      b) 安全，不会出现异常
+ *      c) 只能访问父类定义的方法和属性
+ *      d) 如果子类重写了父类方法，调用时执行子类的方法（多态）
+ * 
+ * 2. 向下转型（Downcasting）
+ *    - 定义：将父类引用转换为子类引用
+ *    - 示例：Dog dog = (Dog)animal;
+ *    - 特点：
+ *      a) 需要显式的强制类型转换
+ *      b) 有风险，可能出现ClassCastException异常
+ *      c) 可以访问子类特有的方法和属性
+ * 
+ * 3. 注意事项：
+ *    - 向下转型前必须用instanceof检查类型（安全，避免ClassCastException异常）5
+ *    - 只能转换有继承关系的类型
+ *    - 不能将父类对象转为子类类型
+ * 
+ * 4. 最佳实践：
+ *    if (animal instanceof Dog) {
+ *        Dog dog = (Dog)animal;    // 安全的向下转型
+ *        dog.fetchStick();         // 调用子类特有方法
+ *    }
+ */
+
+/**
+ * 多态演示类
+ * 展示Java多态的核心概念：继承、接口实现、向上转型、向下转型
+ */
 public class polymorphism {
-    public static void main(String[] args){
-        System.out.println("向上转型示例");  
-        Animal a = new Dog();
-        a.eat(); // 调用Dog的eat方法
-        // a.fetchStick(); // 错误：Animal类型没有fetchStick方法
-        System.out.println("");
+    public static void main(String[] args) {
+        // 1. 基本多态示例
+        Animal dog = new Dog();  // 向上转型
+        dog.eat();
+        ((Dog)dog).fetchStick(); // 向下转型
 
-        System.out.println("向下转型示例");
-        Dog d = (Dog)a;
-        d.eat(); // 调用Dog的eat方法
-        d.fetchStick(); // 现在可以调用Dog特有的fetchStick方法
-        System.out.println("");
-
-        System.out.println("向下转型的另一个例子");
-        Animal animal = new Cat();
-        // animal.catchMouse(); 不行
-        if (animal instanceof Cat) {
-            Cat cat = (Cat) animal;
-            cat.eat();
-            cat.catchMouse(); // 调用Cat特有的方法
+        // 2. instanceof使用和安全转型
+        Animal cat = new Cat();
+        if (cat instanceof Cat) {
+            ((Cat)cat).catchMouse();
         }
-        System.out.println("");
 
-        System.out.println("使用多态");
-        useAnimal(new Dog());
-        useAnimal(new Cat());
-        useAnimal(new Bird());
-        System.out.println("");
-
-        System.out.println("instanceof 示例");
-        Animal animal2 = new Dog();
-        checkAnimalType(animal2);
-        System.out.println("");
-
-        System.out.println("多态数组示例");
+        // 3. 多态数组示例
         Animal[] animals = {new Dog(), new Cat(), new Bird()};
-        for (Animal ani : animals) {
-            ani.eat();
-            ani.makeSound();
-            if (ani instanceof Playable) {
-                ((Playable) ani).play();
+        for (Animal animal : animals) {
+            animal.makeSound();
+            if (animal instanceof Playable) {
+                ((Playable) animal).play();
             }
-            System.out.println();
         }
-        System.out.println("");
 
-        System.out.println("动物互动示例");
+        // 4. 动物互动示例
         interactWithAnimals(new Dog(), new Cat());
-        interactWithAnimals(new Bird(), new Dog());
-        System.out.println("");
     }
 
-    public static void useAnimal(Animal a) {
-        a.eat();
-        a.makeSound();
-    }
-
-    public static void checkAnimalType(Animal animal) {
-        if (animal instanceof Dog) {
-            System.out.println("这是一只狗");
-            ((Dog) animal).play();
-        } else if (animal instanceof Cat) {
-            System.out.println("这是一只猫");
-            ((Cat) animal).play();
-        } else if (animal instanceof Bird) {
-            System.out.println("这是一只鸟");
-        } else {
-            System.out.println("这是一种未知的动物");
-        }
-    }
-
-    public static void interactWithAnimals(Animal a1, Animal a2) {
-        System.out.println("两只动物相遇了：");
-        a1.makeSound();
-        a2.makeSound();
-        System.out.println("它们开始互动：");
+    // 动物互动方法
+    private static void interactWithAnimals(Animal a1, Animal a2) {
         a1.interact(a2);
         a2.interact(a1);
-        System.out.println();
     }
 }
 
+// 动物基类
 abstract class Animal {
     public abstract void eat();
     public abstract void makeSound();
     public abstract void interact(Animal other);
 }
 
+// 可玩耍接口
 interface Playable {
     void play();
 }
 
+// 狗类实现
 class Dog extends Animal implements Playable {
-    @Override
-    public void eat() {
-        System.out.println("狗吃肉");
+    public void eat() { System.out.println("狗吃肉"); }
+    public void makeSound() { System.out.println("汪汪叫"); }
+    public void play() { System.out.println("玩飞盘"); }
+    public void interact(Animal other) { 
+        System.out.println("狗想和" + (other instanceof Dog ? "另一只狗" : "其他动物") + "玩耍"); 
     }
-
-    @Override
-    public void makeSound() {
-        System.out.println("狗汪汪叫");
-    }
-
-    @Override
-    public void play() {
-        System.out.println("狗在玩飞盘");
-    }
-
-    @Override
-    public void interact(Animal other) {
-        System.out.println("狗试图和" + (other instanceof Dog ? "另一只狗" : "其他动物") + "玩耍");
-    }
-
-    // Dog特有的方法
-    public void fetchStick() {
-        System.out.println("狗在捡木棍");
-    }
+    public void fetchStick() { System.out.println("捡木棍"); }
 }
 
+// 猫类实现
 class Cat extends Animal implements Playable {
-    @Override
-    public void eat() {
-        System.out.println("猫吃鱼");
+    public void eat() { System.out.println("猫吃鱼"); }
+    public void makeSound() { System.out.println("喵喵叫"); }
+    public void play() { System.out.println("玩毛线球"); }
+    public void interact(Animal other) { 
+        System.out.println("猫对" + (other instanceof Cat ? "另一只猫" : "其他动物") + "保持警惕"); 
     }
-
-    @Override
-    public void makeSound() {
-        System.out.println("猫喵喵叫");
-    }
-
-    @Override
-    public void play() {
-        System.out.println("猫在玩毛线球");
-    }
-
-    @Override
-    public void interact(Animal other) {
-        System.out.println("猫对" + (other instanceof Cat ? "另一只猫" : "其他动物") + "保持警惕");
-    }
-
-    // Cat特有的方法
-    public void catchMouse() {
-        System.out.println("猫在捉老鼠");
-    }
+    public void catchMouse() { System.out.println("捉老鼠"); }
 }
 
+// 鸟类实现
 class Bird extends Animal {
-    @Override
-    public void eat() {
-        System.out.println("鸟吃虫子");
-    }
-
-    @Override
-    public void makeSound() {
-        System.out.println("鸟叽叽喳喳");
-    }
-
-    @Override
-    public void interact(Animal other) {
-        System.out.println("鸟飞到树上观察" + (other instanceof Bird ? "另一只鸟" : "其他动物"));
+    public void eat() { System.out.println("鸟吃虫"); }
+    public void makeSound() { System.out.println("叽叽喳喳"); }
+    public void interact(Animal other) { 
+        System.out.println("鸟飞到树上观察" + (other instanceof Bird ? "另一只鸟" : "其他动物")); 
     }
 }
