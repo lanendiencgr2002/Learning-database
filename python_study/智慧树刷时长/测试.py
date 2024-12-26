@@ -4,6 +4,7 @@ import re
 import time
 from concurrent.futures import ThreadPoolExecutor
 from concurrent.futures import wait
+import pygame
 def 初始化dp():
     # co = ChromiumOptions().set_local_port(9222)
     # page = ChromiumPage(addr_or_opts=co)
@@ -14,7 +15,6 @@ page=初始化dp()
 def 点下一个(bar):
     drissionpage_utils.找一个元素(bar,'#nextBtn').click()
 def 切换1点5倍数(bar):
-    
     drissionpage_utils.找一个元素(bar,'.speedBox').click()
     drissionpage_utils.找一个元素(bar,'.speedTab speedTab15').click()
 def 找bar元素激活(元素): 
@@ -70,9 +70,26 @@ def 切入视频(元素):
     找bar元素激活(元素)
     点播放(元素)
 
-    
+def 播放mp3(mp3文件路径='e.wav'):
+    # 转音频 https://www.aconvert.com/cn/audio/
+    pygame.mixer.init()
+    sound = pygame.mixer.Sound(mp3文件路径)
+    channel = pygame.mixer.Channel(0)  # 获取第 0 通道
+    channel.play(sound)
+    # 使用 channel.get_busy() 来检查音频是否仍在播放
+    while channel.get_busy():
+        pass
+    sound.stop()
+    pygame.mixer.quit()
+
+def 处理视频卡住():
+    print('视频卡住')
+
+    播放mp3(Path(__file__).parent.joinpath('./寄咯.mp3'))
 
 def 主流程(元素):
+    上一次进度 = 0
+    
     while True:
         切入视频(元素)
         print('切入视频')
@@ -82,6 +99,13 @@ def 主流程(元素):
             找播放按钮防止不播放=元素.ele('.playButton',timeout=.3)
             if 找播放按钮防止不播放:
                 找播放按钮防止不播放.click()
+                
+            # 检查进度是否与上次相同
+            if 已播放进度 == 上一次进度:
+                处理视频卡住()
+            
+            上一次进度 = 已播放进度  # 更新上一次进度
+            
             if 已播放进度 >= 100:
                 break
             print('播放进度', 已播放进度)
@@ -128,9 +152,9 @@ def 获取课程学习页面(page):
 
 if __name__ == "__main__":
     page = 初始化dp()
-
+    # 可以多标签页没事的
     课程学习页面=获取课程学习页面(page)
-
+    # 
     多线程执行(课程学习页面)
 
     # print(page.title)

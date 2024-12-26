@@ -14,7 +14,7 @@ WINDOW_STYLE = """
 """
 
 # 程序配置
-CLIPBOARD_CHECK_INTERVAL = 0.25  # 剪贴板检查间隔（秒）
+CLIPBOARD_CHECK_INTERVAL = 0.5  # 剪贴板检查间隔（秒）
 ENGLISH_THRESHOLD = 0.5  # 英文字符占比阈值
 MAX_CACHE_SIZE = 100  # 翻译缓存最大条数
 
