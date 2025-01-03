@@ -1,0 +1,20 @@
+{
+    "translation_apis": [
+        {
+            "name": "DeepLX-1",
+            "url": "https://api.deeplx.org/nZyuEfvNhWk8Xfh2BP_0Dk3ZEnk5SdFIwA_8jaaAM8Q/translate"
+        },
+        {
+            "name": "DeepLX-2",
+            "url": "https://api-free.deepl.com/v2/translate"
+        },
+        {
+            "name":"DeepLX-3",
+            "url":"https://deeplx.missuo.ru/translate?key=dwPXzOYw0vlPa-LwMKkmCWFeZ-iWsm3AXLb-PDKhFo4="
+        },
+        {
+            "name":"DeepLX-4",
+            "url":"https://deeplx.doi9.top/translate"
+        }
+    ]
+} 

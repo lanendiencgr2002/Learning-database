@@ -10,7 +10,7 @@ from PyQt5.QtGui import QCursor, QIcon
 
 from config import *
 from translation_window import TranslationWindow
-from 接口3 import DeepLTranslator
+from DeepLTranslatorclass import DeepLTranslator
 
 class SignalHandler(QObject):
     show_translation_signal = pyqtSignal(str, QPoint)

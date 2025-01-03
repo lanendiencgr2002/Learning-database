@@ -34,7 +34,7 @@ class AITranslator:
     
     def _create_translation_prompt(self, text):
         """创建翻译提示词"""
-        return f"""你是一��专业的翻译专家，请将以下英文翻译成中文：
+        return f"""你是一个专业的翻译专家，请将以下英文翻译成中文：
 
 {text}
 
