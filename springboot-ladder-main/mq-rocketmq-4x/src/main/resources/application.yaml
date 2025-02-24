@@ -2,6 +2,6 @@ server:
   port: 6060
 
 rocketmq:
-  name-server: 101.42.175.125:9876
+  name-server: localhost:9876
   producer:
     group: rocketmq-4x-service_common-message-execute_pg

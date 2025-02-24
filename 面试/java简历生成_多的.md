@@ -32,8 +32,7 @@ github: 'https://github.com/lanendiencgr2002'
 SpringBoot、SpringCloud Alibaba、RocketMQ、ShardingSphere、Redis、MySQL、Sentinel、Vue、ElementUI
 
 **主要工作**
-- 使用布隆过滤器优化短链接查重逻辑，显著提升判断效率，相比传统分布式锁+数据库查询方案性能提升超过50%
-- 基于RocketMQ实现削峰填谷，解决高并发访问下的监控信息存储问题，系统稳定支持10000+ QPS
+- 使用布隆过滤器优化短链接查重逻辑，显著提升判断效率，相比传统分布式锁+数据库查询方案性能提升超过50% 
 - 设计并实现基于双重检查锁的缓存更新机制，有效减少缓存失效场景下的数据库访问压力
 - 使用Redisson分布式读写锁确保高并发下数据一致性，通过Redis实现消息幂等性处理
 
@@ -41,15 +40,15 @@ SpringBoot、SpringCloud Alibaba、RocketMQ、ShardingSphere、Redis、MySQL、S
 
 - 前端开发：熟悉HTML、CSS、JavaScript、jQuery等前端技术，能够使用Vue+ElementUI进行单页面应用开发
 - 后端开发：熟悉SpringBoot、SpringCloud、SpringCloud Alibaba、MyBatis、MyBatisPlus等后端技术
-- 语言：熟悉Python、Java（熟悉集合，反射机制，注解机制，多线程等）、Js、C++等语言
-- Mysql：熟悉分库分表，读写分离，sql优化，锁，MVCC等
+- 语言：熟悉Python、Java（熟悉集合，反射机制，注解机制等）、Js、C++等语言
+- Mysql：熟悉分库分表，sql优化等
 - Redis：熟悉主从复制，哨兵，集群，布隆过滤器，预热雪崩击穿穿透，淘汰策略等
-- RocketMQ：熟悉RocketMQ消息中间件，能够解决消息重复消费、顺序消费、消息丢失以及消息积压等常见问题
+- RocketMQ：熟悉RocketMQ消息中间件，能够解决消息重复消费、顺序消费等常见问题
 
 ## 个人优势
 
 - 熟练运用AI开发：能够使用Cursor、V0.dev，GPT4，Claude3.5等AI工具辅助开发，提高开发效率
-- 技术栈丰富：熟悉Python电脑手机自动化爬虫Js逆向，Git，Docker，Nginx，Linux，云服务器运维，云服务使用，Autojs等
+- 技术栈丰富：熟悉Python电脑手机自动化爬虫，Git，Docker，Linux，云服务器运维，云服务使用等
 - 查资料能力强：通过笔记等记录了大量技术文档与代码，能通过搜索或AI检索快速找到所需资料
 
 ## 教育经历
@@ -59,10 +58,7 @@ SpringBoot、SpringCloud Alibaba、RocketMQ、ShardingSphere、Redis、MySQL、S
 | :------: | :---------------: |
 | 软件工程 | 2021.09 - 2025.06 |
 
-<p style="
-    display: flex;
-    justify-content: center;
-    padding: 0.5rem 0;
-">
-  <img src="//github-readme-stats.vercel.app/api?username=Dunqing&show_icons=true&icon_color=CE1D2D&text_color=718096&bg_color=ffffff&hide_title=true" />
-</p> 
+### 证书及获奖
+- 英语四级
+- 蓝桥杯c++省赛三等奖
+- 2024广东省大学生程序设计竞赛团队赛三等奖

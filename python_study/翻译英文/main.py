@@ -11,6 +11,7 @@ from PyQt5.QtGui import QCursor, QIcon
 from config import *
 from translation_window import TranslationWindow
 from DeepLTranslatorclass import DeepLTranslator
+翻译器=DeepLTranslator(api_index=0)
 
 class SignalHandler(QObject):
     show_translation_signal = pyqtSignal(str, QPoint)
@@ -35,7 +36,7 @@ class TranslationManager(QMainWindow):
         self.signal_handler.show_translation_signal.connect(self.show_translation)
 
     def init_translator(self):
-        self.translator = DeepLTranslator()
+        self.translator = 翻译器
         self.translation_lock = threading.Lock()
         self.running = True
         self.windows = []

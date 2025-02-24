@@ -1,7 +1,6 @@
-
 springmvc/资料/Postman-win64-Setup.exe
 springmvc/资料/draw.io-24.7.5.exe
 *.pyc
+
 *.pyc
-*.pyc
-*.pyc
+*.xml

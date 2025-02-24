@@ -244,6 +244,19 @@ import java.util.Map;
  * spring-01-ioc\src\main\java\com\atguigu\spring\ioc\dao\UserDao.java
  */
 
+/** final构造器注入
+ * private final GroupService groupService;
+ * 关键点：
+ * - 默认是按类型匹配的
+ * - 构造器参数名称可以作为 Bean 名称的备选匹配条件
+ * - 如果有多个同类型 Bean 最好明确指定要注入哪个
+ * 
+ * 最佳实践建议：
+ * - 如果只有一个该类型的 Bean，直接用类型匹配就够了
+ * - 如果有多个同类型 Bean，建议用 @Qualifier 明确指定
+ * 
+ */
+
 /** @Resource
  * @Resource 是 Java EE 提供的注解，Spring 框架支持使用它进行依赖注入。
  * 注入方式：优先按名称注入，其次按类型注入。如果不行就报错，复杂场景还是使用@Autowired

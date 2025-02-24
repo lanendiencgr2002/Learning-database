@@ -2,8 +2,6 @@ package com.atguigu.cloud;
 
 import java.time.ZonedDateTime;
 
-
-
 /** DiscoveryClient
  * @Resource
  * private DiscoveryClient discoveryClient;
@@ -12,7 +10,6 @@ import java.time.ZonedDateTime;
  * 1. getServices()：获取所有服务名称
  * 2. getInstances(String serviceId)：获取指定服务名称的所有实例
  */
-
 
 /** @LoadBalancerClient
  * 这是 Spring Cloud LoadBalancer 的核心注解，用于声明负载均衡客户端。
