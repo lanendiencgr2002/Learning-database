@@ -4,20 +4,28 @@ from logging.handlers import RotatingFileHandler
 
 def setup_logger(maxBytes=5,backupCount=5):
     """
-    配置并初始化日志系统
-    
-    功能:
-    - 创建日志目录和文件
-    - 配置日志格式和处理器
-    - 同时输出到文件和控制台
-    - 当日志文件超过指定大小时自动分割
-    
-    返回:
-    - logging.Logger: 配置好的日志记录器实例
-    
-    注意:
-    - 使用 UTF-8 编码确保正确处理中文
-    - 日志文件使用追加模式，保留历史记录
+    配置并初始化日志系统。
+
+    Args:
+        maxBytes (int): 单个日志文件的最大大小(MB)，默认为5MB。
+        backupCount (int): 保留的备份日志文件数量，默认为5个。
+
+    Returns:
+        logging.Logger: 配置好的日志记录器实例。
+
+    Raises:
+        Exception: 当日志系统初始化失败时抛出异常。
+
+    Example:
+        >>> logger = setup_logger(maxBytes=10, backupCount=3)
+        >>> logger.info("这是一条日志消息")
+
+    Notes:
+        - 日志文件存储在当前文件所在目录的logs子目录下
+        - 使用UTF-8编码确保正确处理中文
+        - 日志文件使用追加模式，保留历史记录
+        - 当日志文件大小超过maxBytes时会自动分割
+        - 同时输出日志到文件和控制台
     """
     # 在当前文件所在目录下创建 logs 子目录
     log_dir = Path(__file__).parent / "logs"

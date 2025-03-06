@@ -39,6 +39,40 @@
             "url": "https://api.chatanywhere.tech/v1/chat/completions",
             "key": "sk-ATXhpDsohKCPBxdGfLsHXFUf0Q8zDhNxUNjwQOvLWwOLoJMP",
             "model": "gpt-3.5-turbo-ca"
+        },
+        {
+            "url": "https://api.chatanywhere.tech/v1/chat/completions",
+            "key": "sk-ATXhpDsohKCPBxdGfLsHXFUf0Q8zDhNxUNjwQOvLWwOLoJMP",
+            "model": "gpt-3.5-turbo"
+        },
+        {
+            "url":"https://api.deepseek.com/chat/completions",
+            "key":"sk-a3106f45e0fc4466987b6bc4f53b0af3",
+            "model":"deepseek-chat"
+        },
+
+
+
+
+        {
+            "url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+            "key": "49a145c4-6b01-4cb1-a442-8fc94ac0c446",
+            "model": "deepseek-r1-distill-qwen-32b-250120"
+        },
+        {
+            "url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+            "key": "49a145c4-6b01-4cb1-a442-8fc94ac0c446",
+            "model": "deepseek-r1-distill-qwen-7b-250120"
+        },
+        {
+            "url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+            "key": "4069be08-3dd2-4ce9-b863-3602ad637978",
+            "model": "deepseek-r1-distill-qwen-32b-250120"
+        },
+        {
+            "url": "https://ark.cn-beijing.volces.com/api/v3/chat/completions",
+            "key": "4069be08-3dd2-4ce9-b863-3602ad637978",
+            "model": "deepseek-r1-distill-qwen-7b-250120"
         }
     ]
 } 

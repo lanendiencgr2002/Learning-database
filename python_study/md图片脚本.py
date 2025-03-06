@@ -1,7 +1,9 @@
 from pathlib import Path
 import json
 import sys
-
+'''
+只能用于Markdown-image插件，还有当前目录下只有一个md文件，会自动设置md图片目录为当前目录
+'''
 def 更新markdown图片配置(markdown文件路径):
     # 转换为Path对象
     md_path = Path(markdown文件路径)
