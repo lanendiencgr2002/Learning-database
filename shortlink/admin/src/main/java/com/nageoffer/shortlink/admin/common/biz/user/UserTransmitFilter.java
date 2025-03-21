@@ -16,7 +16,7 @@ import lombok.SneakyThrows;
  * 
  * 该过滤器的主要职责：
  * 1. 从HTTP请求头中提取用户相关信息
- * 2. 将用户信息临时存储到UserContext中
+ * 2. 将用户信息临时存储到UserContext中(ThreadLocal对象中)
  * 3. 请求处理完成后清理用户信息
  * 
  * 使用场景：
@@ -38,7 +38,7 @@ public class UserTransmitFilter implements Filter {
         // 例如：getHeader()用于获取HTTP请求头信息
         String username = httpServletRequest.getHeader("username");
         
-        // 只有当username存在时才进行用户信息处理
+        // 只有当username存在时才进行用户信息处理 也就是登录状态
         if (StrUtil.isNotBlank(username)) {
             // 获取其他用户相关信息
             String userId = httpServletRequest.getHeader("userId");

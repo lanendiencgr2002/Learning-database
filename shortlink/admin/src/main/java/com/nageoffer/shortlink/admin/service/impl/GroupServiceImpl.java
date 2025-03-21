@@ -275,6 +275,30 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
      * 
      * @param requestParam 包含分组ID和目标排序值的请求列表
      */
+    /**
+     * 更新短链接分组的排序顺序。
+     *
+     * 该方法允许批量更新多个分组的排序顺序。通过遍历请求参数列表,为每个分组构建更新对象
+     * 并执行更新操作。使用 MyBatis-Plus 的 LambdaUpdateWrapper 构建安全的更新条件。
+     *
+     * Args:
+     *     requestParam (List<ShortLinkGroupSortReqDTO>): 包含分组ID和目标排序值的请求列表。
+     *         每个元素包含:
+     *         - gid: 分组标识
+     *         - sortOrder: 目标排序值
+     *
+     * Notes:
+     *     - 只能更新当前登录用户的分组
+     *     - 只更新未删除的分组(delFlag=0)
+     *     - 每个分组独立更新,互不影响
+     *
+     * Examples:
+     *     List<ShortLinkGroupSortReqDTO> sortList = Arrays.asList(
+     *         new ShortLinkGroupSortReqDTO("gid1", 1),
+     *         new ShortLinkGroupSortReqDTO("gid2", 2)
+     *     );
+     *     groupService.sortGroup(sortList);
+     */
     @Override
     public void sortGroup(List<ShortLinkGroupSortReqDTO> requestParam) {
         requestParam.forEach(each -> {

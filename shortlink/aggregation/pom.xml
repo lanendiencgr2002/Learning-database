@@ -22,13 +22,40 @@
             <version>${project.version}</version>
         </dependency>
     </dependencies>
+<!-- ⭐ 聚合模块构建配置：项目构建的核心管理策略 */
+==模块职责==
+1. 作为项目"总管"，协调和管理所有子模块
+2. 集中定义 <build> 配置，管理构建行为
+3. 通过父 POM 继承机制，实现子模块配置的统一管理
 
+==设计原则==
+- 集中配置通用构建逻辑
+- 提高项目构建的一致性
+- 简化子模块配置复杂度
+-->
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                
+                <!-- ⭐ Spring Boot Maven 插件：应用构建与打包核心工具 */
+                ==插件核心功能==
+                1. 将普通 JAR 重新打包为可执行 JAR
+                2. 自动管理 Spring Boot 应用依赖
+                3. 简化应用部署和运行流程
+
+                ==执行阶段配置==
+                - 在 Maven 打包阶段触发 repackage 目标
+                - repackage：重新打包 JAR，嵌入启动类和依赖
+                - 实现 java -jar 直接运行
+
+                ==产物命名策略==
+                - finalName 动态生成 JAR 文件名
+                - 使用 ${project.artifactId} 确保唯一标识
+                - 便于识别和管理不同模块的构建产物
+                -->
                 <executions>
                     <execution>
                         <goals>

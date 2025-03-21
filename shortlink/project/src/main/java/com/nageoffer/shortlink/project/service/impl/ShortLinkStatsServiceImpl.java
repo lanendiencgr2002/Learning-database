@@ -68,19 +68,49 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
 
     // 单个短链接详情
     @Override
+    /**
+     * 获取单个短链接的统计数据
+     * 包含以下统计维度:
+     * - 基础访问数据(PV、UV、UIP)
+     * - 每日访问趋势
+     * - 地区分布(仅国内)
+     * - 小时访问分布
+     * - 高频访问IP
+     * - 周访问趋势
+     * - 浏览器分布
+     * - 操作系统分布
+     * - 访客类型(新老用户)
+     * - 设备类型分布
+     * - 网络类型分布
+     *
+     * @param requestParam 请求参数,包含gid和查询时间范围等
+     * @return 统计结果DTO对象
+     */
     public ShortLinkStatsRespDTO oneShortLinkStats(ShortLinkStatsReqDTO requestParam) {
+        // 校验权限:检查短链接是否属于当前用户
         checkGroupBelongToUser(requestParam.getGid());
+        
+        // 获取基础访问统计数据
         List<LinkAccessStatsDO> listStatsByShortLink = linkAccessStatsMapper.listStatsByShortLink(requestParam);
         if (CollUtil.isEmpty(listStatsByShortLink)) {
             return null;
         }
-        // 基础访问数据
+        
+        // 获取PV、UV、UIP基础统计数据
         LinkAccessStatsDO pvUvUidStatsByShortLink = linkAccessLogsMapper.findPvUvUidStatsByShortLink(requestParam);
-        // 基础访问详情
+
+        // 构建每日访问趋势数据
         List<ShortLinkStatsAccessDailyRespDTO> daily = new ArrayList<>();
-        List<String> rangeDates = DateUtil.rangeToList(DateUtil.parse(requestParam.getStartDate()), DateUtil.parse(requestParam.getEndDate()), DateField.DAY_OF_MONTH).stream()
+        // 获取查询时间范围内的所有日期
+        List<String> rangeDates = DateUtil.rangeToList(
+                DateUtil.parse(requestParam.getStartDate()), 
+                DateUtil.parse(requestParam.getEndDate()), 
+                DateField.DAY_OF_MONTH
+        ).stream()
                 .map(DateUtil::formatDate)
                 .toList();
+        
+        // 遍历日期范围,填充每日访问数据(无数据的日期填充0)
         rangeDates.forEach(each -> listStatsByShortLink.stream()
                 .filter(item -> Objects.equals(each, DateUtil.formatDate(item.getDate())))
                 .findFirst()
@@ -101,12 +131,15 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                             .build();
                     daily.add(accessDailyRespDTO);
                 }));
-        // 地区访问详情（仅国内）
+
+        // 获取并计算地区访问分布(仅国内)
         List<ShortLinkStatsLocaleCNRespDTO> localeCnStats = new ArrayList<>();
         List<LinkLocaleStatsDO> listedLocaleByShortLink = linkLocaleStatsMapper.listLocaleByShortLink(requestParam);
         int localeCnSum = listedLocaleByShortLink.stream()
                 .mapToInt(LinkLocaleStatsDO::getCnt)
                 .sum();
+        
+        // 计算各地区访问占比
         listedLocaleByShortLink.forEach(each -> {
             double ratio = (double) each.getCnt() / localeCnSum;
             double actualRatio = Math.round(ratio * 100.0) / 100.0;
@@ -117,7 +150,8 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .build();
             localeCnStats.add(localeCNRespDTO);
         });
-        // 小时访问详情
+
+        // 获取24小时访问分布数据
         List<Integer> hourStats = new ArrayList<>();
         List<LinkAccessStatsDO> listHourStatsByShortLink = linkAccessStatsMapper.listHourStatsByShortLink(requestParam);
         for (int i = 0; i < 24; i++) {
@@ -129,7 +163,8 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .orElse(0);
             hourStats.add(hourCnt);
         }
-        // 高频访问IP详情
+
+        // 获取高频访问IP统计
         List<ShortLinkStatsTopIpRespDTO> topIpStats = new ArrayList<>();
         List<HashMap<String, Object>> listTopIpByShortLink = linkAccessLogsMapper.listTopIpByShortLink(requestParam);
         listTopIpByShortLink.forEach(each -> {
@@ -139,7 +174,8 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .build();
             topIpStats.add(statsTopIpRespDTO);
         });
-        // 一周访问详情
+
+        // 获取周访问分布数据(周一到周日)
         List<Integer> weekdayStats = new ArrayList<>();
         List<LinkAccessStatsDO> listWeekdayStatsByShortLink = linkAccessStatsMapper.listWeekdayStatsByShortLink(requestParam);
         for (int i = 1; i < 8; i++) {
@@ -151,12 +187,15 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .orElse(0);
             weekdayStats.add(weekdayCnt);
         }
-        // 浏览器访问详情
+
+        // 获取并计算浏览器访问分布
         List<ShortLinkStatsBrowserRespDTO> browserStats = new ArrayList<>();
         List<HashMap<String, Object>> listBrowserStatsByShortLink = linkBrowserStatsMapper.listBrowserStatsByShortLink(requestParam);
         int browserSum = listBrowserStatsByShortLink.stream()
                 .mapToInt(each -> Integer.parseInt(each.get("count").toString()))
                 .sum();
+        
+        // 计算各浏览器访问占比
         listBrowserStatsByShortLink.forEach(each -> {
             double ratio = (double) Integer.parseInt(each.get("count").toString()) / browserSum;
             double actualRatio = Math.round(ratio * 100.0) / 100.0;
@@ -167,12 +206,15 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .build();
             browserStats.add(browserRespDTO);
         });
-        // 操作系统访问详情
+
+        // 获取并计算操作系统访问分布
         List<ShortLinkStatsOsRespDTO> osStats = new ArrayList<>();
         List<HashMap<String, Object>> listOsStatsByShortLink = linkOsStatsMapper.listOsStatsByShortLink(requestParam);
         int osSum = listOsStatsByShortLink.stream()
                 .mapToInt(each -> Integer.parseInt(each.get("count").toString()))
                 .sum();
+        
+        // 计算各操作系统访问占比
         listOsStatsByShortLink.forEach(each -> {
             double ratio = (double) Integer.parseInt(each.get("count").toString()) / osSum;
             double actualRatio = Math.round(ratio * 100.0) / 100.0;
@@ -183,9 +225,12 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .build();
             osStats.add(osRespDTO);
         });
-        // 访客访问类型详情
+
+        // 获取并计算访客类型分布(新老用户)
         List<ShortLinkStatsUvRespDTO> uvTypeStats = new ArrayList<>();
         HashMap<String, Object> findUvTypeByShortLink = linkAccessLogsMapper.findUvTypeCntByShortLink(requestParam);
+        
+        // 获取新老用户访问数量
         int oldUserCnt = Integer.parseInt(
                 Optional.ofNullable(findUvTypeByShortLink)
                         .map(each -> each.get("oldUserCnt"))
@@ -198,11 +243,15 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                         .map(Object::toString)
                         .orElse("0")
         );
+        
+        // 计算新老用户访问占比
         int uvSum = oldUserCnt + newUserCnt;
         double oldRatio = (double) oldUserCnt / uvSum;
         double actualOldRatio = Math.round(oldRatio * 100.0) / 100.0;
         double newRatio = (double) newUserCnt / uvSum;
         double actualNewRatio = Math.round(newRatio * 100.0) / 100.0;
+        
+        // 构建新老用户访问统计对象
         ShortLinkStatsUvRespDTO newUvRespDTO = ShortLinkStatsUvRespDTO.builder()
                 .uvType("newUser")
                 .cnt(newUserCnt)
@@ -215,12 +264,15 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                 .ratio(actualOldRatio)
                 .build();
         uvTypeStats.add(oldUvRespDTO);
-        // 访问设备类型详情
+
+        // 获取并计算设备类型访问分布
         List<ShortLinkStatsDeviceRespDTO> deviceStats = new ArrayList<>();
         List<LinkDeviceStatsDO> listDeviceStatsByShortLink = linkDeviceStatsMapper.listDeviceStatsByShortLink(requestParam);
         int deviceSum = listDeviceStatsByShortLink.stream()
                 .mapToInt(LinkDeviceStatsDO::getCnt)
                 .sum();
+        
+        // 计算各设备类型访问占比
         listDeviceStatsByShortLink.forEach(each -> {
             double ratio = (double) each.getCnt() / deviceSum;
             double actualRatio = Math.round(ratio * 100.0) / 100.0;
@@ -231,12 +283,15 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .build();
             deviceStats.add(deviceRespDTO);
         });
-        // 访问网络类型详情
+
+        // 获取并计算网络类型访问分布
         List<ShortLinkStatsNetworkRespDTO> networkStats = new ArrayList<>();
         List<LinkNetworkStatsDO> listNetworkStatsByShortLink = linkNetworkStatsMapper.listNetworkStatsByShortLink(requestParam);
         int networkSum = listNetworkStatsByShortLink.stream()
                 .mapToInt(LinkNetworkStatsDO::getCnt)
                 .sum();
+        
+        // 计算各网络类型访问占比
         listNetworkStatsByShortLink.forEach(each -> {
             double ratio = (double) each.getCnt() / networkSum;
             double actualRatio = Math.round(ratio * 100.0) / 100.0;
@@ -247,6 +302,8 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
                     .build();
             networkStats.add(networkRespDTO);
         });
+
+        // 构建并返回完整的统计结果对象
         return ShortLinkStatsRespDTO.builder()
                 .pv(pvUvUidStatsByShortLink.getPv())
                 .uv(pvUvUidStatsByShortLink.getUv())
@@ -506,14 +563,17 @@ public class ShortLinkStatsServiceImpl implements ShortLinkStatsService {
         return actualResult;
     }
 
-    // 检查用户是否属于该分组
+    // 检查用户是否属于该分组 通过上下文的username和gid传参来查询分组
     public void checkGroupBelongToUser(String gid) throws ServiceException {
+        // 获取当前登录用户
         String username = Optional.ofNullable(UserContext.getUsername())
                 .orElseThrow(() -> new ServiceException("用户未登录"));
+        // 查询分组 根据gid和username来查询分组
         LambdaQueryWrapper<GroupDO> queryWrapper = Wrappers.lambdaQuery(GroupDO.class)
                 .eq(GroupDO::getGid, gid)
                 .eq(GroupDO::getUsername, username);
         List<GroupDO> groupDOList = linkGroupMapper.selectList(queryWrapper);
+        // 如果分组不存在 则抛出异常
         if (CollUtil.isEmpty(groupDOList)) {
             throw new ServiceException("用户信息与分组标识不匹配");
         }

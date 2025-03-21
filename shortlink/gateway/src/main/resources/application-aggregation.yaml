@@ -2,20 +2,22 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: short-link-admin-aggregation
-          uri: lb://short-link-aggregation/api/short-link/admin/**
+        # 后台管理服务路由配置
+        - id: short-link-admin-aggregation # 路由唯一标识
+          uri: lb://short-link-aggregation/api/short-link/admin/** # 负载均衡到聚合服务的后台管理接口
           predicates:
-            - Path=/api/short-link/admin/**
+            - Path=/api/short-link/admin/** # 匹配后台管理相关的API路径
           filters:
-            - name: TokenValidate
+            - name: TokenValidate # Token验证过滤器
               args:
-                whitePathList:
-                  - /api/short-link/admin/v1/user/login
-                  - /api/short-link/admin/v1/user/has-username
+                whitePathList: # 白名单路径列表,这些接口不需要token验证 自动注入到config类的属性中
+                  - /api/short-link/admin/v1/user/login # 登录接口
+                  - /api/short-link/admin/v1/user/has-username # 用户名检查接口
 
-        - id: short-link-project-aggregation
-          uri: lb://short-link-aggregation/api/short-link/**
+        # 短链接项目服务路由配置  
+        - id: short-link-project-aggregation # 路由唯一标识
+          uri: lb://short-link-aggregation/api/short-link/** # 负载均衡到聚合服务的短链接项目接口
           predicates:
-            - Path=/api/short-link/**
+            - Path=/api/short-link/** # 匹配短链接项目相关的API路径
           filters:
-            - name: TokenValidate
+            - name: TokenValidate # Token验证过滤器,所有接口都需要验证

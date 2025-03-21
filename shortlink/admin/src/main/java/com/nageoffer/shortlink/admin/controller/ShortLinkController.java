@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * 短链接后管控制层
+ * 短链接后管控制层 带图形化的  前端调后管 后管调中台(并发量高，提供给sass用户)
  */
 @RestController(value = "shortLinkControllerByAdmin")
 @RequiredArgsConstructor

@@ -22,7 +22,7 @@ public interface ShortLinkMapper extends BaseMapper<ShortLinkDO> {
                         @Param("totalUip") Integer totalUip);
 
     /**
-     * 分页统计短链接
+     * 分页统计短链接 
      */
     IPage<ShortLinkDO> pageLink(ShortLinkPageReqDTO requestParam);
 

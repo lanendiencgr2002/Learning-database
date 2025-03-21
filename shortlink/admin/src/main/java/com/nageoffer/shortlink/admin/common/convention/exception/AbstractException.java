@@ -36,6 +36,6 @@ public abstract class AbstractException extends RuntimeException {
         this.errorCode = errorCode.code();  // 设置错误码
         // 使用Optional处理消息，如果message为空则使用errorCode中的默认消息
         this.errorMessage = Optional.ofNullable(StringUtils.hasLength(message) ? message : null)
-                                  .orElse(errorCode.message());
+                                .orElse(errorCode.message());
     }
 }

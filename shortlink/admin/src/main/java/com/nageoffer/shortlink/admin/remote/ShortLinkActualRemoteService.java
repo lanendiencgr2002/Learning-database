@@ -38,7 +38,7 @@ import java.util.List;
  */
 @FeignClient(
         value = "short-link-project",    // 目标微服务名称
-        url = "${aggregation.remote-url:}",  // 动态配置远程服务地址
+        url = "${aggregation.remote-url:}",  // 动态配置远程服务地址 没有 url：使用服务发现
         configuration = OpenFeignConfiguration.class  // 自定义 Feign 配置
 )
 public interface ShortLinkActualRemoteService {

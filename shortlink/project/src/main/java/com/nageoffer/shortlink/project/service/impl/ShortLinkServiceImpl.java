@@ -284,7 +284,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 throw new ServiceException(String.format("短链接：%s 生成重复", fullShortUrl));
             }
             
-            // 将短链接映射关系缓存到Redis,提高访问性能
+            // 将短链接映射关系缓存到Redis,提高访问性能  这也是缓存预热 过期时间为有效期
             stringRedisTemplate.opsForValue().set(
                     String.format(GOTO_SHORT_LINK_KEY, fullShortUrl),
                     requestParam.getOriginUrl(),
@@ -385,7 +385,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             throw new ClientException("短链接记录不存在");
         }
         
-        // 判断是否为同分组更新
+        // 判断是否要切换为其他分组
         if (Objects.equals(hasShortLinkDO.getGid(), requestParam.getGid())) {
             // 同分组更新:直接修改原记录
             LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
@@ -394,7 +394,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .eq(ShortLinkDO::getDelFlag, 0)
                     .eq(ShortLinkDO::getEnableStatus, 0)
                     .set(Objects.equals(requestParam.getValidDateType(), VailDateTypeEnum.PERMANENT.getType()), 
-                         ShortLinkDO::getValidDate, null);
+                        ShortLinkDO::getValidDate, null);
             
             // 构建更新对象
             ShortLinkDO shortLinkDO = ShortLinkDO.builder()
@@ -412,13 +412,21 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .build();
             baseMapper.update(shortLinkDO, updateWrapper);
         } else {
-            // 跨分组更新:使用读写锁保证并发安全
+            // ⭐ 跨分组短链接更新：高并发安全处理 使用读写锁的写锁，因为跨分组更新需要先删除原记录，再创建新记录
+            // 使用写锁的原因：
+            // 这是一个涉及多步骤的复杂更新操作
+            // 需要确保在更新过程中：
+            // 标记原记录为删除
+            // 创建新分组记录
+            // 更新跳转关系表
+            // 这些步骤需要原子性，确保数据一致性
+            // 使用读写锁的写锁可以确保这些步骤是原子性的
             RReadWriteLock readWriteLock = redissonClient.getReadWriteLock(
                     String.format(LOCK_GID_UPDATE_KEY, requestParam.getFullShortUrl()));
             RLock rLock = readWriteLock.writeLock();
             rLock.lock();
             try {
-                // 将原记录标记为删除
+                // == 标记原记录为删除 ==
                 LambdaUpdateWrapper<ShortLinkDO> linkUpdateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)
                         .eq(ShortLinkDO::getFullShortUrl, requestParam.getFullShortUrl())
                         .eq(ShortLinkDO::getGid, hasShortLinkDO.getGid())
@@ -431,7 +439,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 delShortLinkDO.setDelFlag(1);
                 baseMapper.update(delShortLinkDO, linkUpdateWrapper);
                 
-                // 创建新记录
+                // == 创建新分组记录 ==
                 ShortLinkDO shortLinkDO = ShortLinkDO.builder()
                         .domain(createShortLinkDefaultDomain)
                         .originUrl(requestParam.getOriginUrl())
@@ -452,7 +460,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .build();
                 baseMapper.insert(shortLinkDO);
                 
-                // 更新跳转关系表
+                // == 更新跳转关系表 ==
                 LambdaQueryWrapper<ShortLinkGotoDO> linkGotoQueryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
                         .eq(ShortLinkGotoDO::getFullShortUrl, requestParam.getFullShortUrl())
                         .eq(ShortLinkGotoDO::getGid, hasShortLinkDO.getGid());
@@ -529,14 +537,15 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     @SneakyThrows
     @Override
     public void restoreUrl(String shortUri, ServletRequest request, ServletResponse response) {
-        // 构建完整短链接URL
+        // 获取请求的域名 xx:8080.com 或者 xx.com 这种情况是包含80端口的
         String serverName = request.getServerName();
-        // 获取端口号,如果是80端口则忽略
+        // 80->'' 其他  x->':x'
         String serverPort = Optional.of(request.getServerPort())
-                .filter(each -> !Objects.equals(each, 80))
-                .map(String::valueOf)
-                .map(each -> ":" + each)
-                .orElse("");
+                .filter(each -> !Objects.equals(each, 80)) // 过滤掉80端口
+                .map(String::valueOf) //转为字符串
+                .map(each -> ":" + each) //拼接冒号
+                .orElse(""); 
+        // 构建完整短链接URL
         String fullShortUrl = serverName + serverPort + "/" + shortUri;
 
         // 第一级缓存:直接查询Redis
@@ -548,7 +557,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             return;
         }
 
-        // 第二级缓存:布隆过滤器
+        // 第二级缓存:布隆过滤器 防止缓存穿透
         boolean contains = shortUriCreateCachePenetrationBloomFilter.contains(fullShortUrl);
         if (!contains) {
             // 布隆过滤器判定链接不存在,直接返回404
@@ -563,7 +572,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             return;
         }
 
-        // 使用分布式锁防止缓存击穿
+        // 使用分布式锁防止缓存击穿 保证这波操作完 下一次是读到的缓存的数据
         RLock lock = redissonClient.getLock(String.format(LOCK_GOTO_SHORT_LINK_KEY, fullShortUrl));
         lock.lock();
         try {
@@ -583,6 +592,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             }
 
             // 查询数据库获取短链接映射关系
+            // 根据完全的url来查询gid 因为完整的短链接数据库是通过gid分表的 ShortLinkGotoDO可以通过这个简单的表来查询到gid
             LambdaQueryWrapper<ShortLinkGotoDO> linkGotoQueryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
                     .eq(ShortLinkGotoDO::getFullShortUrl, fullShortUrl);
             ShortLinkGotoDO shortLinkGotoDO = shortLinkGotoMapper.selectOne(linkGotoQueryWrapper);
@@ -593,7 +603,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 return;
             }
 
-            // 查询短链接详细信息
+            // 查询短链接详细信息 根据gid和fullShortUrl来查询短链接详细信息
             LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
                     .eq(ShortLinkDO::getGid, shortLinkGotoDO.getGid())
                     .eq(ShortLinkDO::getFullShortUrl, fullShortUrl)
@@ -601,14 +611,14 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     .eq(ShortLinkDO::getEnableStatus, 0);
             ShortLinkDO shortLinkDO = baseMapper.selectOne(queryWrapper);
 
-            // 验证短链接是否有效
+            // 验证短链接是否有效 如果短链接有效期过了 或者短链接不存在 则设置空值缓存 防止缓存穿透
             if (shortLinkDO == null || (shortLinkDO.getValidDate() != null && shortLinkDO.getValidDate().before(new Date()))) {
                 stringRedisTemplate.opsForValue().set(String.format(GOTO_IS_NULL_SHORT_LINK_KEY, fullShortUrl), "-", 30, TimeUnit.MINUTES);
                 ((HttpServletResponse) response).sendRedirect("/page/notfound");
                 return;
             }
 
-            // 将有效短链接写入缓存
+            // 将有效短链接写入缓存 缓存过期时间就是有效期
             stringRedisTemplate.opsForValue().set(
                     String.format(GOTO_SHORT_LINK_KEY, fullShortUrl),
                     shortLinkDO.getOriginUrl(),

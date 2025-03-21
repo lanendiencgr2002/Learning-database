@@ -9,11 +9,21 @@ import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
 /**
+ * ⭐ 自定义全局过滤器 - 接口性能统计
+ * 
+ * == 工作原理 ==
+ * 1. 记录请求开始时间
+ * 2. 请求处理完成后计算耗时
+ * 3. 输出详细的请求信息和性能数据
+ * 
+ * 💡 自动注册机制：
+ * - @Component：Spring Boot自动将过滤器注册到应用上下文
+ * - GlobalFilter接口：Gateway自动将其应用于所有请求，无需配置文件配置
+ * 
+ * ❗ 关联：实现了Gateway的性能监控功能，为接口优化提供数据支持
+ * 
  * @auther zzyy
  * @create 2023-12-31 21:05
- * 不需要额外配置的原因：
- * 自动注册：使用 @Component 注解后，Spring Boot 会自动将其注册到应用上下文中。
- * 全局过滤器：实现 GlobalFilter 接口后，Spring Cloud Gateway 会自动将其作为全局过滤器处理所有请求。
  */
 
 @Component
@@ -25,14 +35,17 @@ public class MyGlobalFilter implements GlobalFilter, Ordered
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain)
     {
-        // exchange 代表一个请求-响应交互的上下文。
-        //1 先记录下访问接口的开始时间
-        exchange.getAttributes().put(BEGIN_VISIT_TIME,System.currentTimeMillis());
-        //2 返回统计的各个结果给后台
+        // ⭐ 第一步：记录请求开始时间
+        // exchange「请求-响应交互上下文」用于在过滤器链中传递数据
+        exchange.getAttributes().put(BEGIN_VISIT_TIME, System.currentTimeMillis());
+        
+        // ⭐ 第二步：继续过滤器链并添加后置处理逻辑
         return chain.filter(exchange).then(Mono.fromRunnable(() -> {
+            // 从上下文中获取开始时间
             Long beginVisitTime = exchange.getAttribute(BEGIN_VISIT_TIME);
             if(beginVisitTime != null)
             {
+                // 输出详细的请求信息和性能统计
                 log.info("访问接口主机："+exchange.getRequest().getURI().getHost());
                 log.info("访问接口端口："+exchange.getRequest().getURI().getPort());
                 log.info("访问接口URL："+exchange.getRequest().getURI().getPath());
@@ -45,8 +58,9 @@ public class MyGlobalFilter implements GlobalFilter, Ordered
     }
 
     /**
+     * ⭐ 过滤器优先级设置
      * 数字越小，优先级越高
-     * @return
+     * @return 优先级值
      */
     @Override
     public int getOrder()

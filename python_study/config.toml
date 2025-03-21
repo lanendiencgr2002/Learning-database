@@ -1,0 +1,40 @@
+name = "Hucci"
+age = 59
+sex = "\"Female\""
+hobbies = [
+    "reading",
+    "writing",
+    "coding",
+]
+birthdate = 1966-07-01 00:00:00+00:00
+account = [
+    { name = "bilibili", username = "HucciB", password = "123456" },
+    { name = "youtube", username = "HucciY", password = "123456" },
+]
+users = [
+    { name = "张三", role = "admin", active = true, login_times = 2 },
+    { name = "李四", role = "user", active = true, login_times = 0 },
+]
+
+[shape]
+height = 1
+weight = 2
+
+[app]
+name = "我的应用"
+version = "1.0.0"
+debug = true
+launch_date = 2024-03-20 10:30:00+00:00
+
+[database]
+host = "localhost"
+port = 5432
+name = "myapp_db"
+user = "admin"
+password = "secret123"
+
+[logging]
+level = "INFO"
+file_path = "logs/app.log"
+max_size = 1024
+backup_count = 3

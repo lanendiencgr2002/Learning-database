@@ -46,7 +46,7 @@ public interface LinkAccessStatsMapper extends BaseMapper<LinkAccessStatsDO> {
     List<LinkAccessStatsDO> listStatsByShortLink(@Param("param") ShortLinkStatsReqDTO requestParam);
 
     /**
-     * 根据分组获取指定日期内基础监控数据
+     * 根据分组获取指定日期内基础监控数据 统计在特定时间段内,某个分组的访问量、独立访客数和独立IP数
      */
     @Select("SELECT " +
             "    tlas.date, " +
@@ -66,7 +66,7 @@ public interface LinkAccessStatsMapper extends BaseMapper<LinkAccessStatsDO> {
     List<LinkAccessStatsDO> listStatsByGroup(@Param("param") ShortLinkGroupStatsReqDTO requestParam);
 
     /**
-     * 根据短链接获取指定日期内小时基础监控数据
+     * 根据短链接获取指定日期内小时基础监控数据 统计在特定时间段内,某个短链接在特定小时内的访问量
      */
     @Select("SELECT " +
             "    tlas.hour, " +
@@ -85,7 +85,7 @@ public interface LinkAccessStatsMapper extends BaseMapper<LinkAccessStatsDO> {
     List<LinkAccessStatsDO> listHourStatsByShortLink(@Param("param") ShortLinkStatsReqDTO requestParam);
 
     /**
-     * 根据分组获取指定日期内小时基础监控数据
+     * 根据分组获取指定日期内小时基础监控数据 统计在特定时间段内,某个分组在特定小时内的访问量
      */
     @Select("SELECT " +
             "    tlas.hour, " +
@@ -103,7 +103,7 @@ public interface LinkAccessStatsMapper extends BaseMapper<LinkAccessStatsDO> {
     List<LinkAccessStatsDO> listHourStatsByGroup(@Param("param") ShortLinkGroupStatsReqDTO requestParam);
 
     /**
-     * 根据短链接获取指定日期内小时基础监控数据
+     * 根据短链接获取指定日期内小时基础监控数据 统计在特定时间段内,某个短链接在特定星期几的访问量
      */
     @Select("SELECT " +
             "    tlas.weekday, " +
@@ -122,7 +122,7 @@ public interface LinkAccessStatsMapper extends BaseMapper<LinkAccessStatsDO> {
     List<LinkAccessStatsDO> listWeekdayStatsByShortLink(@Param("param") ShortLinkStatsReqDTO requestParam);
 
     /**
-     * 根据分组获取指定日期内小时基础监控数据
+     * 根据分组获取指定日期内小时基础监控数据 统计在特定时间段内,某个分组在特定星期几的访问量
      */
     @Select("SELECT " +
             "    tlas.weekday, " +

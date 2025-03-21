@@ -15,7 +15,7 @@ github: 'https://github.com/lanendiencgr2002'
 
 >
 
-- Java后端开发工程师
+- 求职意向：Java后端开发
 
 >
 
@@ -33,16 +33,29 @@ SpringBoot、SpringCloud Alibaba、RocketMQ、ShardingSphere、Redis、MySQL、S
 
 **主要工作**
 - 使用布隆过滤器优化短链接查重逻辑，显著提升判断效率，相比传统分布式锁+数据库查询方案性能提升超过50%
-- 基于RocketMQ实现削峰填谷，解决高并发访问下的监控信息存储问题，系统稳定支持10000+ QPS
 - 设计并实现基于双重检查锁的缓存更新机制，有效减少缓存失效场景下的数据库访问压力
 - 使用Redisson分布式读写锁确保高并发下数据一致性，通过Redis实现消息幂等性处理
 - 基于ShardingSphere实现数据分片，并设计路由表支持短链接分页查询功能
 - 集成Sentinel实现接口级别限流和降级，保障系统的稳定性和可用性
 
+### 电商优惠券系统
+
+**项目描述**
+负责开发一个高性能的电商优惠券管理平台,支持优惠券的创建、秒杀、分发、结算等核心功能。系统具备百万级用户同时抢券能力,保证优惠券不超发、不漏发,支持商家灵活配置优惠券规则。
+
+**技术架构**
+SpringBoot3、SpringCloud Alibaba、RocketMQ 5.x、Redis、MySQL、Sentinel、XXL-Job、Redisson
+
+**主要工作**
+- 基于Redis布隆过滤器和空值缓存防止缓存击穿和穿透,通过Redisson分布式锁保证数据一致性
+- 基于ShardingSphere分库分表方案提升大量优惠券数据的存储和查询效率
+- 通过RocketMQ实现优惠券异步发放,使用延时消息实现精准的抢券提醒功能
+- 设计基于责任链模式的参数校验体系,实现了验证逻辑的高内聚低耦合
+
 ## 专业技能
 
-- Mysql：熟悉分库分表，sql优化，锁，MVCC等
-- Redis：熟悉主从复制，哨兵，集群，布隆过滤器，淘汰策略等
+- Mysql：熟悉分库分表，读写分离，sql优化，锁，MVCC等
+- Redis：熟悉主从复制，哨兵，集群，布隆过滤器，过期策略，内存淘汰策略等
 - RocketMQ：熟悉RocketMQ消息中间件，能够解决消息重复消费、顺序消费、消息丢失以及消息积压等常见问题
 
 ## 教育经历
@@ -59,3 +72,9 @@ SpringBoot、SpringCloud Alibaba、RocketMQ、ShardingSphere、Redis、MySQL、S
 ">
   <img src="//github-readme-stats.vercel.app/api?username=Dunqing&show_icons=true&icon_color=CE1D2D&text_color=718096&bg_color=ffffff&hide_title=true" />
 </p>
+
+熟悉Java核心技术：掌握面向对象设计、集合框架、反射机制、IO流等基础特性，了解JVM内存模型和类加载机制
+熟悉并发编程：掌握线程池原理、同步机制、AQS框架，熟练运用并发容器和原子类解决并发问题
+熟悉Spring全家桶：掌握Spring IOC/AOP原理，熟练使用SpringBoot开发，了解SpringCloud微服务架构及组件
+熟悉数据库技术：掌握MySQL索引设计、锁机制、事务特性，熟练使用Redis缓存、集群部署及性能优化
+熟悉消息中间件：掌握消息队列原理，熟悉消息可靠性投递、幂等性处理、顺序消费等解决方案

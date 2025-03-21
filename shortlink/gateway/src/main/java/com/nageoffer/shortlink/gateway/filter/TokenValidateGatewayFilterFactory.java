@@ -57,6 +57,7 @@ public class TokenValidateGatewayFilterFactory extends AbstractGatewayFilterFact
             
             // 白名单路径直接放行
             if (!isPathInWhiteList(requestPath, requestMethod, config.getWhitePathList())) {
+                // 获取请求头中的username和token
                 String username = request.getHeaders().getFirst("username");
                 String token = request.getHeaders().getFirst("token");
                 Object userInfo;
@@ -67,7 +68,6 @@ public class TokenValidateGatewayFilterFactory extends AbstractGatewayFilterFact
                 if (StringUtils.hasText(username) && 
                     StringUtils.hasText(token) && 
                     (userInfo = stringRedisTemplate.opsForHash().get("short-link:login:" + username, token)) != null) {
-                    
                     // Token验证成功，将用户信息注入请求头
                     // 注意：realName需要URL编码以处理中文字符
                     JSONObject userInfoJsonObject = JSON.parseObject(userInfo.toString());
@@ -96,13 +96,30 @@ public class TokenValidateGatewayFilterFactory extends AbstractGatewayFilterFact
     }
 
     /**
-     * 检查请求路径是否在白名单中
-     * 白名单规则：
-     * 1. 路径前缀匹配白名单列表中的任意项
-     * 2. 特殊处理用户注册接口 (/api/short-link/admin/v1/user POST方法)
+     * 检查请求路径是否在白名单中。
+     *
+     * 该方法用于验证当前请求路径是否在允许的白名单列表中。白名单匹配规则包括路径前缀匹配和特定接口匹配两种方式。
+     *
+     * Args:
+     *     requestPath (String): 当前请求的路径
+     *     requestMethod (String): 当前请求的HTTP方法
+     *     whitePathList (List<String>): 白名单路径列表
+     *
+     * Returns:
+     *     boolean: 如果请求路径在白名单中返回true，否则返回false
+     *
+     * Examples:
+     *     isPathInWhiteList("/api/short-link/admin/v1/user/login", "GET", Arrays.asList("/api/short-link/admin/v1/user/login"))
+     *     // 返回 true
+     *     
+     *     isPathInWhiteList("/api/short-link/admin/v1/user", "POST", Collections.emptyList()) 
+     *     // 返回 true，因为是用户注册接口
+     *
+     * Notes:
+     *     - 白名单匹配支持两种规则:
+     *       1. 路径前缀匹配白名单列表中的任意项
+     *       2. 特殊处理用户注册接口 (/api/short-link/admin/v1/user POST方法)
      */
-    // whitePathList.stream() 转为不是引用
-    // .anyMatch(whitePath -> requestPath.startsWith(whitePath))
     private boolean isPathInWhiteList(String requestPath, String requestMethod, List<String> whitePathList) {
         return (!CollectionUtils.isEmpty(whitePathList) && 
                 whitePathList.stream().anyMatch(requestPath::startsWith)) || 

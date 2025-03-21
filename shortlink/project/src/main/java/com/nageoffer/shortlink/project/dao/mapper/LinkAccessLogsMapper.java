@@ -20,7 +20,7 @@ import java.util.Map;
 public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
 
     /**
-     * 根据短链接获取指定日期内高频访问IP数据
+     * 根据短链接获取指定日期内高频访问IP数据 统计在特定时间段内,某个短链接在特定分组下被不同IP访问的次数
      */
     @Select("SELECT " +
             "    tlal.ip, " +
@@ -42,7 +42,7 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
     List<HashMap<String, Object>> listTopIpByShortLink(@Param("param") ShortLinkStatsReqDTO requestParam);
 
     /**
-     * 根据分组获取指定日期内高频访问IP数据
+     * 根据分组获取指定日期内高频访问IP数据 统计在特定时间段内,某个分组下被不同IP访问的次数
      */
     @Select("SELECT " +
             "    tlal.ip, " +
@@ -63,7 +63,7 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
     List<HashMap<String, Object>> listTopIpByGroup(@Param("param") ShortLinkGroupStatsReqDTO requestParam);
 
     /**
-     * 根据短链接获取指定日期内新旧访客数据
+     * 根据短链接获取指定日期内新旧访客数据 统计在特定时间段内,某个短链接的访问者中,新老访客的数量
      */
     @Select("SELECT " +
             "    SUM(old_user) AS oldUserCnt, " +
@@ -86,7 +86,7 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
     HashMap<String, Object> findUvTypeCntByShortLink(@Param("param") ShortLinkStatsReqDTO requestParam);
 
     /**
-     * 获取用户信息是否新老访客
+     * 获取用户信息是否新老访客 统计在特定时间段内,某个短链接的访问者中,新老访客的数量
      */
     @Select("<script> " +
             "SELECT " +
@@ -120,7 +120,7 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
     );
 
     /**
-     * 获取分组用户信息是否新老访客
+     * 获取分组用户信息是否新老访客 统计在特定时间段内,某个分组的访问者中,新老访客的数量
      */
     @Select("<script> " +
             "SELECT " +
@@ -151,7 +151,7 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
     );
 
     /**
-     * 根据短链接获取指定日期内PV、UV、UIP数据
+     * 根据短链接获取指定日期内PV、UV、UIP数据 统计在特定时间段内,某个短链接的访问量、独立访客数和独立IP数
      */
     @Select("SELECT " +
             "    COUNT(tlal.user) AS pv, " +
@@ -171,7 +171,7 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
     LinkAccessStatsDO findPvUvUidStatsByShortLink(@Param("param") ShortLinkStatsReqDTO requestParam);
 
     /**
-     * 根据分组获取指定日期内PV、UV、UIP数据
+     * 根据分组获取指定日期内PV、UV、UIP数据 统计在特定时间段内,某个分组的访问量、独立访客数和独立IP数
      */
     @Select("SELECT " +
             "    COUNT(tlal.user) AS pv, " +
@@ -189,6 +189,9 @@ public interface LinkAccessLogsMapper extends BaseMapper<LinkAccessLogsDO> {
             "    tl.gid;")
     LinkAccessStatsDO findPvUvUidStatsByGroup(@Param("param") ShortLinkGroupStatsReqDTO requestParam);
 
+    /**
+     * 根据分组获取指定日期内访问记录 统计在特定时间段内,某个分组的访问记录
+     */
     @Select("SELECT " +
             "    tlal.* " +
             "FROM " +

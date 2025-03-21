@@ -170,7 +170,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, UserDO> implements 
         // 构建更新条件，确保只更新指定用户的数据
         LambdaUpdateWrapper<UserDO> updateWrapper = Wrappers.lambdaUpdate(UserDO.class)
                 .eq(UserDO::getUsername, requestParam.getUsername());
-                
+        
         // 执行更新操作
         baseMapper.update(BeanUtil.toBean(requestParam, UserDO.class), updateWrapper);
     }

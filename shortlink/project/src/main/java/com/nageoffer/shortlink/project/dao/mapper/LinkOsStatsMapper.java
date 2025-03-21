@@ -26,7 +26,7 @@ public interface LinkOsStatsMapper extends BaseMapper<LinkOsStatsDO> {
     void shortLinkOsState(@Param("linkOsStats") LinkOsStatsDO linkOsStatsDO);
 
     /**
-     * 根据短链接获取指定日期内操作系统监控数据
+     * 根据短链接获取指定日期内操作系统监控数据 统计在特定时间段内,某个短链接在特定操作系统下的访问量
      */
     @Select("SELECT " +
             "    tlos.os, " +
@@ -45,7 +45,7 @@ public interface LinkOsStatsMapper extends BaseMapper<LinkOsStatsDO> {
     List<HashMap<String, Object>> listOsStatsByShortLink(@Param("param") ShortLinkStatsReqDTO requestParam);
 
     /**
-     * 根据分组获取指定日期内操作系统监控数据
+     * 根据分组获取指定日期内操作系统监控数据 统计在特定时间段内,某个分组在特定操作系统下的访问量
      */
     @Select("SELECT " +
             "    tlos.os, " +

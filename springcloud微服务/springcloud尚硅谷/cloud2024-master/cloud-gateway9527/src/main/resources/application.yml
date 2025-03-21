@@ -3,55 +3,69 @@ server:
 
 spring:
   application:
-    name: cloud-gateway #以微服务注册进consul或nacos服务列表内
+    name: cloud-gateway # ⭐ 微服务名称 - 用于注册到服务发现系统(consul/nacos)
   cloud:
-    consul: #配置consul地址
+    consul: # ===== Consul配置区 =====
       host: localhost
       port: 8500
-      discovery: # 注册到consul注册中心中
-        prefer-ip-address: true
+      discovery: # ⭐ 服务发现配置 - 控制服务如何注册到Consul
+        prefer-ip-address: true # 优先使用IP地址而非主机名
         service-name: ${spring.application.name}
-    gateway: # 网关配置
-      routes: # 找得到对应的路劲访问，不然不能访问 
-        - id: pay_routh1 #pay_routh1                 # 路由的ID(类似mysql主键ID)，没有固定规则但要求唯一，建议配合服务名
-#          uri: http://localhost:8001                # 匹配后提供服务的路由地址
-          uri: lb://cloud-payment-service            # 匹配后提供服务的路由地址
-          predicates: #访问网关的，可以转到对应的服务（相当于隐藏了真实的服务地址） 转到对应微服务的/pay/gateway/get/**路劲上
-            - Path=/pay/gateway/get/**               # 断言，路径相匹配的进行路由
-            - After=2023-12-30T23:02:39.079979400+08:00[Asia/Shanghai] # 断言，时间在指定时间之后
-            #- Cookie=username,zzyy                  # 断言，cookie中要有username参数 值为zzyy
-            #- Header=X-Request-Id, \d+              # 请求头要有X-Request-Id属性并且值为整数的正则表达式
-            #- Host=**.atguigu.com                   # 断言，主机名匹配
-            #- Query=username, \d+                   # 这是get请求参数 要有参数名username并且值还要是整数才能路由
-            #- RemoteAddr=192.168.124.1/24           # 外部访问我的IP限制，最大跨度不超过32，目前是1~24它们是 CIDR 表示法。192.168.124.x才能访问 
-            #- My=gold                               # 自定义了myroutepredicate 值为gold， 会报错，缺少shortcutFieldOrder方法的实现
-#            - name: My #自定义了myroutepredicate 值为gold，
+    gateway: # ===== 网关核心配置区 =====
+      routes: # ⭐ 路由配置列表 - 定义请求如何转发到各个微服务
+        # 💡 路由1配置 - 支付服务路由配置1
+        - id: pay_routh1 # ⭐ 路由唯一标识符「类似数据库主键」
+#          uri: http://localhost:8001                # 直连方式(已注释)
+          uri: lb://cloud-payment-service            # ⭐ 负载均衡方式「lb://服务名」- 通过服务发现动态路由
+          predicates: # ⭐ 断言配置 - 决定请求是否匹配该路由
+            - Path=/pay/gateway/get/**               # ⭐ 路径匹配断言 - 匹配指定URL路径格式
+            - After=2023-12-30T23:02:39.079979400+08:00[Asia/Shanghai] # ⭐ 时间断言 - 仅在指定时间后生效
+            #- Cookie=username,zzyy                  # ⭐ Cookie断言 - 要求Cookie中包含指定键值对
+            #- Header=X-Request-Id, \d+              # ⭐ 请求头断言 - 要求Header满足正则表达式
+            #- Host=**.atguigu.com                   # ⭐ 主机名断言 - 限制访问域名
+            #- Query=username, \d+                   # ⭐ 查询参数断言 - 要求参数满足正则表达式
+            #- RemoteAddr=192.168.124.1/24           # ⭐ IP地址断言 - 限制客户端IP范围「CIDR格式」
+            #- My=gold                               # ⭐ 自定义断言示例「简单方式，但缺少实现」
+#            - name: My # ⭐ 自定义断言「完整方式」- 需要对应的断言工厂实现
 #              args:
 #                userType: diamond
 
-        - id: pay_routh2 #pay_routh2                #路由的ID(类似mysql主键ID)，没有固定规则但要求唯一，建议配合服务名
-          #uri: http://localhost:8001                #匹配后提供服务的路由地址
-          uri: lb://cloud-payment-service
+        # 💡 路由2配置 - 支付服务路由配置2
+        - id: pay_routh2
+          #uri: http://localhost:8001                # 直连方式(已注释)
+          uri: lb://cloud-payment-service            # ⭐ 负载均衡方式 - 通过服务名动态发现服务实例
           predicates:
-            - Path=/pay/gateway/info/**              # 断言，路径相匹配的进行路由
+            - Path=/pay/gateway/info/**              # ⭐ 路径匹配断言 - 匹配info接口路径
 
-        - id: pay_routh3 #pay_routh3
-          uri: lb://cloud-payment-service                #匹配后提供服务的路由地址
+        # 💡 路由3配置 - 支付服务路由配置3(带过滤器示例)
+        - id: pay_routh3
+          uri: lb://cloud-payment-service
           predicates: 
-            - Path=/pay/gateway/filter/**              # 断言，路径相匹配的进行路由，默认正确地址
-            #- Path=/gateway/filter/**              # 断言，为配合PrefixPath测试过滤，暂时注释掉/pay
-            #- Path=/XYZ/abc/{segment}           # 断言，为配合SetPath测试，{segment}的内容最后被SetPath取代 这个跟过滤器的setpath那配合，这里传啥到那就是啥
-          filters: # 可以添加请求头 或者xxxx操作  先过predicates再过filters
-            - My=atguigu
-            #- RedirectTo=302, http://www.atguigu.com/ # 访问http://localhost:9527/pay/gateway/filter跳转到http://www.atguigu.com/
-            #- SetPath=/pay/gateway/{segment}  # {segment}表示占位符，用于传参，你写abc也行但要上下一致
-            #- PrefixPath=/pay # http://localhost:9527/pay/gateway/filter  被分拆为: PrefixPath + Path 前端可以访问不带pay的路劲 这里会自动加上/pay在路劲前缀
-            - AddRequestHeader=X-Request-atguigu1,atguiguValue1  # 请求头kv，若一头含有多参则重写一行设置
-            #- AddRequestHeader=X-Request-atguigu2,atguiguValue2
-            #- RemoveRequestHeader=sec-fetch-site      # 删除请求头sec-fetch-site
-            #- SetRequestHeader=sec-fetch-mode, Blue-updatebyzzyy # 将请求头sec-fetch-mode对应的值修改为Blue-updatebyzzyy 可覆盖
-            #- AddRequestParameter=customerId,9527001 # 新增请求参数Parameter：k ，v 如果原本有，则不会覆盖
-            #- RemoveRequestParameter=customerName   # 删除url请求参数customerName，你传递过来也是null
-            #- AddResponseHeader=X-Response-atguigu, BlueResponse # 新增请求参数X-Response-atguigu并设值为BlueResponse
-            #- SetResponseHeader=Date,2099-11-11 # 设置回应头Date值为2099-11-11
-            #- RemoveResponseHeader=Content-Type # 将默认自带Content-Type回应属性删除
+            - Path=/pay/gateway/filter/**            # ⭐ 当前使用的路径匹配规则 - 匹配filter接口路径
+            #- Path=/gateway/filter/**               # ⭐ 配合PrefixPath过滤器的测试路径(已注释)
+            #- Path=/XYZ/abc/{segment}               # ⭐ 配合SetPath过滤器的测试路径(已注释)
+          filters: # ===== 过滤器配置 ===== 
+            # ❗ 注意：请求先经过断言(predicates)匹配，再经过过滤器(filters)处理
+            - My=atguigu                             # ⭐ 自定义过滤器示例 - 需要对应的过滤器工厂实现
+            
+            # ----- 重定向过滤器(已注释) -----
+            #- RedirectTo=302, http://www.atguigu.com/ # ⭐ 重定向过滤器 - 将请求重定向到外部URL
+            
+            # ----- 路径操作过滤器(已注释) -----
+            #- SetPath=/pay/gateway/{segment}        # ⭐ 路径重写过滤器 - 使用占位符动态替换路径
+            #- PrefixPath=/pay                       # ⭐ 前缀添加过滤器 - 允许客户端使用简化路径
+            
+            # ----- 请求头操作过滤器 -----
+            - AddRequestHeader=X-Request-atguigu1,atguiguValue1  # ⭐ 添加请求头过滤器 - 增加自定义请求头
+            #- AddRequestHeader=X-Request-atguigu2,atguiguValue2  # ⭐ 多个请求头需分行设置
+            #- RemoveRequestHeader=sec-fetch-site    # ⭐ 删除请求头过滤器 - 移除指定请求头
+            #- SetRequestHeader=sec-fetch-mode, Blue-updatebyzzyy # ⭐ 修改请求头过滤器 - 覆盖已有请求头
+            
+            # ----- 请求参数操作过滤器(已注释) -----
+            #- AddRequestParameter=customerId,9527001 # ⭐ 添加请求参数过滤器 - 已有则不覆盖
+            #- RemoveRequestParameter=customerName   # ⭐ 删除请求参数过滤器 - 移除指定参数
+            
+            # ----- 响应头操作过滤器(已注释) -----
+            #- AddResponseHeader=X-Response-atguigu, BlueResponse # ⭐ 添加响应头过滤器 - 增加自定义响应头
+            #- SetResponseHeader=Date,2099-11-11     # ⭐ 设置响应头过滤器 - 覆盖已有响应头
+            #- RemoveResponseHeader=Content-Type     # ⭐ 删除响应头过滤器 - 移除指定响应头

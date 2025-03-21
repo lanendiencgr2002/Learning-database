@@ -55,6 +55,8 @@ class LoggerManager:
         Raises:
             RuntimeError: 创建日志目录或处理器失败时抛出
         """
+        # 保存 name 参数
+        self.name = name
         # 保存 log_dir 参数
         self.log_dir = Path(log_dir)
         # 创建目录
@@ -127,7 +129,7 @@ class LoggerManager:
             RuntimeError: 创建处理器失败时抛出
         """
         try:
-            log_file = self.log_dir / f"app_{datetime.now().strftime('%Y%m%d')}.log"
+            log_file = self.log_dir / f"{self.name}_{datetime.now().strftime('%Y%m%d')}.log"
             handler = RotatingFileHandler(
                 log_file,
                 maxBytes=max_bytes,

@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * 短链接控制层
+ * 短链接控制层  中台
  */
 @RestController
 @RequiredArgsConstructor

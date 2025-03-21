@@ -1,32 +1,49 @@
+# ⭐ 服务器配置：定义应用运行端口
 server:
   port: 8001
 
+# ⭐ Spring 应用核心配置
 spring:
+  # 应用名称「用于服务注册与发现」
   application:
     name: short-link-project
+  
+  # 数据源配置「使用ShardingSphere分库分表」
   datasource:
     driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
     url: jdbc:shardingsphere:classpath:shardingsphere-config-${database.env:dev}.yaml
+  
+  # Redis 缓存配置「本地开发环境」
   data:
     redis:
       host: 127.0.0.1
       port: 6379
       password: 123456
+  
+  # MVC 视图解析配置
   mvc:
     view:
       prefix: /templates/
       suffix: .html
+  
+  # 服务注册发现配置「Nacos」
   cloud:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848
 
+# ⭐ 短链接项目特定配置
 short-link:
+  # 默认域名配置
   domain:
     default: nurl.ink:8001
+  
+  # 统计定位服务配置「高德地图Key」
   stats:
     locale:
       amap-key: 824c511f0997586ea016f979fdb23087
+  
+  # 域名白名单配置「安全访问控制」
   goto-domain:
     white-list:
       enable: true
@@ -37,7 +54,11 @@ short-link:
         - juejin.cn
         - cnblogs.com
 
+# ⭐ MyBatis-Plus 配置
 mybatis-plus:
+  # 日志输出配置「控制台打印SQL」
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  
+  # Mapper XML 文件位置
   mapper-locations: classpath:mapper/*.xml

@@ -29,7 +29,7 @@ import static com.nageoffer.shortlink.project.common.constant.RedisKeyConstant.G
 public class RecycleBinServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLinkDO> implements RecycleBinService {
     private final StringRedisTemplate stringRedisTemplate;
 
-    // 移入回收站
+    // 移入回收站 逻辑是查询短链接，然后把启动状态改为关闭 然后把GOTO_SHORT_LINK_KEY缓存删了
     @Override
     public void saveRecycleBin(RecycleBinSaveReqDTO requestParam) {
         LambdaUpdateWrapper<ShortLinkDO> updateWrapper = Wrappers.lambdaUpdate(ShortLinkDO.class)

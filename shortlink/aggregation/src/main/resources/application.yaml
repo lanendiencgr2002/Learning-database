@@ -1,52 +1,63 @@
-# 服务器配置
+# ⭐ 服务器配置：定义应用运行端口
 server:
   port: 8003  # 应用程序运行的端口号
 
-# Spring 相关配置
+# ⭐ Spring 应用核心配置
 spring:
+  # 应用名称「用于服务注册与发现」
   application:
-    name: short-link-aggregation  # 应用服务名称
-  # 数据源配置，使用 ShardingSphere 进行数据分片
+    name: short-link-aggregation
+  
+  # 数据源配置「使用ShardingSphere分库分表」
   datasource:
     driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
     url: jdbc:shardingsphere:classpath:shardingsphere-config-${database.env:dev}.yaml
-  # Redis 配置
+  
+  # Redis 缓存配置「本地开发环境」
   data:
     redis:
       host: 127.0.0.1  # Redis 服务器地址
       port: 6379       # Redis 端口
       password: 123456 # Redis 密码
-  # MVC 视图配置
+  
+  # MVC 视图解析配置
   mvc:
     view:
       prefix: /templates/  # 视图前缀
-      suffix: .html       # 视图后缀
-  # Nacos 服务发现配置
+      suffix: .html        # 视图后缀
+  
+  # 服务注册发现配置「Nacos」
   cloud:
     nacos:
       discovery:
         server-addr: 127.0.0.1:8848  # Nacos 服务器地址
 
-# 聚合服务配置
+# ⭐ 聚合服务特定配置
 aggregation:
   remote-url: http://127.0.0.1:${server.port}  # 远程调用地址
 
-# 短链接相关配置
+# ⭐ 短链接项目特定配置
 short-link:
+  # 分组管理配置
   group:
     max-num: 20  # 短链接分组最大数量
-  # 流量限制配置
+  
+  # 流量控制配置「防止恶意访问」
   flow-limit:
     enable: true           # 是否启用流量限制
     time-window: 1         # 时间窗口（单位：秒）
     max-access-count: 20   # 最大访问次数
+  
+  # 默认域名配置
   domain:
     default: nurl.ink:8003 # 默认短链接域名
-  # 统计功能配置
+  
+  # 统计定位服务配置「高德地图Key」
   stats:
     locale:
       amap-key: 824c511f0997586ea016f979fdb23087  # 高德地图 API 密钥
-  # 跳转域名白名单配置
+  
+  # 域名白名单配置「安全访问控制」
   goto-domain:
     white-list:
       enable: true                               # 是否启用白名单
@@ -57,8 +68,11 @@ short-link:
         - juejin.cn
         - cnblogs.com
 
-# MyBatis-Plus 配置
+# ⭐ MyBatis-Plus 配置
 mybatis-plus:
+  # 日志输出配置「控制台打印SQL」
   configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # SQL 日志输出实现类
-  mapper-locations: classpath:mapper/*.xml                 # Mapper XML 文件位置
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  
+  # Mapper XML 文件位置
+  mapper-locations: classpath:mapper/*.xml
